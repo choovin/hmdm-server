@@ -198,6 +198,9 @@
 
                 <configuration>
                     <workingDirectory>webtarget</workingDirectory>
+                    <!-- 使用国内镜像下载 Node.js -->
+                    <nodeDownloadRoot>https://cdn.npmmirror.com/binaries/node/</nodeDownloadRoot>
+                    <!-- npm 使用官方源 -->
                 </configuration>
 
                 <executions>
@@ -216,7 +219,7 @@
                         <goals><goal>npm</goal></goals>
 
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>install --registry=https://registry.npmmirror.com</arguments>
                         </configuration>
                     </execution>
 
