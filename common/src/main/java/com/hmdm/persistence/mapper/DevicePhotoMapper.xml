@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hmdm.persistence.mapper.DevicePhotoMapper">
+
+    <resultMap id="DevicePhotoResultMap" type="DevicePhoto">
+        <id property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="deviceNumber" column="device_number"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="mimeType" column="mime_type"/>
+        <result property="width" column="width"/>
+        <result property="height" column="height"/>
+        <result property="description" column="description"/>
+        <result property="tags" column="tags"/>
+        <result property="uploadedByDevice" column="uploaded_by_device"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="takenAt" column="taken_at"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+    </resultMap>
+
+    <resultMap id="PhotoUploadRequestResultMap" type="PhotoUploadRequest">
+        <id property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="deviceNumber" column="device_number"/>
+        <result property="status" column="status"/>
+        <result property="requestedAt" column="requested_at"/>
+        <result property="completedAt" column="completed_at"/>
+        <result property="photoCount" column="photo_count"/>
+        <result property="description" column="description"/>
+        <result property="errorMessage" column="error_message"/>
+    </resultMap>
+
+    <!-- Device Photo queries -->
+
+    <insert id="insertDevicePhoto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO device_photos (device_id, customer_id, file_name, file_path, file_size,
+                                   mime_type, width, height, description, tags, uploaded_by_device,
+                                   taken_at, latitude, longitude)
+        VALUES (#{deviceId}, #{customerId}, #{fileName}, #{filePath}, #{fileSize},
+                #{mimeType}, #{width}, #{height}, #{description}, #{tags}, #{uploadedByDevice},
+                #{takenAt}, #{latitude}, #{longitude})
+    </insert>
+
+    <select id="getDevicePhotoById" resultMap="DevicePhotoResultMap">
+        SELECT dp.*, d.number as device_number
+        FROM device_photos dp
+        JOIN devices d ON dp.device_id = d.id
+        WHERE dp.id = #{id}
+    </select>
+
+    <select id="getDevicePhotosByDeviceId" resultMap="DevicePhotoResultMap">
+        SELECT dp.*, d.number as device_number
+        FROM device_photos dp
+        JOIN devices d ON dp.device_id = d.id
+        WHERE dp.device_id = #{deviceId}
+        ORDER BY dp.created_at DESC
+    </select>
+
+    <select id="getDevicePhotosByCustomerId" resultMap="DevicePhotoResultMap">
+        SELECT dp.*, d.number as device_number
+        FROM device_photos dp
+        JOIN devices d ON dp.device_id = d.id
+        WHERE dp.customer_id = #{customerId}
+        ORDER BY dp.created_at DESC
+    </select>
+
+    <select id="searchDevicePhotos" resultMap="DevicePhotoResultMap">
+        SELECT dp.*, d.number as device_number
+        FROM device_photos dp
+        JOIN devices d ON dp.device_id = d.id
+        WHERE dp.customer_id = #{customerId}
+        <if test="deviceId != null">
+            AND dp.device_id = #{deviceId}
+        </if>
+        <if test="search != null and search != ''">
+            AND (
+                dp.file_name ILIKE #{search}
+                OR dp.description ILIKE #{search}
+                OR dp.tags ILIKE #{search}
+                OR d.number ILIKE #{search}
+            )
+        </if>
+        ORDER BY dp.created_at DESC
+    </select>
+
+    <update id="updateDevicePhoto">
+        UPDATE device_photos
+        SET description = #{description},
+            tags = #{tags}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteDevicePhoto">
+        DELETE FROM device_photos WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteOldPhotos">
+        DELETE FROM device_photos
+        WHERE created_at &lt; CURRENT_TIMESTAMP - INTERVAL '${days} days'
+    </delete>
+
+    <!-- Photo Upload Request queries -->
+
+    <insert id="insertPhotoUploadRequest" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO photo_upload_requests (device_id, customer_id, status, description)
+        VALUES (#{deviceId}, #{customerId}, #{status}, #{description})
+    </insert>
+
+    <select id="getPhotoUploadRequestById" resultMap="PhotoUploadRequestResultMap">
+        SELECT pur.*, d.number as device_number
+        FROM photo_upload_requests pur
+        JOIN devices d ON pur.device_id = d.id
+        WHERE pur.id = #{id}
+    </select>
+
+    <select id="getPendingPhotoUploadRequests" resultMap="PhotoUploadRequestResultMap">
+        SELECT pur.*, d.number as device_number
+        FROM photo_upload_requests pur
+        JOIN devices d ON pur.device_id = d.id
+        WHERE pur.device_id = #{deviceId}
+        AND pur.status = 'PENDING'
+        ORDER BY pur.requested_at ASC
+    </select>
+
+    <update id="updatePhotoUploadRequestStatus">
+        UPDATE photo_upload_requests
+        SET status = #{status},
+            photo_count = COALESCE(#{photoCount}, photo_count),
+            completed_at = CASE WHEN #{status} IN ('COMPLETED', 'FAILED', 'CANCELLED') THEN CURRENT_TIMESTAMP ELSE completed_at END,
+            error_message = #{errorMessage}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getPhotoUploadRequestsByCustomerId" resultMap="PhotoUploadRequestResultMap">
+        SELECT pur.*, d.number as device_number
+        FROM photo_upload_requests pur
+        JOIN devices d ON pur.device_id = d.id
+        WHERE pur.customer_id = #{customerId}
+        ORDER BY pur.requested_at DESC
+    </select>
+
+    <delete id="deleteOldPhotoUploadRequests">
+        DELETE FROM photo_upload_requests
+        WHERE status IN ('COMPLETED', 'FAILED', 'CANCELLED')
+        AND completed_at &lt; CURRENT_TIMESTAMP - INTERVAL '${days} days'
+    </delete>
+
+</mapper>

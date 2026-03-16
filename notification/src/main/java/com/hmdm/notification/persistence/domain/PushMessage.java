@@ -52,6 +52,9 @@ public class PushMessage implements Serializable {
     public static final String TYPE_LOCK = "lock";
     public static final String TYPE_FACTORY_RESET = "factoryReset";
 
+    // Photo upload type
+    public static final String TYPE_UPLOAD_PHOTOS = "uploadPhotos";
+
     /**
      * <p>Constructs new <code>PushMessage</code> instance. This implementation does nothing.</p>
      */

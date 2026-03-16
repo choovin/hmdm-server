@@ -121,6 +121,7 @@ document.localization ['en_US'] = {
     'button.device.reboot': 'Reboot Device',
     'button.device.lock': 'Lock Device',
     'button.device.factory.reset': 'Factory Reset',
+    'button.device.request.photo': 'Request Photo Upload',
     'button.login': 'Login',
     'button.renew.code': 'Renew',
     'button.configurations': 'Configurations',
@@ -154,6 +155,7 @@ document.localization ['en_US'] = {
     'question.device.reboot.bulk': 'Send reboot command to selected devices?',
     'question.device.lock.bulk': 'Send lock command to selected devices?',
     'question.device.factory.reset.bulk': 'Send factory reset command to selected devices? This will erase all data!',
+    'question.device.request.photo': 'Send photo upload request to device "${deviceNumber}"?',
     'question.exit.without.saving': 'Changes are not saved. Anyway leave this page?',
     'question.turn2common.application': 'Share the application "${applicationName}"?',
     'question.app.upgrade': 'Update application "${v1}" to latest version for configuration "${v2}"?',
@@ -272,6 +274,7 @@ document.localization ['en_US'] = {
     'success.device.reboot.sent': 'Reboot command has been sent to device',
     'success.device.lock.sent': 'Lock command has been sent to device',
     'success.device.factory.reset.sent': 'Factory reset command has been sent to device',
+    'success.device.request.photo.sent': 'Photo upload request has been sent to device',
 
     'form.icon.title': 'Icon',
     'form.icon.name': 'Name',

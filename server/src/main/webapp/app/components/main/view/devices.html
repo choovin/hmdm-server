@@ -469,6 +469,9 @@
                         <li role="menuitem" ng-if="hasPermission('edit_devices')">
                             <a ng-click="factoryResetDevice(device)" localized>button.device.factory.reset</a>
                         </li>
+                        <li role="menuitem" ng-if="hasPermission('edit_devices')">
+                            <a ng-click="requestPhotoUpload(device)" localized>button.device.request.photo</a>
+                        </li>
                         <li role="menuitem" ng-if="hasPermission('edit_device_app_settings')">
                             <a ng-click="manageApplicationSettings(device)" localized>button.app.settings</a>
                         </li>

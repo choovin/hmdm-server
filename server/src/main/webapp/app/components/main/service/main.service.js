@@ -14,7 +14,8 @@ angular.module('headwind-kiosk')
             rebootDevice: {url: 'rest/private/devices/:id/reboot', method: 'POST'},
             lockDevice: {url: 'rest/private/devices/:id/lock', method: 'POST'},
             factoryResetDevice: {url: 'rest/private/devices/:id/factoryReset', method: 'POST'},
-            remoteCommandBulk: {url: 'rest/private/devices/remoteCommandBulk', method: 'POST'}
+            remoteCommandBulk: {url: 'rest/private/devices/remoteCommandBulk', method: 'POST'},
+            requestPhotoUpload: {url: 'rest/private/photos/request/:deviceId', method: 'POST'}
         });
     })
     .factory('configurationService', function ($resource) {
@@ -155,7 +156,18 @@ angular.module('headwind-kiosk')
             }
         }
     })
-    .factory('summaryService', function ($resource) {
+    .factory('photoService', function ($resource) {
+        return $resource('', {}, {
+            getAllPhotos: {url: 'rest/private/photos/all', method: 'GET'},
+            getPhotosByDevice: {url: 'rest/private/photos/device/:deviceId', method: 'GET'},
+            searchPhotos: {url: 'rest/private/photos/search', method: 'GET'},
+            getPhotoById: {url: 'rest/private/photos/:id', method: 'GET'},
+            updatePhoto: {url: 'rest/private/photos', method: 'PUT'},
+            deletePhoto: {url: 'rest/private/photos/:id', method: 'DELETE'},
+            requestPhotoUpload: {url: 'rest/private/photos/request/:deviceId', method: 'POST'},
+            getPhotoUploadRequests: {url: 'rest/private/photos/requests', method: 'GET'}
+        });
+    })
         return $resource('', {}, {
             getDeviceStat: {url: 'rest/private/summary/devices', method: 'GET'}
         });

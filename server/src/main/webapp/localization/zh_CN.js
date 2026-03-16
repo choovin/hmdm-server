@@ -121,6 +121,7 @@ document.localization ['zh_CN'] = {
     'button.device.reboot': "重启设备",
     'button.device.lock': "锁定设备",
     'button.device.factory.reset': "恢复出厂设置",
+    'button.device.request.photo': "请求上传照片",
     'button.login' : "登录",
     'button.renew.code' : "更新",
     'button.configurations':"配置",
@@ -154,6 +155,7 @@ document.localization ['zh_CN'] = {
     'question.device.reboot.bulk': "向所选设备发送重启命令？",
     'question.device.lock.bulk': "向所选设备发送锁定命令？",
     'question.device.factory.reset.bulk': "向所选设备发送恢复出厂设置命令？此操作将删除所有数据！",
+    'question.device.request.photo': "向设备\"${deviceNumber}\"发送照片上传请求？",
     'question.exit.without.saving' : "更改未储存。无论如何要离开此页面？",
     'question.turn2common.application':"共享应用程式\"${applicationName}\"吗？",
     'question.app.upgrade':"将应用程式\"${v1}\"更新到配置\"${v2}\"的最新版本吗？",
@@ -272,6 +274,7 @@ document.localization ['zh_CN'] = {
     'success.device.reboot.sent':"重启命令已发送到设备",
     'success.device.lock.sent':"锁定命令已发送到设备",
     'success.device.factory.reset.sent':"恢复出厂设置命令已发送到设备",
+    'success.device.request.photo.sent':"照片上传请求已发送到设备",
 		
     'form.icon.title' : "图示",
     'form.icon.name' : "名称",

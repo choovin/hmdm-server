@@ -1098,6 +1098,19 @@ angular.module('headwind-kiosk')
             });
         };
 
+        $scope.requestPhotoUpload = function (device) {
+            let localizedText = localization.localize('question.device.request.photo').replace('${deviceNumber}', device.number);
+            confirmModal.getUserConfirmation(localizedText, function () {
+                deviceService.requestPhotoUpload({deviceId: device.id}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.request.photo.sent');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
         pluginService.getAvailablePlugins(function (response) {
             if (response.status === 'OK') {
                 if (response.data) {
