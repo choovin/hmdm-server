@@ -5,6 +5,43 @@ angular.module( 'headwind-kiosk' )
     $scope.isControlPanel = false;
     $scope.authService = authService;
     $scope.showExitReportMode = false;
+
+    // Page titles mapping for modern layout
+    var pageTitles = {
+        'summary': '概览',
+        'main': '设备管理',
+        'applications': '应用管理',
+        'configurations': '配置管理',
+        'files': '文件管理',
+        'designSettings': '默认设计',
+        'commonSettings': '通用设置',
+        'users': '用户管理',
+        'roles': '角色管理',
+        'groups': '分组管理',
+        'icons': '图标管理',
+        'langSettings': '语言设置',
+        'pluginSettings': '插件管理',
+        'profile': '个人资料',
+        'updates': '系统更新',
+        'control-panel': '控制面板'
+    };
+
+    $scope.getPageTitle = function() {
+        var title = pageTitles[$state.current.name];
+        if (title) return title;
+
+        // Check for plugin states
+        if ($state.current.name && $state.current.name.indexOf('plugin-') === 0) {
+            return '插件功能';
+        }
+
+        return 'MDM Server';
+    };
+
+    $scope.toggleSidebar = function() {
+        $rootScope.$broadcast('sidebarToggle');
+    };
+
     $scope.$on( 'START_REPORT_MODE', function() {
         $scope.showExitReportMode = true;
     } );

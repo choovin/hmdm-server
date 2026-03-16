@@ -23,9 +23,23 @@ angular.module('headwind-kiosk').controller('ViewToggleController',
     function init() {
         var savedView = localStorage.getItem(STORAGE_KEY);
         if (savedView && (savedView === $scope.VIEWS.TABLE || savedView === $scope.VIEWS.CARD)) {
-            $scope.currentView =savedView;
-        // Broadcast event for parent controllers
-        $rootScope.$broadcast('viewChanged', view);
+            $scope.currentView = savedView;
+        }
+    };
+
+    /**
+     * Set view
+     */
+    $scope.setView = function(view) {
+        if (view !== $scope.currentView) {
+            $scope.currentView = view;
+            localStorage.setItem(STORAGE_KEY, view);
+            // Broadcast event for parent controllers
+            $rootScope.$broadcast('viewChanged', view);
+            // Call callback if provided
+            if ($scope.onViewChange) {
+                $scope.onViewChange({view: view});
+            }
         }
     };
 

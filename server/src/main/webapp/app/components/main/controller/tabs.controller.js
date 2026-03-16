@@ -5,6 +5,27 @@ angular.module('headwind-kiosk')
 
         $scope.localization = localization;
 
+        // Page titles for modern layout
+        var pageTitles = {
+            'SUMMARY': '概览',
+            'DEVICES': '设备管理',
+            'APPS': '应用管理',
+            'CONFS': '配置管理',
+            'FILES': '文件管理',
+            'DESIGN': '默认设计',
+            'COMMON': '通用设置',
+            'USERS': '用户管理',
+            'ROLES': '角色管理',
+            'GROUPS': '分组管理',
+            'ICONS': '图标管理',
+            'LANG': '语言设置',
+            'PLUGINS': '插件管理'
+        };
+
+        // View mode (table/card) - persist to localStorage
+        const VIEW_MODE_KEY = 'hmdm-view-mode';
+        $scope.viewMode = localStorage.getItem(VIEW_MODE_KEY) || 'table';
+
         var routes = {
             SUMMARY: 'summary',
             DEVICES: 'main',
@@ -56,6 +77,24 @@ angular.module('headwind-kiosk')
         $scope.hasPermission = authService.hasPermission;
         $scope.canManageRoles = function() {
             return authService.isSingleCustomer() || authService.isSuperAdmin();
+        };
+
+        // Get page title for modern layout
+        $scope.getPageTitle = function() {
+            return pageTitles[openTab] || 'MDM Server';
+        };
+
+        // Check if current page should show view toggle
+        $scope.showViewToggle = function() {
+            return openTab === 'DEVICES' || openTab === 'APPS' || openTab === 'CONFS' ||
+                   openTab === 'FILES' || openTab === 'USERS' || openTab === 'GROUPS';
+        };
+
+        // Handle view mode change
+        $scope.onViewModeChange = function(mode) {
+            $scope.viewMode = mode;
+            localStorage.setItem(VIEW_MODE_KEY, mode);
+            $rootScope.$broadcast('viewModeChanged', mode);
         };
 
         $scope.activeTab = openTab;

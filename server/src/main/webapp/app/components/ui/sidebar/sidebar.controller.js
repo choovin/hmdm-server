@@ -8,67 +8,22 @@
  */
 
 angular.module('headwind-kiosk').controller('SidebarController',
-['$scope', '$location', '$rootScope',
-function($scope, $location, $rootScope) {
+['$scope', '$state', '$rootScope', 'authService', 'localization', 'pluginService',
+function($scope, $state, $rootScope, authService, localization, pluginService) {
 
     const STORAGE_KEY = 'hmdm-sidebar-collapsed';
 
-    // Sidebar state
-    $scope.isCollapsed = false;
+    // Sidebar state - use sidebarCollapsed to match main.html
+    $scope.sidebarCollapsed = false;
     $scope.activeMenu = '';
+    $scope.localization = localization;
+    $scope.functionsPlugins = [];
 
-    // Menu structure
-    $scope.menuItems = [
-        {
-            id: 'devices',
-            icon: 'smartphone',
-            label: 'menu.devices',
-            route: '/devices',
-            permission: 'devices'
-        },
-        {
-            id: 'applications',
-            icon: 'apps',
-            label: 'menu.applications',
-            route: '/applications',
-            permission: 'applications'
-        },
-        {
-            id: 'configurations',
-            icon: 'settings_applications',
-            label: 'menu.configurations',
-            route: '/configurations',
-            permission: 'configurations'
-        },
-        {
-            id: 'files',
-            icon: 'folder',
-            label: 'menu.files',
-            route: '/files',
-            permission: 'files'
-        },
-        {
-            id: 'users',
-            icon: 'people',
-            label: 'menu.users',
-            route: '/settings/users',
-            permission: 'settings'
-        },
-        {
-            id: 'groups',
-            icon: 'account_tree',
-            label: 'menu.groups',
-            route: '/settings/groups',
-            permission: null
-        },
-        {
-            id: 'plugins',
-            icon: 'extension',
-            label: 'menu.plugins',
-            route: '/plugins',
-            permission: 'plugins_customer_access_management'
-        }
-    ];
+    // Expose auth service methods
+    $scope.hasPermission = authService.hasPermission;
+    $scope.canManageRoles = function() {
+        return authService.isSingleCustomer() || authService.isSuperAdmin();
+    };
 
     /**
      * Initialize sidebar
@@ -77,15 +32,36 @@ function($scope, $location, $rootScope) {
         // Load collapsed state from storage
         var savedState = localStorage.getItem(STORAGE_KEY);
         if (savedState !== null) {
-            $scope.isCollapsed = savedState === 'true';
+            $scope.sidebarCollapsed = savedState === 'true';
         }
 
         // Set active menu based on current route
         updateActiveMenu();
 
         // Listen for route changes
-        $rootScope.$on('$locationChangeSuccess', function() {
+        $rootScope.$on('$stateChangeSuccess', function() {
             updateActiveMenu();
+        });
+
+        // Watch for sidebar toggle from header
+        $scope.$on('sidebarToggle', function(event, collapsed) {
+            $scope.sidebarCollapsed = collapsed;
+        });
+
+        // Load plugin functions
+        loadPlugins();
+    }
+
+    /**
+     * Load plugin functions
+     */
+    function loadPlugins() {
+        pluginService.getAvailablePlugins(function(response) {
+            if (response.status === 'OK' && response.data) {
+                $scope.functionsPlugins = response.data.filter(function(plugin) {
+                    return plugin.functionsViewTemplate !== undefined && plugin.functionsViewTemplate !== null;
+                });
+            }
         });
     }
 
@@ -93,50 +69,51 @@ function($scope, $location, $rootScope) {
      * Update active menu based on current route
      */
     function updateActiveMenu() {
-        var path = $location.path();
-
-        // Find matching menu item
-        var activeItem = $scope.menuItems.find(function(item) {
-            return path.indexOf(item.route) !== -1;
-        });
-
-        $scope.activeMenu = activeItem ? activeItem.id : '';
+        $scope.activeMenu = $state.current.name;
     }
 
     /**
      * Toggle sidebar collapsed state
      */
     $scope.toggleSidebar = function() {
-        $scope.isCollapsed = !$scope.isCollapsed;
-        localStorage.setItem(STORAGE_KEY, $scope.isCollapsed);
+        $scope.sidebarCollapsed = !$scope.sidebarCollapsed;
+        localStorage.setItem(STORAGE_KEY, $scope.sidebarCollapsed);
 
         // Broadcast event for other components
-        $rootScope.$broadcast('sidebarToggle', $scope.isCollapsed);
+        $rootScope.$broadcast('sidebarToggle', $scope.sidebarCollapsed);
     };
 
     /**
-     * Navigate to menu item
+     * Navigate to a state
      */
-    $scope.navigate = function(item) {
-        if (item.route) {
-            $location.path(item.route);
+    $scope.navigateTo = function(stateName) {
+        if (stateName && $state.current.name !== stateName) {
+            $state.transitionTo(stateName);
         }
     };
 
     /**
-     * Check if menu item is active
+     * Navigate to plugin function
      */
-    $scope.isActive = function(itemId) {
-        return $scope.activeMenu === itemId;
+    $scope.navigateToPlugin = function(pluginId) {
+        var stateName = 'plugin-' + pluginId;
+        if ($state.current.name !== stateName) {
+            $state.transitionTo(stateName);
+        }
     };
 
     /**
-     * Check if user has permission for menu item
+     * Check if a state is active
      */
-    $scope.hasPermission = function(permission) {
-        if (!permission) return true;
-        // Delegate to existing permission check
-        return $scope.$parent.hasPermission ? $scope.$parent.hasPermission(permission) : true;
+    $scope.isActive = function(stateName) {
+        return $state.current.name === stateName;
+    };
+
+    /**
+     * Check if a plugin is active
+     */
+    $scope.isPluginActive = function(pluginId) {
+        return $state.current.name === 'plugin-' + pluginId;
     };
 
     // Initialize

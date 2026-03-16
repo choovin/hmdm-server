@@ -1,6 +1,190 @@
 <!-- Localization completed -->
-<div ng-controller='HeaderController'>
-    <div ng-include='"app/components/header/header.html"' ng-if='isAuth() && !isHidden()'></div>
+<!-- Modern Layout with Sidebar -->
+<div class="modern-layout" ng-class="{'sidebar-collapsed': sidebarCollapsed}" ng-if='isAuth() && !isHidden()'>
+
+    <!-- Sidebar Navigation -->
+    <aside class="modern-sidebar" ng-controller="SidebarController">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span class="material-icons">devices</span>
+                <span class="logo-text" ng-show="!sidebarCollapsed">{{appName}}</span>
+            </div>
+            <button class="sidebar-toggle" ng-click="toggleSidebar()" title="{{sidebarCollapsed ? '展开菜单' : '收起菜单'}}">
+                <span class="material-icons">{{sidebarCollapsed ? 'chevron_right' : 'chevron_left'}}</span>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Main Navigation -->
+            <div class="nav-section">
+                <div class="nav-section-title" ng-show="!sidebarCollapsed">主菜单</div>
+                <ul class="nav-list">
+                    <li class="nav-item" ng-class="{'active': isActive('summary')}">
+                        <a ng-click="navigateTo('summary')">
+                            <span class="material-icons nav-icon">dashboard</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">概览</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('main')}">
+                        <a ng-click="navigateTo('main')">
+                            <span class="material-icons nav-icon">phone_android</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">设备</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('applications')}" ng-if="hasPermission('applications')">
+                        <a ng-click="navigateTo('applications')">
+                            <span class="material-icons nav-icon">apps</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">应用</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('configurations')}" ng-if="hasPermission('configurations')">
+                        <a ng-click="navigateTo('configurations')">
+                            <span class="material-icons nav-icon">settings_applications</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">配置</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('files')}" ng-if="hasPermission('files')">
+                        <a ng-click="navigateTo('files')">
+                            <span class="material-icons nav-icon">folder</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">文件</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="nav-section" ng-if="hasPermission('settings')">
+                <div class="nav-section-title" ng-show="!sidebarCollapsed">设置</div>
+                <ul class="nav-list">
+                    <li class="nav-item" ng-class="{'active': isActive('designSettings')}">
+                        <a ng-click="navigateTo('designSettings')">
+                            <span class="material-icons nav-icon">palette</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">默认设计</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('commonSettings')}">
+                        <a ng-click="navigateTo('commonSettings')">
+                            <span class="material-icons nav-icon">tune</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">通用设置</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('users')}">
+                        <a ng-click="navigateTo('users')">
+                            <span class="material-icons nav-icon">people</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">用户</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('roles')}" ng-if="canManageRoles()">
+                        <a ng-click="navigateTo('roles')">
+                            <span class="material-icons nav-icon">admin_panel_settings</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">角色</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('groups')}">
+                        <a ng-click="navigateTo('groups')">
+                            <span class="material-icons nav-icon">groups</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">分组</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('icons')}">
+                        <a ng-click="navigateTo('icons')">
+                            <span class="material-icons nav-icon">image</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">图标</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('langSettings')}">
+                        <a ng-click="navigateTo('langSettings')">
+                            <span class="material-icons nav-icon">language</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">语言</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('pluginSettings')}" ng-if="hasPermission('plugins_customer_access_management')">
+                        <a ng-click="navigateTo('pluginSettings')">
+                            <span class="material-icons nav-icon">extension</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">插件</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Plugin Functions -->
+            <div class="nav-section" ng-if="functionsPlugins.length > 0">
+                <div class="nav-section-title" ng-show="!sidebarCollapsed">功能插件</div>
+                <ul class="nav-list">
+                    <li class="nav-item" ng-repeat="plugin in functionsPlugins" ng-class="{'active': isPluginActive(plugin.identifier)}"
+                        ng-if="!plugin.functionsPermission || hasPermission(plugin.functionsPermission)">
+                        <a ng-click="navigateToPlugin(plugin.identifier)">
+                            <span class="material-icons nav-icon">extension</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">{{localization.localize(plugin.nameLocalizationKey)}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer" ng-show="!sidebarCollapsed">
+            <span class="version">MDM Server</span>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="modern-main">
+        <!-- Modern Header -->
+        <header class="modern-header" ng-controller="HeaderController">
+            <div class="header-left">
+                <button class="menu-toggle" ng-click="toggleSidebar()">
+                    <span class="material-icons">menu</span>
+                </button>
+                <span class="header-title">{{getPageTitle()}}</span>
+            </div>
+
+            <div class="header-right">
+                <!-- Date Time -->
+                <span class="header-datetime hide-on-small-screen">{{dateTime}}</span>
+
+                <!-- Theme Switcher -->
+                <theme-switcher></theme-switcher>
+
+                <!-- User Menu -->
+                <div class="user-menu dropdown" uib-dropdown>
+                    <button class="user-menu-btn dropdown-toggle" uib-dropdown-toggle>
+                        <span class="material-icons">account_circle</span>
+                        <span class="username">{{getUserName()}}</span>
+                        <span class="material-icons">expand_more</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                        <li><a ng-click="about()">
+                            <span class="material-icons">info</span> 关于
+                        </a></li>
+                        <li><a ui-sref="profile">
+                            <span class="material-icons">person</span> 个人资料
+                        </a></li>
+                        <li ng-if="updatesAllowed()"><a ui-sref="updates">
+                            <span class="material-icons">update</span> 更新
+                        </a></li>
+                        <li class="divider" ng-if="authService.isSuperAdmin()"></li>
+                        <li ng-if="authService.isSuperAdmin() && !isControlPanel"><a ng-click="controlPanel()">
+                            <span class="material-icons">admin_panel_settings</span> 控制面板
+                        </a></li>
+                        <li ng-if="authService.isSuperAdmin() && isControlPanel"><a ng-click="mainPanel()">
+                            <span class="material-icons">home</span> 主面板
+                        </a></li>
+                        <li class="divider"></li>
+                        <li><a ng-click="logout()">
+                            <span class="material-icons">logout</span> 退出登录
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="modern-content">
+            <div ui-view></div>
+        </main>
+    </div>
 </div>
 
-<div ui-view></div>
+<!-- Non-authenticated views (login, etc.) -->
+<div ui-view ng-if='!isAuth() || isHidden()'></div>
