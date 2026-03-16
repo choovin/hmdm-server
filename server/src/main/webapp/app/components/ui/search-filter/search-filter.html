@@ -1,0 +1,58 @@
+<!-- Search Filter Component -->
+<div class="search-filter">
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <span class="search-icon material-icons">search</span>
+        <input type="text"
+               class="search-input"
+               ng-model="searchQuery"
+               ng-change="onSearchChange()"
+               placeholder="{{placeholder || '搜索...'}}">
+        <button class="search-clear"
+                ng-if="searchQuery"
+                ng-click="searchQuery = ''; onSearchChange()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+
+    <!-- Quick Filter Tags -->
+    <div class="quick-filters" ng-if="quickFilters.length > 0">
+        <button class="filter-tag"
+                ng-repeat="filter in quickFilters"
+                ng-class="{'active': filter.active}"
+                ng-click="toggleQuickFilter(filter)">
+            {{filter.label}}
+        </button>
+    </div>
+
+    <!-- Advanced Filter Toggle -->
+    <button class="filter-btn" ng-click="toggleAdvancedFilter()">
+        <span class="material-icons">filter_list</span>
+        <span>筛选</span>
+        <span class="filter-count" ng-if="getActiveFilterCount() > 0">{{getActiveFilterCount()}}</span>
+    </button>
+
+    <!-- Clear Filters -->
+    <button class="clear-btn" ng-if="hasActiveFilters()" ng-click="clearFilters()">
+        <span class="material-icons">clear_all</span>
+        <span>清除</span>
+    </button>
+</div>
+
+<!-- Advanced Filter Panel (Drawer) -->
+<div class="advanced-filter-drawer" ng-class="{'open': showAdvancedFilter}">
+    <div class="drawer-header">
+        <h3>高级筛选</h3>
+        <button class="close-btn" ng-click="toggleAdvancedFilter()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    <div class="drawer-body">
+        <!-- Transclude advanced filter content from parent -->
+        <ng-transclude></ng-transclude>
+    </div>
+    <div class="drawer-footer">
+        <button class="btn btn-secondary" ng-click="clearFilters()">重置</button>
+        <button class="btn btn-primary" ng-click="applyFilters(); toggleAdvancedFilter()">应用</button>
+    </div>
+</div>

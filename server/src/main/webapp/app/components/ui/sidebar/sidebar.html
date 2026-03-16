@@ -1,0 +1,42 @@
+<!-- Sidebar Component -->
+<aside class="sidebar" ng-class="{'collapsed': isCollapsed}">
+    <!-- Logo Area -->
+    <div class="sidebar-header">
+        <div class="sidebar-logo" ng-if="!isCollapsed">
+            <span class="logo-icon material-icons">phonelink_setup</span>
+            <span class="logo-text">HMDM</span>
+        </div>
+        <div class="sidebar-logo collapsed" ng-if="isCollapsed">
+            <span class="logo-icon material-icons">phonelink_setup</span>
+        </div>
+        <button class="sidebar-toggle" ng-click="toggleSidebar()" title="{{isCollapsed ? '展开菜单' : '收起菜单'}}">
+            <span class="material-icons">{{isCollapsed ? 'chevron_right' : 'chevron_left'}}</span>
+        </button>
+    </div>
+
+    <!-- Menu Items -->
+    <nav class="sidebar-nav">
+        <ul class="sidebar-menu">
+            <li ng-repeat="item in menuItems"
+                ng-if="hasPermission(item.permission)"
+                class="sidebar-menu-item"
+                ng-class="{'active': isActive(item.id)}">
+                <a ng-click="navigate(item)" class="sidebar-menu-link">
+                    <span class="menu-icon material-icons">{{item.icon}}</span>
+                    <span class="menu-text" ng-if="!isCollapsed">{{localization.localize(item.label)}}</span>
+                </a>
+                <!-- Tooltip for collapsed state -->
+                <div class="sidebar-tooltip" ng-if="isCollapsed">
+                    {{localization.localize(item.label)}}
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Bottom Section -->
+    <div class="sidebar-footer" ng-if="!isCollapsed">
+        <div class="sidebar-footer-content">
+            <span class="version">v5.38.1</span>
+        </div>
+    </div>
+</aside>

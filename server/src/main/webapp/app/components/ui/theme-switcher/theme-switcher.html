@@ -1,0 +1,31 @@
+<!-- Theme Switcher Component -->
+<div class="theme-switcher">
+    <!-- Compact button version (for header) -->
+    <button class="theme-btn"
+            ng-click="cycleTheme()"
+            title="{{getThemeLabel()}}">
+        <span class="material-icons">{{getThemeIcon()}}</span>
+    </button>
+
+    <!-- Dropdown version (for settings page) -->
+    <div class="theme-dropdown" ng-if="showDropdown">
+        <button class="theme-option"
+                ng-class="{'active': currentTheme === THEMES.LIGHT}"
+                ng-click="setTheme(THEMES.LIGHT)">
+            <span class="material-icons">light_mode</span>
+            <span>浅色模式</span>
+        </button>
+        <button class="theme-option"
+                ng-class="{'active': currentTheme === THEMES.DARK}"
+                ng-click="setTheme(THEMES.DARK)">
+            <span class="material-icons">dark_mode</span>
+            <span>深色模式</span>
+        </button>
+        <button class="theme-option"
+                ng-class="{'active': currentTheme === THEMES.AUTO}"
+                ng-click="setTheme(THEMES.AUTO)">
+            <span class="material-icons">brightness_auto</span>
+            <span>跟随系统</span>
+        </button>
+    </div>
+</div>
