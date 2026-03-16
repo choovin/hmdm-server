@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hmdm.persistence.mapper.DeviceImportExportMapper">
+
+    <!-- Import Jobs -->
+    <resultMap id="DeviceImportJobResultMap" type="DeviceImportJob">
+        <id property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="importType" column="import_type"/>
+        <result property="fileName" column="file_name"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="status" column="status"/>
+        <result property="totalRecords" column="total_records"/>
+        <result property="processedRecords" column="processed_records"/>
+        <result property="successCount" column="success_count"/>
+        <result property="failedCount" column="failed_count"/>
+        <result property="skippedCount" column="skipped_count"/>
+        <result property="errorLog" column="error_log"/>
+        <result property="importOptions" column="import_options"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="startedAt" column="started_at"/>
+        <result property="completedAt" column="completed_at"/>
+    </resultMap>
+
+    <insert id="insertImportJob" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO device_import_jobs (customer_id, user_id, import_type, file_name, file_size, status, import_options, created_at)
+        VALUES (#{customerId}, #{userId}, #{importType}, #{fileName}, #{fileSize}, COALESCE(#{status}, 'PENDING'), #{importOptions}, NOW())
+    </insert>
+
+    <select id="getImportJobById" resultMap="DeviceImportJobResultMap">
+        SELECT j.*, u.name AS user_name FROM device_import_jobs j
+        LEFT JOIN users u ON j.user_id = u.id
+        WHERE j.id = #{id} AND j.customer_id = #{customerId}
+    </select>
+
+    <select id="getImportJobsByCustomer" resultMap="DeviceImportJobResultMap">
+        SELECT j.*, u.name AS user_name FROM device_import_jobs j
+        LEFT JOIN users u ON j.user_id = u.id
+        WHERE j.customer_id = #{customerId}
+        ORDER BY j.created_at DESC
+    </select>
+
+    <update id="updateImportJob">
+        UPDATE device_import_jobs SET
+            status = #{status},
+            total_records = #{totalRecords},
+            processed_records = #{processedRecords},
+            success_count = #{successCount},
+            failed_count = #{failedCount},
+            skipped_count = #{skippedCount},
+            error_log = #{errorLog},
+            started_at = #{startedAt},
+            completed_at = #{completedAt}
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <update id="updateImportJobStatus">
+        UPDATE device_import_jobs SET status = #{status}
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteImportJob">
+        DELETE FROM device_import_jobs WHERE id = #{id} AND customer_id = #{customerId}
+    </delete>
+
+    <!-- Export Jobs -->
+    <resultMap id="DeviceExportJobResultMap" type="DeviceExportJob">
+        <id property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="exportType" column="export_type"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="status" column="status"/>
+        <result property="filterCriteria" column="filter_criteria"/>
+        <result property="totalRecords" column="total_records"/>
+        <result property="exportOptions" column="export_options"/>
+        <result property="expiresAt" column="expires_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="startedAt" column="started_at"/>
+        <result property="completedAt" column="completed_at"/>
+    </resultMap>
+
+    <insert id="insertExportJob" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO device_export_jobs (customer_id, user_id, export_type, status, filter_criteria, export_options, created_at)
+        VALUES (#{customerId}, #{userId}, #{exportType}, 'PENDING', #{filterCriteria}, #{exportOptions}, NOW())
+    </insert>
+
+    <select id="getExportJobById" resultMap="DeviceExportJobResultMap">
+        SELECT j.*, u.name AS user_name FROM device_export_jobs j
+        LEFT JOIN users u ON j.user_id = u.id
+        WHERE j.id = #{id} AND j.customer_id = #{customerId}
+    </select>
+
+    <select id="getExportJobsByCustomer" resultMap="DeviceExportJobResultMap">
+        SELECT j.*, u.name AS user_name FROM device_export_jobs j
+        LEFT JOIN users u ON j.user_id = u.id
+        WHERE j.customer_id = #{customerId}
+        ORDER BY j.created_at DESC
+    </select>
+
+    <update id="updateExportJob">
+        UPDATE device_export_jobs SET
+            status = #{status},
+            file_name = #{fileName},
+            file_path = #{filePath},
+            file_size = #{fileSize},
+            total_records = #{totalRecords},
+            expires_at = #{expiresAt},
+            started_at = #{startedAt},
+            completed_at = #{completedAt}
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <update id="updateExportJobStatus">
+        UPDATE device_export_jobs SET status = #{status}
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteExportJob">
+        DELETE FROM device_export_jobs WHERE id = #{id} AND customer_id = #{customerId}
+    </delete>
+
+</mapper>
