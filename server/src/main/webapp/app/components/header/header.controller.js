@@ -6,67 +6,75 @@ angular.module( 'headwind-kiosk' )
     $scope.authService = authService;
     $scope.showExitReportMode = false;
 
-    // Page titles mapping for modern layout
-    var pageTitles = {
-        'summary': '概览',
-        'main': '设备管理',
-        'applications': '应用管理',
-        'configurations': '配置管理',
-        'files': '文件管理',
-        'designSettings': '默认设计',
-        'commonSettings': '通用设置',
-        'users': '用户管理',
-        'roles': '角色管理',
-        'groups': '分组管理',
-        'icons': '图标管理',
-        'langSettings': '语言设置',
-        'pluginSettings': '插件管理',
-        'profile': '个人资料',
-        'updates': '系统更新',
-        'control-panel': '控制面板'
+    // Store event listener references for cleanup
+    var listeners = [];
+
+    // Page titles mapping for modern layout - using localized strings
+    var pageTitleKeys = {
+        'summary': 'tab.summary.title',
+        'main': 'tab.devices.title',
+        'applications': 'tab.applications.title',
+        'configurations': 'tab.configurations.title',
+        'files': 'tab.files.title',
+        'designSettings': 'tab.design.title',
+        'commonSettings': 'tab.common.title',
+        'users': 'tab.users.title',
+        'roles': 'tab.roles.title',
+        'groups': 'tab.groups.title',
+        'icons': 'tab.icons.title',
+        'langSettings': 'tab.language.title',
+        'pluginSettings': 'tab.plugins.title',
+        'profile': 'profile.title',
+        'updates': 'updates.title',
+        'control-panel': 'control.panel.title'
     };
 
     $scope.getPageTitle = function() {
-        var title = pageTitles[$state.current.name];
-        if (title) return title;
+        var key = pageTitleKeys[$state.current.name];
+        if (key) {
+            var localized = localization.localize(key);
+            if (localized !== key) {
+                return localized;
+            }
+        }
 
         // Check for plugin states
         if ($state.current.name && $state.current.name.indexOf('plugin-') === 0) {
-            return '插件功能';
+            return localization.localize('plugin.functions') || '插件功能';
         }
 
-        return 'MDM Server';
+        return localization.localize('app.name') || 'MDM Server';
     };
 
     $scope.toggleSidebar = function() {
         $rootScope.$broadcast('sidebarToggle');
     };
 
-    $scope.$on( 'START_REPORT_MODE', function() {
+    listeners.push($scope.$on( 'START_REPORT_MODE', function() {
         $scope.showExitReportMode = true;
-    } );
+    } ));
 
-    $scope.$on( 'HIDE_REPORT_MODE', function() {
+    listeners.push($scope.$on( 'HIDE_REPORT_MODE', function() {
         $scope.showExitReportMode = false;
-    } );
+    } ));
 
-    $scope.$on( 'HIDE_ADDRESS', function() {
+    listeners.push($scope.$on( 'HIDE_ADDRESS', function() {
         $scope.mapToolsConfig.showDeviceAddress = false;
-    } );
+    } ));
 
-    $scope.$on( 'SHOW_CHECKLIST_INFO', function( event, checklistId ) {
+    listeners.push($scope.$on( 'SHOW_CHECKLIST_INFO', function( event, checklistId ) {
         showWorkResultsContent( checklistId );
-    } );
+    } ));
 
-    $scope.$on( 'SHOW_DATA_LOADING_MODAL', function() {
+    listeners.push($scope.$on( 'SHOW_DATA_LOADING_MODAL', function() {
         $scope.dataLoadingWait = true;
-    } );
+    } ));
 
-    $scope.$on( 'HIDE_DATA_LOADING_MODAL', function() {
+    listeners.push($scope.$on( 'HIDE_DATA_LOADING_MODAL', function() {
         $scope.dataLoadingWait = false;
-    } );
+    } ));
 
-    $scope.$on('IdleWarn', function(e, countdown) {
+    listeners.push($scope.$on('IdleWarn', function(e, countdown) {
         if (!$scope.logoutAlert) {
             $scope.logoutAlert = alertService.showAlertMessage(
                 localization.localize('idle.logout.message').replace('${sec}', countdown),
@@ -77,20 +85,23 @@ angular.module( 'headwind-kiosk' )
         } else {
             // How to update the logoutAlert contents??
         }
-    });
+    }));
 
-    $scope.$on('IdleTimeout', function() {
+    listeners.push($scope.$on('IdleTimeout', function() {
         $scope.logoutAlert.close();
         $scope.logoutAlert = null;
         $scope.logout();
-    });
+    }));
 
-    $rootScope.$on( 'SHOW_EXPIRY_WARNING', function() {
+    listeners.push($rootScope.$on( 'SHOW_EXPIRY_WARNING', function() {
         $scope.expiryWarning = true;
-    } );
+    } ));
 
     rebranding.query(function(value) {
         $scope.appName = value.appName;
+    }, function() {
+        // Error handling
+        $scope.appName = 'MDM';
     });
 
     updateDateTime = function() {
@@ -99,10 +110,33 @@ angular.module( 'headwind-kiosk' )
     updateDateTime();
 
     var interval = $interval( updateDateTime, 10000 );
-    $scope.$on('$destroy', function() { $interval.cancel( interval ) } );
+
+    // Pause interval when tab is hidden to save resources
+    var visibilityHandler = function() {
+        if (document.hidden) {
+            $interval.cancel(interval);
+        } else {
+            updateDateTime();
+            interval = $interval(updateDateTime, 10000);
+        }
+    };
+    document.addEventListener('visibilitychange', visibilityHandler);
+
+    // Cleanup on destroy
+    $scope.$on('$destroy', function() {
+        // Cancel interval
+        $interval.cancel(interval);
+        // Remove visibility listener
+        document.removeEventListener('visibilitychange', visibilityHandler);
+        // Unregister all scope listeners
+        listeners.forEach(function(listener) { listener(); });
+    });
+
+    // Cache URL check result - document.URL rarely changes
+    var urlHasInvoice = document.URL.indexOf('invoice') !== -1;
 
     $scope.getUserName = function() { return authService.getUserName(); };
-    $scope.isAuth = function() { return authService.isLoggedIn() && document.URL.indexOf( 'invoice' ) === -1; };
+    $scope.isAuth = function() { return authService.isLoggedIn() && !urlHasInvoice; };
     $scope.isHidden = function() {
         return $state.current.name === 'qr' || $state.current.name === 'passwordReset';
     };

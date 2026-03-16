@@ -1,12 +1,11 @@
 /**
  * View Toggle Component
  * Toggle between table and card views
+ * Note: View persistence is handled by tabs.controller.js
  */
 
 angular.module('headwind-kiosk').controller('ViewToggleController',
 ['$scope', '$rootScope', function($scope, $rootScope) {
-
-    const STORAGE_KEY = 'hmdm-view-preference';
 
     // View types
     $scope.VIEWS = {
@@ -14,18 +13,17 @@ angular.module('headwind-kiosk').controller('ViewToggleController',
         CARD: 'card'
     };
 
-    // Current view
+    // Current view - default to table, will be updated by parent
     $scope.currentView = $scope.VIEWS.TABLE;
 
     /**
-     * Initialize
+     * Listen for view mode changes from parent controller
      */
-    function init() {
-        var savedView = localStorage.getItem(STORAGE_KEY);
-        if (savedView && (savedView === $scope.VIEWS.TABLE || savedView === $scope.VIEWS.CARD)) {
-            $scope.currentView = savedView;
+    $scope.$on('viewModeChanged', function(event, mode) {
+        if (mode === $scope.VIEWS.TABLE || mode === $scope.VIEWS.CARD) {
+            $scope.currentView = mode;
         }
-    };
+    });
 
     /**
      * Set view
@@ -33,8 +31,7 @@ angular.module('headwind-kiosk').controller('ViewToggleController',
     $scope.setView = function(view) {
         if (view !== $scope.currentView) {
             $scope.currentView = view;
-            localStorage.setItem(STORAGE_KEY, view);
-            // Broadcast event for parent controllers
+            // Broadcast event for parent controllers (tabs.controller.js handles persistence)
             $rootScope.$broadcast('viewChanged', view);
             // Call callback if provided
             if ($scope.onViewChange) {
@@ -49,8 +46,6 @@ angular.module('headwind-kiosk').controller('ViewToggleController',
     $scope.isActive = function(view) {
         return $scope.currentView === view;
     };
-
-    init();
 }])
 .directive('viewToggle', function() {
     return {

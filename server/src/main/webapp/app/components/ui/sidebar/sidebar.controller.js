@@ -38,14 +38,20 @@ function($scope, $state, $rootScope, authService, localization, pluginService) {
         // Set active menu based on current route
         updateActiveMenu();
 
-        // Listen for route changes
-        $rootScope.$on('$stateChangeSuccess', function() {
+        // Listen for route changes and store listener reference for cleanup
+        var stateChangeListener = $rootScope.$on('$stateChangeSuccess', function() {
             updateActiveMenu();
         });
 
         // Watch for sidebar toggle from header
-        $scope.$on('sidebarToggle', function(event, collapsed) {
+        var sidebarToggleListener = $scope.$on('sidebarToggle', function(event, collapsed) {
             $scope.sidebarCollapsed = collapsed;
+        });
+
+        // Cleanup on scope destroy
+        $scope.$on('$destroy', function() {
+            stateChangeListener();
+            sidebarToggleListener();
         });
 
         // Load plugin functions
@@ -59,9 +65,14 @@ function($scope, $state, $rootScope, authService, localization, pluginService) {
         pluginService.getAvailablePlugins(function(response) {
             if (response.status === 'OK' && response.data) {
                 $scope.functionsPlugins = response.data.filter(function(plugin) {
-                    return plugin.functionsViewTemplate !== undefined && plugin.functionsViewTemplate !== null;
+                    return !!plugin.functionsViewTemplate;
                 });
+            } else {
+                $scope.functionsPlugins = [];
             }
+        }, function() {
+            // Error callback
+            $scope.functionsPlugins = [];
         });
     }
 
@@ -77,7 +88,11 @@ function($scope, $state, $rootScope, authService, localization, pluginService) {
      */
     $scope.toggleSidebar = function() {
         $scope.sidebarCollapsed = !$scope.sidebarCollapsed;
-        localStorage.setItem(STORAGE_KEY, $scope.sidebarCollapsed);
+        var currentState = localStorage.getItem(STORAGE_KEY);
+        var newState = String($scope.sidebarCollapsed);
+        if (currentState !== newState) {
+            localStorage.setItem(STORAGE_KEY, $scope.sidebarCollapsed);
+        }
 
         // Broadcast event for other components
         $rootScope.$broadcast('sidebarToggle', $scope.sidebarCollapsed);

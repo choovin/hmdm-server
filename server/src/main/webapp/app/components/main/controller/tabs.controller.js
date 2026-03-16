@@ -47,19 +47,22 @@ angular.module('headwind-kiosk')
             pluginService.getAvailablePlugins(function (response) {
                 if (response.status === 'OK') {
                     if (response.data) {
+                        // Helper function to filter plugins by template property
+                        function filterPlugins(plugins, templateProperty) {
+                            return plugins.filter(function(plugin) {
+                                return !!plugin[templateProperty];
+                            });
+                        }
+
                         // Plugins available for Functions tab
-                        $scope.functionsPlugins = response.data.filter(function (plugin) {
-                            return plugin.functionsViewTemplate !== undefined && plugin.functionsViewTemplate !== null;
-                        });
+                        $scope.functionsPlugins = filterPlugins(response.data, 'functionsViewTemplate');
                         $scope.functionsPlugins.forEach(function (plugin) {
                             let ID = 'plugin-' + plugin.identifier;
                             routes[ID] = ID;
                         });
 
                         // Plugins available for Settings tab
-                        $scope.settingsPlugins = response.data.filter(function (plugin) {
-                            return plugin.settingsViewTemplate !== undefined && plugin.settingsViewTemplate !== null;
-                        });
+                        $scope.settingsPlugins = filterPlugins(response.data, 'settingsViewTemplate');
                         $scope.settingsPlugins.forEach(function (plugin) {
                             let ID = 'plugin-settings-' + plugin.identifier;
                             routes[ID] = ID;

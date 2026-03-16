@@ -30,6 +30,13 @@ angular.module('headwind-kiosk').controller('SearchFilterController',
                 console.warn('Failed to load saved filters');
             }
         }
+
+        // Cleanup on scope destroy
+        $scope.$on('$destroy', function() {
+            if ($scope.searchTimeout) {
+                $timeout.cancel($scope.searchTimeout);
+            }
+        });
     }
 
     /**
@@ -59,9 +66,14 @@ angular.module('headwind-kiosk').controller('SearchFilterController',
             $scope.onFilterChange({filters: filterData});
         }
 
-        // Save filters
+        // Save filters only if changed
         if ($scope.filterKey) {
-            localStorage.setItem('hmdm-filters-' + $scope.filterKey, JSON.stringify($scope.activeFilters));
+            var storageKey = 'hmdm-filters-' + $scope.filterKey;
+            var currentStored = localStorage.getItem(storageKey);
+            var newValue = JSON.stringify($scope.activeFilters);
+            if (currentStored !== newValue) {
+                localStorage.setItem(storageKey, newValue);
+            }
         }
     };
 

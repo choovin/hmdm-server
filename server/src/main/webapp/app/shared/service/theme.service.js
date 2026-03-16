@@ -18,6 +18,10 @@ angular.module('headwind-kiosk').service('themeService', ['$rootScope', function
         AUTO: 'auto'
     };
 
+    // Store MediaQueryList reference for cleanup
+    let darkModeQuery = null;
+    let themeChangeHandler = null;
+
     /**
      * Initialize theme on app startup
      */
@@ -32,13 +36,17 @@ angular.module('headwind-kiosk').service('themeService', ['$rootScope', function
             applyTheme(systemPrefersDark ? THEMES.DARK : THEMES.LIGHT);
         }
 
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-            const currentPref = localStorage.getItem(STORAGE_KEY);
-            if (!currentPref || currentPref === THEMES.AUTO) {
-                applyTheme(e.matches ? THEMES.DARK : THEMES.LIGHT);
-            }
-        });
+        // Listen for system theme changes (only once)
+        if (!darkModeQuery) {
+            darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            themeChangeHandler = function(e) {
+                const currentPref = localStorage.getItem(STORAGE_KEY);
+                if (!currentPref || currentPref === THEMES.AUTO) {
+                    applyTheme(e.matches ? THEMES.DARK : THEMES.LIGHT);
+                }
+            };
+            darkModeQuery.addEventListener('change', themeChangeHandler);
+        }
     }
 
     /**
