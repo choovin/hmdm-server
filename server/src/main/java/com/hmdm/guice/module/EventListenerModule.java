@@ -25,6 +25,8 @@ import com.google.inject.Inject;
 import com.hmdm.event.EventService;
 import com.hmdm.persistence.ConfigurationUpdatedEventListener;
 import com.hmdm.persistence.DeviceInfoUpdatedEventListener;
+import com.hmdm.persistence.DeviceLocationDAO;
+import com.hmdm.persistence.DeviceLocationUpdatedEventListener;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.service.DeviceStatusService;
 import org.slf4j.Logger;
@@ -42,6 +44,7 @@ public class EventListenerModule {
     private final EventService eventService;
     private final DeviceMapper deviceMapper;
     private final DeviceStatusService deviceStatusService;
+    private final DeviceLocationDAO deviceLocationDAO;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
@@ -52,15 +55,18 @@ public class EventListenerModule {
      * <p>Constructs new <code>EventListenerModule</code> instance. This implementation does nothing.</p>
      */
     @Inject
-    public EventListenerModule(EventService eventService, DeviceMapper deviceMapper, DeviceStatusService deviceStatusService) {
+    public EventListenerModule(EventService eventService, DeviceMapper deviceMapper, DeviceStatusService deviceStatusService,
+                               DeviceLocationDAO deviceLocationDAO) {
         this.eventService = eventService;
         this.deviceMapper = deviceMapper;
         this.deviceStatusService = deviceStatusService;
+        this.deviceLocationDAO = deviceLocationDAO;
     }
 
     public void init() {
         this.eventService.addEventListener(new DeviceInfoUpdatedEventListener(deviceStatusService));
         this.eventService.addEventListener(new ConfigurationUpdatedEventListener(deviceMapper, deviceStatusService));
+        this.eventService.addEventListener(new DeviceLocationUpdatedEventListener(deviceLocationDAO));
 
         executorService.submit(() -> {
             List<Integer> deviceIds = this.deviceMapper.getAllDeviceIds();

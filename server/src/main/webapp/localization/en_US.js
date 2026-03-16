@@ -106,6 +106,7 @@ document.localization ['en_US'] = {
     'button.cleanup': 'Clear',
     'button.add': 'Add',
     'button.add.icon': 'New Icon',
+    'button.add.geofence': 'New Geofence',
     'button.search': 'Search',
     'button.export': 'Export',
     'button.change': 'Edit',
@@ -768,6 +769,7 @@ document.localization ['en_US'] = {
     'tab.applications': 'Applications',
     'tab.configurations': 'Configurations',
     'tab.files': 'Files',
+    'tab.locations': 'Location Tracking',
     'tab.default.design': 'Default Design',
     'tab.common.settings': 'Device Table View',
     'tab.users': 'Users',
@@ -935,6 +937,7 @@ document.localization ['en_US'] = {
     'breadcrumb.applications': 'Applications',
     'breadcrumb.configurations': 'Configurations',
     'breadcrumb.files': 'Files',
+    'breadcrumb.locations': 'Location Tracking',
     'breadcrumb.default.design': 'Design by default',
     'breadcrumb.common.settings': 'Device Table View',
     'breadcrumb.language.settings': 'Language and Other Settings',
@@ -1108,6 +1111,22 @@ document.localization ['en_US'] = {
     'permission.edit_application_versions': 'Manage application versions',
     'permission.files': 'View files',
     'permission.edit_files': 'Manage files',
+    'permission.locations': 'View device locations',
+    'permission.edit_locations': 'Manage geofences',
+
+    'heading.devices.map': 'Devices Map',
+    'heading.devices.locations': 'Device Locations',
+    'heading.geofences': 'Geofences',
+
+    'status.active': 'Active',
+    'status.inactive': 'Inactive',
+
+    'tooltip.show.on.map': 'Show on Map',
+    'tooltip.view.history': 'View History',
+    'tooltip.enter.notification': 'Notify on Enter',
+    'tooltip.exit.notification': 'Notify on Exit',
+
+    'search.location': 'Search locations...',
 
     'yes': 'yes',
     'no': 'no'

@@ -1,0 +1,139 @@
+<!-- Localization completed -->
+<!-- Modern Locations Page -->
+<div class="modern-content">
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="search-box">
+                <input type="text"
+                       class="form-control search-input"
+                       ng-model="searchLocation"
+                       placeholder="{{localization.localize('search.location')}}">
+                <span class="search-icon material-icons">search</span>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn btn-primary btn-modern" ng-click="openGeofenceModal()">
+                <span class="material-icons">add_circle</span>
+                <span>{{localization.localize('button.add.geofence')}}</span>
+            </button>
+            <button class="btn btn-default btn-modern" ng-click="refreshLocations()">
+                <span class="material-icons">refresh</span>
+                <span>{{localization.localize('button.refresh')}}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- Map Card -->
+        <div class="card map-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">map</span>
+                    {{localization.localize('heading.devices.map')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="devicesMap" class="devices-map"></div>
+            </div>
+        </div>
+
+        <!-- Devices List Card -->
+        <div class="card devices-list-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">devices</span>
+                    {{localization.localize('heading.devices.locations')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="location-list">
+                    <div class="location-item" ng-repeat="location in locations | filter:searchLocation">
+                        <div class="location-device">
+                            <div class="device-icon" ng-class="{'online': location.online, 'offline': !location.online}">
+                                <span class="material-icons">smartphone</span>
+                            </div>
+                            <div class="device-info">
+                                <div class="device-number">{{location.deviceNumber}}</div>
+                                <div class="device-time">{{formatTime(location.timestamp)}}</div>
+                            </div>
+                        </div>
+                        <div class="location-details">
+                            <div class="location-coords">
+                                <span class="material-icons">place</span>
+                                {{location.latitude | number:6}}, {{location.longitude | number:6}}
+                            </div>
+                            <div class="location-accuracy" ng-if="location.accuracy">
+                                <span class="material-icons">gps_fixed</span>
+                                ±{{location.accuracy | number:0}}m
+                            </div>
+                            <div class="location-battery" ng-if="location.batteryLevel">
+                                <span class="material-icons" ng-class="{'battery-low': location.batteryLevel < 20}">
+                                    {{getBatteryIcon(location.batteryLevel)}}
+                                </span>
+                                {{location.batteryLevel}}%
+                            </div>
+                        </div>
+                        <div class="location-actions">
+                            <button class="btn btn-icon" ng-click="showOnMap(location)" title="{{localization.localize('tooltip.show.on.map')}}">
+                                <span class="material-icons">location_on</span>
+                            </button>
+                            <button class="btn btn-icon" ng-click="viewHistory(location.deviceId)" title="{{localization.localize('tooltip.view.history')}}">
+                                <span class="material-icons">history</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Geofences Section -->
+    <div class="card geofences-card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <span class="material-icons">share_location</span>
+                {{localization.localize('heading.geofences')}}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="geofence-list">
+                <div class="geofence-item" ng-repeat="geofence in geofences" ng-class="{'inactive': !geofence.active}">
+                    <div class="geofence-info">
+                        <div class="geofence-name">{{geofence.name}}</div>
+                        <div class="geofence-details">
+                            <span class="material-icons">place</span>
+                            {{geofence.latitude | number:6}}, {{geofence.longitude | number:6}}
+                            <span class="radius">{{geofence.radius}}m</span>
+                        </div>
+                        <div class="geofence-description" ng-if="geofence.description">
+                            {{geofence.description}}
+                        </div>
+                    </div>
+                    <div class="geofence-notifications">
+                        <span class="badge" ng-if="geofence.enterNotification" title="{{localization.localize('tooltip.enter.notification')}}">
+                            <span class="material-icons">login</span>
+                        </span>
+                        <span class="badge" ng-if="geofence.exitNotification" title="{{localization.localize('tooltip.exit.notification')}}">
+                            <span class="material-icons">logout</span>
+                        </span>
+                    </div>
+                    <div class="geofence-status">
+                        <span class="status-badge" ng-class="{'active': geofence.active, 'inactive': !geofence.active}">
+                            {{geofence.active ? localization.localize('status.active') : localization.localize('status.inactive')}}
+                        </span>
+                    </div>
+                    <div class="geofence-actions">
+                        <button class="btn btn-icon" ng-click="editGeofence(geofence)" title="{{localization.localize('tooltip.edit')}}">
+                            <span class="material-icons">edit</span>
+                        </button>
+                        <button class="btn btn-icon" ng-click="deleteGeofence(geofence)" title="{{localization.localize('tooltip.delete')}}">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -182,6 +182,17 @@ angular.module('headwind-kiosk',
                     openTab: function () {return "FILES"}
                 }
             })
+            .state('locations', {
+                url: '/locations',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.locations" | localize}}' //label to show in breadcrumbs
+                },
+                resolve: {
+                    openTab: function () {return "LOCATIONS"}
+                }
+            })
             .state('designSettings', {
                 url: '/designSettings',
                 templateUrl: 'app/components/main/view/content.html',

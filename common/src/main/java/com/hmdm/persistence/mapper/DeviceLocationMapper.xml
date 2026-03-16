@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~
+  ~ Headwind MDM: Open Source Android MDM Software
+  ~ https://h-mdm.com
+  ~
+  ~ Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmdm.persistence.mapper.DeviceLocationMapper">
+
+    <resultMap id="deviceLocationResult" type="DeviceLocation">
+        <result property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="deviceNumber" column="device_number"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="accuracy" column="accuracy"/>
+        <result property="altitude" column="altitude"/>
+        <result property="speed" column="speed"/>
+        <result property="batteryLevel" column="battery_level"/>
+        <result property="address" column="address"/>
+        <result property="provider" column="provider"/>
+        <result property="timestamp" column="timestamp"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="geofenceResult" type="Geofence">
+        <result property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="radius" column="radius"/>
+        <result property="enterNotification" column="enter_notification"/>
+        <result property="exitNotification" column="exit_notification"/>
+        <result property="active" column="active"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <!-- Insert device location -->
+    <insert id="insertDeviceLocation" parameterType="DeviceLocation" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO device_locations(device_id, latitude, longitude, accuracy, altitude, speed, battery_level, address, provider, timestamp, created_at)
+        VALUES (#{deviceId}, #{latitude}, #{longitude}, #{accuracy}, #{altitude}, #{speed}, #{batteryLevel}, #{address}, #{provider}, #{timestamp}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <!-- Get device location history -->
+    <select id="getDeviceLocationHistory" resultMap="deviceLocationResult">
+        SELECT dl.*, d.number as device_number
+        FROM device_locations dl
+        JOIN devices d ON dl.device_id = d.id
+        WHERE dl.device_id = #{deviceId}
+        <if test="fromTime != null">
+            AND dl.timestamp >= #{fromTime}
+        </if>
+        <if test="toTime != null">
+            AND dl.timestamp &lt;= #{toTime}
+        </if>
+        ORDER BY dl.timestamp DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- Get latest device location -->
+    <select id="getLatestDeviceLocation" resultMap="deviceLocationResult">
+        SELECT dl.*, d.number as device_number
+        FROM device_locations dl
+        JOIN devices d ON dl.device_id = d.id
+        WHERE dl.device_id = #{deviceId}
+        ORDER BY dl.timestamp DESC
+        LIMIT 1
+    </select>
+
+    <!-- Get all latest locations for a customer -->
+    <select id="getAllLatestLocations" resultMap="deviceLocationResult">
+        SELECT dl.*, d.number as device_number
+        FROM device_locations dl
+        JOIN devices d ON dl.device_id = d.id
+        JOIN (
+            SELECT device_id, MAX(timestamp) as max_timestamp
+            FROM device_locations
+            WHERE device_id IN (SELECT id FROM devices WHERE customer_id = #{customerId})
+            GROUP BY device_id
+        ) latest ON dl.device_id = latest.device_id AND dl.timestamp = latest.max_timestamp
+        WHERE d.customer_id = #{customerId}
+    </select>
+
+    <!-- Delete old locations -->
+    <delete id="deleteOldLocations">
+        DELETE FROM device_locations
+        WHERE device_id = #{deviceId}
+        AND timestamp &lt; #{olderThan}
+    </delete>
+
+    <!-- Geofence methods -->
+
+    <!-- Insert geofence -->
+    <insert id="insertGeofence" parameterType="Geofence" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO geofences(customer_id, name, description, latitude, longitude, radius, enter_notification, exit_notification, active, created_at)
+        VALUES (#{customerId}, #{name}, #{description}, #{latitude}, #{longitude}, #{radius}, #{enterNotification}, #{exitNotification}, #{active}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <!-- Update geofence -->
+    <update id="updateGeofence" parameterType="Geofence">
+        UPDATE geofences
+        SET name = #{name},
+            description = #{description},
+            latitude = #{latitude},
+            longitude = #{longitude},
+            radius = #{radius},
+            enter_notification = #{enterNotification},
+            exit_notification = #{exitNotification},
+            active = #{active}
+        WHERE id = #{id}
+        AND customer_id = #{customerId}
+    </update>
+
+    <!-- Delete geofence -->
+    <delete id="deleteGeofence">
+        DELETE FROM geofences
+        WHERE id = #{id}
+        AND customer_id = #{customerId}
+    </delete>
+
+    <!-- Get geofence by ID -->
+    <select id="getGeofenceById" resultMap="geofenceResult">
+        SELECT *
+        FROM geofences
+        WHERE id = #{id}
+        AND customer_id = #{customerId}
+    </select>
+
+    <!-- Get all geofences for a customer -->
+    <select id="getAllGeofences" resultMap="geofenceResult">
+        SELECT *
+        FROM geofences
+        WHERE customer_id = #{customerId}
+        <if test="activeOnly != null and activeOnly == true">
+            AND active = true
+        </if>
+        ORDER BY name
+    </select>
+
+    <!-- Assign devices to geofence -->
+    <insert id="assignDevicesToGeofence">
+        INSERT INTO geofence_devices (geofence_id, device_id)
+        VALUES
+        <foreach collection="deviceIds" item="deviceId" separator=",">
+            (#{geofenceId}, #{deviceId})
+        </foreach>
+        ON CONFLICT (geofence_id, device_id) DO NOTHING
+    </insert>
+
+    <!-- Remove all devices from geofence -->
+    <delete id="removeDevicesFromGeofence">
+        DELETE FROM geofence_devices
+        WHERE geofence_id = #{geofenceId}
+    </delete>
+
+    <!-- Get device IDs assigned to geofence -->
+    <select id="getGeofenceDeviceIds" resultType="java.lang.Integer">
+        SELECT device_id
+        FROM geofence_devices
+        WHERE geofence_id = #{geofenceId}
+    </select>
+
+    <!-- Update geofence device status -->
+    <update id="updateGeofenceDeviceStatus">
+        UPDATE geofence_devices
+        SET status = #{status},
+            last_triggered_at = CURRENT_TIMESTAMP
+        WHERE geofence_id = #{geofenceId}
+        AND device_id = #{deviceId}
+    </update>
+
+</mapper>

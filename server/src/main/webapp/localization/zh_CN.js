@@ -106,6 +106,7 @@ document.localization ['zh_CN'] = {
     'button.cleanup' : "明确",
     'button.add' : "新增",
     'button.add.icon':"新图示",
+    'button.add.geofence':"新增地理围栏",
     'button.search' : "搜索",
     'button.export' : "导出",
     'button.change' : "编辑",
@@ -768,6 +769,7 @@ document.localization ['zh_CN'] = {
     'tab.applications':"应用程式",
     'tab.configurations':"配置",
     'tab.files':"文档",
+    'tab.locations':"位置追踪",
     'tab.default.design':"默认设计",
     'tab.common.settings':"设备表视图",
     'tab.users':"用户",
@@ -935,6 +937,7 @@ document.localization ['zh_CN'] = {
     'breadcrumb.applications':"应用程式",
     'breadcrumb.configurations':"配置",
     'breadcrumb.files':"文档",
+    'breadcrumb.locations':"位置追踪",
     'breadcrumb.default.design':"默认设计",
     'breadcrumb.common.settings':"设备表视图",
     'breadcrumb.language.settings':"语言和其他设置",
@@ -1109,6 +1112,22 @@ document.localization ['zh_CN'] = {
     'permission.edit_application_versions': '管理应用程序版本',
     'permission.files': '查看文件',
     'permission.edit_files': '管理文件',
+    'permission.locations': '查看设备位置',
+    'permission.edit_locations': '管理地理围栏',
+
+    'heading.devices.map': '设备地图',
+    'heading.devices.locations': '设备位置',
+    'heading.geofences': '地理围栏',
+
+    'status.active': '活跃',
+    'status.inactive': '不活跃',
+
+    'tooltip.show.on.map': '在地图上显示',
+    'tooltip.view.history': '查看历史',
+    'tooltip.enter.notification': '进入时通知',
+    'tooltip.exit.notification': '离开时通知',
+
+    'search.location': '搜索位置...',
 
     'yes' : 'yes',
     'no' : 'No'
