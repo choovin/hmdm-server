@@ -501,6 +501,17 @@ angular.module('headwind-kiosk',
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
 
+        // Cache URL check result - document.URL rarely changes
+        var urlHasInvoice = document.URL.indexOf('invoice') !== -1;
+
+        // Define isAuth and isHidden on rootScope for modern layout
+        $rootScope.isAuth = function() {
+            return authService.isLoggedIn() && !urlHasInvoice;
+        };
+        $rootScope.isHidden = function() {
+            return $state.current.name === 'qr' || $state.current.name === 'passwordReset';
+        };
+
         var initIdleLogout = function() {
             var user = authService.getUser();
             if (user.idleLogout) {
