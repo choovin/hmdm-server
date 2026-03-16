@@ -168,6 +168,24 @@ angular.module('headwind-kiosk')
             getPhotoUploadRequests: {url: 'rest/private/photos/requests', method: 'GET'}
         });
     })
+    .factory('remoteControlService', function ($resource) {
+        return $resource('', {}, {
+            getAllSessions: {url: 'rest/private/remote-control/sessions', method: 'GET'},
+            getSessionsByDevice: {url: 'rest/private/remote-control/sessions/device/:deviceId', method: 'GET'},
+            getActiveSessionsByDevice: {url: 'rest/private/remote-control/sessions/device/:deviceId/active', method: 'GET'},
+            getSessionById: {url: 'rest/private/remote-control/sessions/:id', method: 'GET'},
+            getSessionByToken: {url: 'rest/private/remote-control/sessions/token/:token', method: 'GET'},
+            createSession: {url: 'rest/private/remote-control/sessions', method: 'POST'},
+            updateSession: {url: 'rest/private/remote-control/sessions/:id', method: 'PUT'},
+            updateSessionStatus: {url: 'rest/private/remote-control/sessions/:id/status', method: 'PUT'},
+            markSessionConnecting: {url: 'rest/private/remote-control/sessions/:id/connecting', method: 'PUT'},
+            markSessionConnected: {url: 'rest/private/remote-control/sessions/:id/connected', method: 'PUT'},
+            markSessionDisconnected: {url: 'rest/private/remote-control/sessions/:id/disconnected', method: 'PUT'},
+            markSessionError: {url: 'rest/private/remote-control/sessions/:id/error', method: 'PUT'},
+            deleteSession: {url: 'rest/private/remote-control/sessions/:id', method: 'DELETE'},
+            hasActiveSessions: {url: 'rest/private/remote-control/sessions/device/:deviceId/has-active', method: 'GET'}
+        });
+    })
         return $resource('', {}, {
             getDeviceStat: {url: 'rest/private/summary/devices', method: 'GET'}
         });

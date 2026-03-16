@@ -55,6 +55,14 @@ public class PushMessage implements Serializable {
     // Photo upload type
     public static final String TYPE_UPLOAD_PHOTOS = "uploadPhotos";
 
+    // Remote control types
+    public static final String TYPE_REMOTE_CONTROL_START = "remoteControlStart";
+    public static final String TYPE_REMOTE_CONTROL_STOP = "remoteControlStop";
+    public static final String TYPE_REMOTE_CONTROL_WEBRTC_OFFER = "remoteControlWebRTCOffer";
+    public static final String TYPE_REMOTE_CONTROL_WEBRTC_ANSWER = "remoteControlWebRTCAnswer";
+    public static final String TYPE_REMOTE_CONTROL_ICE_CANDIDATE = "remoteControlICECandidate";
+    public static final String TYPE_REMOTE_CONTROL_COMMAND = "remoteControlCommand";
+
     /**
      * <p>Constructs new <code>PushMessage</code> instance. This implementation does nothing.</p>
      */

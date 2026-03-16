@@ -3,7 +3,7 @@ angular.module('headwind-kiosk')
     .controller('DevicesTabController', function ($scope, $rootScope, $state, $modal, $interval, $cookies, $window, $filter, $timeout,
                                                   confirmModal, deviceService, groupService, settingsService, hintService,
                                                   authService, pluginService, configurationService, alertService,
-                                                  spinnerService, localization, utils) {
+                                                  spinnerService, localization, utils, remoteControlService) {
 
         var saveDeviceSearchParams = function() {
             var expireDate = new Date();
@@ -1104,6 +1104,40 @@ angular.module('headwind-kiosk')
                 deviceService.requestPhotoUpload({deviceId: device.id}, function (response) {
                     if (response.status === 'OK') {
                         alertService.showAlert('success.device.request.photo.sent');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
+        $scope.startRemoteView = function (device) {
+            let localizedText = localization.localize('question.device.remote.view').replace('${deviceNumber}', device.number);
+            confirmModal.getUserConfirmation(localizedText, function () {
+                remoteControlService.createSession({deviceId: device.id, sessionType: 'VIEW'}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.remote.view.sent');
+                        // Open remote view window
+                        var session = response.data;
+                        var remoteUrl = '/remote-control/view/' + session.sessionToken;
+                        window.open(remoteUrl, '_blank', 'width=1280,height=720,location=no,toolbar=no');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
+        $scope.startRemoteControl = function (device) {
+            let localizedText = localization.localize('question.device.remote.control').replace('${deviceNumber}', device.number);
+            confirmModal.getUserConfirmation(localizedText, function () {
+                remoteControlService.createSession({deviceId: device.id, sessionType: 'CONTROL'}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.remote.control.sent');
+                        // Open remote control window
+                        var session = response.data;
+                        var remoteUrl = '/remote-control/control/' + session.sessionToken;
+                        window.open(remoteUrl, '_blank', 'width=1280,height=720,location=no,toolbar=no');
                     } else {
                         alertService.showError(localization.localizeServerResponse(response));
                     }

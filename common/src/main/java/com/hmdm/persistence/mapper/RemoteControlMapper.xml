@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Headwind MDM: Open Source Android MDM Software
+  https://h-mdm.com
+
+  Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hmdm.persistence.mapper.RemoteControlMapper">
+
+    <resultMap id="RemoteControlSessionResultMap" type="RemoteControlSession">
+        <id property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="deviceNumber" column="device_number"/>
+        <result property="userName" column="user_name"/>
+        <result property="sessionToken" column="session_token"/>
+        <result property="status" column="status"/>
+        <result property="sessionType" column="session_type"/>
+        <result property="startedAt" column="started_at"/>
+        <result property="connectedAt" column="connected_at"/>
+        <result property="endedAt" column="ended_at"/>
+        <result property="durationSeconds" column="duration_seconds"/>
+        <result property="remoteAddress" column="remote_address"/>
+        <result property="errorMessage" column="error_message"/>
+    </resultMap>
+
+    <resultMap id="RemoteControlSessionWithWebRTCResultMap" type="RemoteControlSession" extends="RemoteControlSessionResultMap">
+        <result property="webrtcOffer" column="webrtc_offer"/>
+        <result property="webrtcAnswer" column="webrtc_answer"/>
+        <result property="iceCandidates" column="ice_candidates"/>
+    </resultMap>
+
+    <insert id="insertRemoteControlSession" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO remote_control_sessions (
+            device_id,
+            customer_id,
+            user_id,
+            session_token,
+            status,
+            session_type,
+            started_at,
+            remote_address
+        ) VALUES (
+            #{deviceId},
+            #{customerId},
+            #{userId},
+            #{sessionToken},
+            #{status},
+            #{sessionType},
+            COALESCE(#{startedAt}, NOW()),
+            #{remoteAddress}
+        )
+    </insert>
+
+    <select id="getRemoteControlSessionById" resultMap="RemoteControlSessionWithWebRTCResultMap">
+        SELECT
+            s.*,
+            d.number AS device_number,
+            u.name AS user_name
+        FROM remote_control_sessions s
+        LEFT JOIN devices d ON s.device_id = d.id
+        LEFT JOIN users u ON s.user_id = u.id
+        WHERE s.id = #{id}
+          AND s.customer_id = #{customerId}
+    </select>
+
+    <select id="getRemoteControlSessionByToken" resultMap="RemoteControlSessionWithWebRTCResultMap">
+        SELECT
+            s.*,
+            d.number AS device_number,
+            u.name AS user_name
+        FROM remote_control_sessions s
+        LEFT JOIN devices d ON s.device_id = d.id
+        LEFT JOIN users u ON s.user_id = u.id
+        WHERE s.session_token = #{sessionToken}
+          AND s.customer_id = #{customerId}
+    </select>
+
+    <select id="getActiveSessionsByDeviceId" resultMap="RemoteControlSessionResultMap">
+        SELECT
+            s.*,
+            d.number AS device_number,
+            u.name AS user_name
+        FROM remote_control_sessions s
+        LEFT JOIN devices d ON s.device_id = d.id
+        LEFT JOIN users u ON s.user_id = u.id
+        WHERE s.device_id = #{deviceId}
+          AND s.customer_id = #{customerId}
+          AND s.status IN ('PENDING', 'CONNECTING', 'CONNECTED')
+        ORDER BY s.started_at DESC
+    </select>
+
+    <select id="getRemoteControlSessionsByDeviceId" resultMap="RemoteControlSessionResultMap">
+        SELECT
+            s.*,
+            d.number AS device_number,
+            u.name AS user_name
+        FROM remote_control_sessions s
+        LEFT JOIN devices d ON s.device_id = d.id
+        LEFT JOIN users u ON s.user_id = u.id
+        WHERE s.device_id = #{deviceId}
+          AND s.customer_id = #{customerId}
+        ORDER BY s.started_at DESC
+    </select>
+
+    <select id="getRemoteControlSessionsByCustomerId" resultMap="RemoteControlSessionResultMap">
+        SELECT
+            s.*,
+            d.number AS device_number,
+            u.name AS user_name
+        FROM remote_control_sessions s
+        LEFT JOIN devices d ON s.device_id = d.id
+        LEFT JOIN users u ON s.user_id = u.id
+        WHERE s.customer_id = #{customerId}
+        ORDER BY s.started_at DESC
+    </select>
+
+    <update id="updateRemoteControlSession">
+        UPDATE remote_control_sessions
+        SET
+            device_id = #{deviceId},
+            user_id = #{userId},
+            session_token = #{sessionToken},
+            status = #{status},
+            session_type = #{sessionType},
+            connected_at = #{connectedAt},
+            ended_at = #{endedAt},
+            duration_seconds = #{durationSeconds},
+            remote_address = #{remoteAddress},
+            error_message = #{errorMessage}
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </update>
+
+    <update id="updateSessionStatus">
+        UPDATE remote_control_sessions
+        SET status = #{status}
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </update>
+
+    <update id="updateSessionWebRTCData">
+        UPDATE remote_control_sessions
+        SET
+            webrtc_offer = #{webrtcOffer},
+            webrtc_answer = #{webrtcAnswer},
+            ice_candidates = #{iceCandidates}
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </update>
+
+    <update id="markSessionConnected">
+        UPDATE remote_control_sessions
+        SET
+            status = 'CONNECTED',
+            connected_at = #{connectedAt},
+            remote_address = #{remoteAddress}
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </update>
+
+    <update id="markSessionDisconnected">
+        UPDATE remote_control_sessions
+        SET
+            status = 'DISCONNECTED',
+            ended_at = #{endedAt},
+            duration_seconds = #{durationSeconds}
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </update>
+
+    <update id="markSessionError">
+        UPDATE remote_control_sessions
+        SET
+            status = 'ERROR',
+            error_message = #{errorMessage},
+            ended_at = #{endedAt}
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteRemoteControlSession">
+        DELETE FROM remote_control_sessions
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </delete>
+
+    <delete id="deleteOldSessions">
+        DELETE FROM remote_control_sessions
+        WHERE customer_id = #{customerId}
+          AND status IN ('DISCONNECTED', 'ERROR')
+          AND ended_at &lt; #{beforeDate}
+    </delete>
+
+    <insert id="insertAuditLog">
+        INSERT INTO remote_control_audit (
+            session_id,
+            device_id,
+            customer_id,
+            user_id,
+            action,
+            action_details,
+            created_at
+        ) VALUES (
+            #{sessionId},
+            #{deviceId},
+            #{customerId},
+            #{userId},
+            #{action},
+            #{actionDetails},
+            NOW()
+        )
+    </insert>
+
+</mapper>
