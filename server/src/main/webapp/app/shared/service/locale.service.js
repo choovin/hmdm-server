@@ -1,7 +1,7 @@
 // Localization completed
 angular.module('headwind-kiosk')
     .factory('localization', function ($http, $timeout, settingsService, authService, getBrowserLanguage,
-                                       ENGLISH, localizeText, LOCALIZATION_BUNDLES) {
+                                       DEFAULT_LANGUAGE, localizeText, LOCALIZATION_BUNDLES) {
 
         var loadUserLangSettings = function (scope) {
             settingsService.getSettings(function (response) {
@@ -13,7 +13,8 @@ angular.module('headwind-kiosk')
                         } else if (settings.language) {
                             locale = settings.language;
                         } else {
-                            locale = ENGLISH;
+                            // Default to Chinese instead of English
+                            locale = DEFAULT_LANGUAGE;
                         }
                         if (scope) {
                             scope.$emit('aero_LOCALE_CHANGED');

@@ -51,18 +51,28 @@ angular.module('headwind-kiosk',
         'zh_TW', 'zh_CN', 'ja_JP', 'tr_TR', 'vi_VN', 'it_IT'])
     .constant("APP_VERSION", "5.38.1") // Update this value on each commit
     .constant("ENGLISH", "en_US")
-    .provider('getBrowserLanguage', function (ENGLISH, SUPPORTED_LANGUAGES) {
+    .constant("DEFAULT_LANGUAGE", "zh_CN") // Default language changed to Chinese
+    .provider('getBrowserLanguage', function (DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES) {
         this.f = function () {
+            // Check if user has set a language preference
+            var userLang = localStorage.getItem('hmdm-language');
+            if (userLang && SUPPORTED_LANGUAGES[userLang]) {
+                return SUPPORTED_LANGUAGES[userLang];
+            }
+
+            // Otherwise detect browser language
             var userLang = window.navigator.language || window.navigator.userLanguage;
             if (userLang) {
                 userLang = userLang.replace('-', '_');
                 if (SUPPORTED_LANGUAGES[userLang]) {
                     userLang = SUPPORTED_LANGUAGES[userLang];
                 } else {
-                    userLang = ENGLISH;
+                    // Fall back to Chinese instead of English
+                    userLang = DEFAULT_LANGUAGE;
                 }
             } else {
-                userLang = ENGLISH;
+                // Default to Chinese
+                userLang = DEFAULT_LANGUAGE;
             }
 
             return userLang;
