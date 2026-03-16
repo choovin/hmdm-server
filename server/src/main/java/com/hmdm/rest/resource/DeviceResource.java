@@ -39,6 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.hmdm.notification.PushService;
+import com.hmdm.notification.persistence.domain.PushMessage;
 import com.hmdm.persistence.*;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.rest.json.*;
@@ -439,6 +440,130 @@ public class DeviceResource {
             return Response.OK();
         } catch (Exception e) {
             log.error("Failed to save the description for device #{}", deviceId, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    // =================================================================================================================
+    // Remote Commands
+    // =================================================================================================================
+
+    @ApiOperation(
+            value = "Reboot device",
+            notes = "Send remote reboot command to device"
+    )
+    @POST
+    @Path("/{id}/reboot")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response rebootDevice(@PathParam("id") @ApiParam("Device ID") Integer id) {
+        final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
+
+        if (!canEditDevices) {
+            log.error("Unauthorized attempt to reboot device",
+                    SecurityException.onCustomerDataAccessViolation(id, "device"));
+            return Response.PERMISSION_DENIED();
+        }
+
+        try {
+            this.pushService.sendRemoteCommand(id, PushMessage.TYPE_REBOOT);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Failed to send reboot command to device #{}"، id, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    @ApiOperation(
+            value = "Lock device",
+            notes = "Send remote lock command to device"
+    )
+    @POST
+    @Path("/{id}/lock")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response lockDevice(@PathParam("id") @ApiParam("Device ID") Integer id) {
+        final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
+
+        if (!canEditDevices) {
+            log.error("Unauthorized attempt to lock device",
+                    SecurityException.onCustomerDataAccessViolation(id, "device"));
+            return Response.PERMISSION_DENIED();
+        }
+
+        try {
+            this.pushService.sendRemoteCommand(id, PushMessage.TYPE_LOCK);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Failed to send lock command to device #{}"، id, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    @ApiOperation(
+            value = "Factory reset device",
+            notes = "Send remote factory reset command to device"
+    )
+    @POST
+    @Path("/{id}/factoryReset")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response factoryResetDevice(@PathParam("id") @ApiParam("Device ID") Integer id) {
+        final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
+
+        if (!canEditDevices) {
+            log.error("Unauthorized attempt to factory reset device",
+                    SecurityException.onCustomerDataAccessViolation(id, "device"));
+            return Response.PERMISSION_DENIED();
+        }
+
+        try {
+            this.pushService.sendRemoteCommand(id, PushMessage.TYPE_FACTORY_RESET);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Failed to send factory reset command to device #{}"، id, e);
+            return Response.INTERNAL_ERROR();
+        }
+    }
+
+    @ApiOperation(
+            value = "Bulk remote command",
+            notes = "Send remote command to multiple devices"
+    )
+    @POST
+    @Path("/remoteCommandBulk")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response sendRemoteCommandBulk(RemoteCommandRequest request) {
+        final boolean canEditDevices = SecurityContext.get().hasPermission("edit_devices");
+
+        if (!canEditDevices) {
+            log.error("Unauthorized attempt to send remote command to devices",
+                    SecurityException.onCustomerDataAccessViolation(0, "device"));
+            return Response.PERMISSION_DENIED();
+        }
+
+        if (request == null || request.getDeviceIds() == null || request.getCommandType() == null) {
+            return Response.ERROR();
+        }
+
+        try {
+            String messageType;
+            switch (request.getCommandType()) {
+                case "reboot":
+                    messageType = PushMessage.TYPE_REBOOT;
+                    break;
+                case "lock":
+                    messageType = PushMessage.TYPE_LOCK;
+                    break;
+                case "factoryReset":
+                    messageType = PushMessage.TYPE_FACTORY_RESET;
+                    break;
+                default:
+                    return Response.ERROR();
+            }
+
+            this.pushService.sendRemoteCommandBulk(request.getDeviceIds(), messageType);
+            return Response.OK();
+        } catch (Exception e) {
+            log.error("Failed to send bulk remote command", e);
             return Response.INTERNAL_ERROR();
         }
     }

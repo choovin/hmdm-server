@@ -1001,6 +1001,103 @@ angular.module('headwind-kiosk')
             });
         };
 
+        // Remote command functions
+        $scope.rebootDevice = function (device) {
+            let localizedText = localization.localize('question.device.reboot').replace('${deviceNumber}', device.number);
+            confirmModal.getUserConfirmation(localizedText, function () {
+                deviceService.rebootDevice({id: device.id}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.reboot.sent');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
+        $scope.lockDevice = function (device) {
+            let localizedText = localization.localize('question.device.lock').replace('${deviceNumber}', device.number);
+            confirmModal.getUserConfirmation(localizedText, function () {
+                deviceService.lockDevice({id: device.id}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.lock.sent');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
+        $scope.factoryResetDevice = function (device) {
+            let localizedText = localization.localize('question.device.factory.reset').replace('${deviceNumber}', device.number);
+            confirmModal.getUserConfirmation(localizedText, function () {
+                deviceService.factoryResetDevice({id: device.id}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.factory.reset.sent');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
+        $scope.confirmBulkReboot = function() {
+            let localizedText = localization.localize('question.device.reboot.bulk');
+            confirmModal.getUserConfirmation(localizedText, function () {
+                var ids = [];
+                for (var i = 0; i < $scope.devices.length; i++) {
+                    if ($scope.devices[i].selected) {
+                        ids.push($scope.devices[i].id);
+                    }
+                }
+                deviceService.remoteCommandBulk({deviceIds: ids, commandType: 'reboot'}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.reboot.sent');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
+        $scope.confirmBulkLock = function() {
+            let localizedText = localization.localize('question.device.lock.bulk');
+            confirmModal.getUserConfirmation(localizedText, function () {
+                var ids = [];
+                for (var i = 0; i < $scope.devices.length; i++) {
+                    if ($scope.devices[i].selected) {
+                        ids.push($scope.devices[i].id);
+                    }
+                }
+                deviceService.remoteCommandBulk({deviceIds: ids, commandType: 'lock'}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.lock.sent');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
+        $scope.confirmBulkFactoryReset = function() {
+            let localizedText = localization.localize('question.device.factory.reset.bulk');
+            confirmModal.getUserConfirmation(localizedText, function () {
+                var ids = [];
+                for (var i = 0; i < $scope.devices.length; i++) {
+                    if ($scope.devices[i].selected) {
+                        ids.push($scope.devices[i].id);
+                    }
+                }
+                deviceService.remoteCommandBulk({deviceIds: ids, commandType: 'factoryReset'}, function (response) {
+                    if (response.status === 'OK') {
+                        alertService.showAlert('success.device.factory.reset.sent');
+                    } else {
+                        alertService.showError(localization.localizeServerResponse(response));
+                    }
+                });
+            });
+        };
+
         pluginService.getAvailablePlugins(function (response) {
             if (response.status === 'OK') {
                 if (response.data) {

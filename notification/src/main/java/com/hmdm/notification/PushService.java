@@ -93,4 +93,42 @@ public class PushService {
             this.send(message);
         }
     }
+
+    /**
+     * <p>Sends a remote command to a device.</p>
+     *
+     * @param deviceId an ID of device to receive the command.
+     * @param commandType the type of command (reboot, lock, factoryReset).
+     */
+    @Transactional
+    public void sendRemoteCommand(Integer deviceId, String commandType) {
+        final Device dbDevice = this.deviceDAO.getDeviceById(deviceId);
+        if (dbDevice != null) {
+            PushMessage message = new PushMessage();
+            message.setDeviceId(dbDevice.getId());
+            message.setMessageType(commandType);
+            this.send(message);
+        }
+    }
+
+    /**
+     * <p>Sends a remote command to multiple devices.</p>
+     *
+     * @param deviceIds list of device IDs to receive the command.
+     * @param commandType the type of command (reboot, lock, factoryReset).
+     */
+    @Transactional
+    public void sendRemoteCommandBulk(List<Integer> deviceIds, String commandType) {
+        if (deviceIds != null) {
+            deviceIds.forEach(deviceId -> {
+                final Device dbDevice = this.deviceDAO.getDeviceById(deviceId);
+                if (dbDevice != null) {
+                    PushMessage message = new PushMessage();
+                    message.setDeviceId(dbDevice.getId());
+                    message.setMessageType(commandType);
+                    this.send(message);
+                }
+            });
+        }
+    }
 }
