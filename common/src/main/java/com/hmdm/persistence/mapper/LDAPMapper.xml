@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Headwind MDM: Open Source Android MDM Software
+  https://h-mdm.com
+
+  Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hmdm.persistence.mapper.LDAPMapper">
+
+    <!-- ==================== LDAP Configuration ==================== -->
+
+    <resultMap id="LDAPConfigurationResultMap" type="LDAPConfiguration">
+        <id property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="enabled" column="enabled"/>
+        <result property="serverHost" column="server_host"/>
+        <result property="serverPort" column="server_port"/>
+        <result property="useSsl" column="use_ssl"/>
+        <result property="useTls" column="use_tls"/>
+        <result property="bindDn" column="bind_dn"/>
+        <result property="bindPassword" column="bind_password"/>
+        <result property="baseDn" column="base_dn"/>
+        <result property="userSearchFilter" column="user_search_filter"/>
+        <result property="userNameAttribute" column="user_name_attribute"/>
+        <result property="userEmailAttribute" column="user_email_attribute"/>
+        <result property="userFirstNameAttribute" column="user_first_name_attribute"/>
+        <result property="userLastNameAttribute" column="user_last_name_attribute"/>
+        <result property="groupSearchFilter" column="group_search_filter"/>
+        <result property="groupNameAttribute" column="group_name_attribute"/>
+        <result property="adminGroupDn" column="admin_group_dn"/>
+        <result property="autoCreateUsers" column="auto_create_users"/>
+        <result property="autoAssignConfigurationId" column="auto_assign_configuration_id"/>
+        <result property="connectionTimeout" column="connection_timeout"/>
+        <result property="readTimeout" column="read_timeout"/>
+        <result property="lastSyncAt" column="last_sync_at"/>
+        <result property="syncEnabled" column="sync_enabled"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insertLDAPConfiguration" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ldap_configurations (
+            customer_id, enabled, server_host, server_port, use_ssl, use_tls,
+            bind_dn, bind_password, base_dn, user_search_filter,
+            user_name_attribute, user_email_attribute, user_first_name_attribute, user_last_name_attribute,
+            group_search_filter, group_name_attribute, admin_group_dn,
+            auto_create_users, auto_assign_configuration_id, connection_timeout, read_timeout,
+            last_sync_at, sync_enabled, created_at, updated_at
+        ) VALUES (
+            #{customerId}, COALESCE(#{enabled}, FALSE), #{serverHost}, COALESCE(#{serverPort}, 389),
+            COALESCE(#{useSsl}, FALSE), COALESCE(#{useTls}, FALSE),
+            #{bindDn}, #{bindPassword}, #{baseDn}, COALESCE(#{userSearchFilter}, '(uid={0})'),
+            COALESCE(#{userNameAttribute}, 'uid'), COALESCE(#{userEmailAttribute}, 'mail'),
+            COALESCE(#{userFirstNameAttribute}, 'givenName'), COALESCE(#{userLastNameAttribute}, 'sn'),
+            #{groupSearchFilter}, COALESCE(#{groupNameAttribute}, 'cn'), #{adminGroupDn},
+            COALESCE(#{autoCreateUsers}, TRUE), #{autoAssignConfigurationId},
+            COALESCE(#{connectionTimeout}, 5000), COALESCE(#{readTimeout}, 10000),
+            #{lastSyncAt}, COALESCE(#{syncEnabled}, FALSE), NOW(), NOW()
+        )
+    </insert>
+
+    <select id="getLDAPConfigurationById" resultMap="LDAPConfigurationResultMap">
+        SELECT * FROM ldap_configurations
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </select>
+
+    <select id="getLDAPConfigurationByCustomerId" resultMap="LDAPConfigurationResultMap">
+        SELECT * FROM ldap_configurations
+        WHERE customer_id = #{customerId}
+        LIMIT 1
+    </select>
+
+    <update id="updateLDAPConfiguration">
+        UPDATE ldap_configurations
+        SET
+            enabled = #{enabled},
+            server_host = #{serverHost},
+            server_port = #{serverPort},
+            use_ssl = #{useSsl},
+            use_tls = #{useTls},
+            bind_dn = #{bindDn},
+            bind_password = COALESCE(#{bindPassword}, bind_password),
+            base_dn = #{baseDn},
+            user_search_filter = #{userSearchFilter},
+            user_name_attribute = #{userNameAttribute},
+            user_email_attribute = #{userEmailAttribute},
+            user_first_name_attribute = #{userFirstNameAttribute},
+            user_last_name_attribute = #{userLastNameAttribute},
+            group_search_filter = #{groupSearchFilter},
+            group_name_attribute = #{groupNameAttribute},
+            admin_group_dn = #{adminGroupDn},
+            auto_create_users = #{autoCreateUsers},
+            auto_assign_configuration_id = #{autoAssignConfigurationId},
+            connection_timeout = #{connectionTimeout},
+            read_timeout = #{readTimeout},
+            sync_enabled = #{syncEnabled},
+            updated_at = NOW()
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <update id="updateLastSyncTime">
+        UPDATE ldap_configurations
+        SET last_sync_at = NOW(), updated_at = NOW()
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteLDAPConfiguration">
+        DELETE FROM ldap_configurations
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </delete>
+
+    <!-- ==================== LDAP Group Mappings ==================== -->
+
+    <resultMap id="LDAPGroupMappingResultMap" type="LDAPGroupMapping">
+        <id property="id" column="id"/>
+        <result property="ldapConfigId" column="ldap_config_id"/>
+        <result property="ldapGroupDn" column="ldap_group_dn"/>
+        <result property="localRole" column="local_role"/>
+        <result property="localConfigurationId" column="local_configuration_id"/>
+        <result property="priority" column="priority"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="configurationName" column="config_name"/>
+    </resultMap>
+
+    <insert id="insertGroupMapping" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ldap_group_mappings (
+            ldap_config_id, ldap_group_dn, local_role, local_configuration_id, priority, created_at
+        ) VALUES (
+            #{ldapConfigId}, #{ldapGroupDn}, #{localRole}, #{localConfigurationId}, COALESCE(#{priority}, 0), NOW()
+        )
+    </insert>
+
+    <select id="getGroupMappingById" resultMap="LDAPGroupMappingResultMap">
+        SELECT m.*, c.name AS config_name
+        FROM ldap_group_mappings m
+        LEFT JOIN configurations c ON m.local_configuration_id = c.id
+        WHERE m.id = #{id}
+    </select>
+
+    <select id="getGroupMappingsByConfigId" resultMap="LDAPGroupMappingResultMap">
+        SELECT m.*, c.name AS config_name
+        FROM ldap_group_mappings m
+        LEFT JOIN configurations c ON m.local_configuration_id = c.id
+        WHERE m.ldap_config_id = #{ldapConfigId}
+        ORDER BY m.priority DESC, m.created_at ASC
+    </select>
+
+    <update id="updateGroupMapping">
+        UPDATE ldap_group_mappings
+        SET
+            ldap_group_dn = #{ldapGroupDn},
+            local_role = #{localRole},
+            local_configuration_id = #{localConfigurationId},
+            priority = #{priority}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteGroupMapping">
+        DELETE FROM ldap_group_mappings WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteGroupMappingsByConfigId">
+        DELETE FROM ldap_group_mappings WHERE ldap_config_id = #{ldapConfigId}
+    </delete>
+
+    <!-- ==================== LDAP Sync Logs ==================== -->
+
+    <resultMap id="LDAPSyncLogResultMap" type="LDAPSyncLog">
+        <id property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="syncType" column="sync_type"/>
+        <result property="status" column="status"/>
+        <result property="usersSynced" column="users_synced"/>
+        <result property="usersCreated" column="users_created"/>
+        <result property="usersUpdated" column="users_updated"/>
+        <result property="usersFailed" column="users_failed"/>
+        <result property="errorMessage" column="error_message"/>
+        <result property="startedAt" column="started_at"/>
+        <result property="completedAt" column="completed_at"/>
+    </resultMap>
+
+    <insert id="insertSyncLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ldap_sync_logs (
+            customer_id, sync_type, status, users_synced, users_created, users_updated, users_failed,
+            error_message, started_at, completed_at
+        ) VALUES (
+            #{customerId}, #{syncType}, #{status}, #{usersSynced}, #{usersCreated}, #{usersUpdated}, #{usersFailed},
+            #{errorMessage}, COALESCE(#{startedAt}, NOW()), #{completedAt}
+        )
+    </insert>
+
+    <update id="updateSyncLog">
+        UPDATE ldap_sync_logs
+        SET
+            status = #{status},
+            users_synced = #{usersSynced},
+            users_created = #{usersCreated},
+            users_updated = #{usersUpdated},
+            users_failed = #{usersFailed},
+            error_message = #{errorMessage},
+            completed_at = COALESCE(#{completedAt}, NOW())
+        WHERE id = #{id}
+    </update>
+
+    <select id="getSyncLogById" resultMap="LDAPSyncLogResultMap">
+        SELECT * FROM ldap_sync_logs
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </select>
+
+    <select id="getSyncLogsByCustomerId" resultMap="LDAPSyncLogResultMap">
+        SELECT * FROM ldap_sync_logs
+        WHERE customer_id = #{customerId}
+        ORDER BY started_at DESC
+    </select>
+
+    <select id="getRecentSyncLogsByCustomerId" resultMap="LDAPSyncLogResultMap">
+        SELECT * FROM ldap_sync_logs
+        WHERE customer_id = #{customerId}
+        ORDER BY started_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- ==================== User LDAP Fields ==================== -->
+
+    <update id="updateUserLdapFields">
+        UPDATE users
+        SET ldap_user = #{ldapUser}, ldap_dn = #{ldapDn}, ldap_synced_at = NOW()
+        WHERE id = #{userId}
+    </update>
+
+    <update id="markUserAsLdap">
+        UPDATE users
+        SET ldap_user = TRUE, ldap_dn = #{ldapDn}, ldap_synced_at = NOW()
+        WHERE id = #{userId}
+    </update>
+
+</mapper>
