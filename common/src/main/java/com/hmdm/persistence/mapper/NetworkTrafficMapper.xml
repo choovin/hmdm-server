@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Headwind MDM: Open Source Android MDM Software
+  https://h-mdm.com
+
+  Copyright (C) 2019 Headwind Solutions LLC (http://h-sms.com)
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hmdm.persistence.mapper.NetworkTrafficMapper">
+
+    <!-- ==================== Traffic Rules ==================== -->
+
+    <resultMap id="NetworkTrafficRuleResultMap" type="NetworkTrafficRule">
+        <id property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="configurationId" column="configuration_id"/>
+        <result property="ruleName" column="rule_name"/>
+        <result property="ruleType" column="rule_type"/>
+        <result property="trafficType" column="traffic_type"/>
+        <result property="pattern" column="pattern"/>
+        <result property="description" column="description"/>
+        <result property="priority" column="priority"/>
+        <result property="enabled" column="enabled"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insertTrafficRule" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO network_traffic_rules (
+            customer_id,
+            configuration_id,
+            rule_name,
+            rule_type,
+            traffic_type,
+            pattern,
+            description,
+            priority,
+            enabled,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{customerId},
+            #{configurationId},
+            #{ruleName},
+            #{ruleType},
+            #{trafficType},
+            #{pattern},
+            #{description},
+            COALESCE(#{priority}, 0),
+            COALESCE(#{enabled}, TRUE),
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <select id="getTrafficRuleById" resultMap="NetworkTrafficRuleResultMap">
+        SELECT * FROM network_traffic_rules
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </select>
+
+    <select id="getTrafficRulesByCustomerId" resultMap="NetworkTrafficRuleResultMap">
+        SELECT * FROM network_traffic_rules
+        WHERE customer_id = #{customerId}
+        ORDER BY priority DESC, created_at DESC
+    </select>
+
+    <select id="getTrafficRulesByConfigurationId" resultMap="NetworkTrafficRuleResultMap">
+        SELECT * FROM network_traffic_rules
+        WHERE configuration_id = #{configurationId}
+          AND customer_id = #{customerId}
+        ORDER BY priority DESC, created_at DESC
+    </select>
+
+    <select id="getEnabledTrafficRulesByConfigurationId" resultMap="NetworkTrafficRuleResultMap">
+        SELECT * FROM network_traffic_rules
+        WHERE configuration_id = #{configurationId}
+          AND customer_id = #{customerId}
+          AND enabled = TRUE
+        ORDER BY priority DESC, created_at DESC
+    </select>
+
+    <update id="updateTrafficRule">
+        UPDATE network_traffic_rules
+        SET
+            rule_name = #{ruleName},
+            configuration_id = #{configurationId},
+            rule_type = #{ruleType},
+            traffic_type = #{trafficType},
+            pattern = #{pattern},
+            description = #{description},
+            priority = #{priority},
+            enabled = #{enabled},
+            updated_at = NOW()
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </update>
+
+    <update id="updateTrafficRuleEnabled">
+        UPDATE network_traffic_rules
+        SET enabled = #{enabled}, updated_at = NOW()
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteTrafficRule">
+        DELETE FROM network_traffic_rules
+        WHERE id = #{id}
+          AND customer_id = #{customerId}
+    </delete>
+
+    <delete id="deleteOldTrafficRules">
+        DELETE FROM network_traffic_rules
+        WHERE customer_id = #{customerId}
+          AND created_at &lt; #{beforeDate}
+    </delete>
+
+    <!-- ==================== Traffic Logs ==================== -->
+
+    <resultMap id="NetworkTrafficLogResultMap" type="NetworkTrafficLog">
+        <id property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="ruleId" column="rule_id"/>
+        <result property="deviceNumber" column="device_number"/>
+        <result property="url" column="url"/>
+        <result property="domain" column="domain"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="port" column="port"/>
+        <result property="appPackage" column="app_package"/>
+        <result property="action" column="action"/>
+        <result property="timestamp" column="timestamp"/>
+        <result property="dataUsageBytes" column="data_usage_bytes"/>
+        <result property="ruleName" column="rule_name"/>
+        <result property="ruleType" column="rule_type"/>
+    </resultMap>
+
+    <insert id="insertTrafficLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO network_traffic_logs (
+            device_id,
+            customer_id,
+            rule_id,
+            url,
+            domain,
+            ip_address,
+            port,
+            app_package,
+            action,
+            timestamp,
+            data_usage_bytes
+        ) VALUES (
+            #{deviceId},
+            #{customerId},
+            #{ruleId},
+            #{url},
+            #{domain},
+            #{ipAddress},
+            #{port},
+            #{appPackage},
+            #{action},
+            COALESCE(#{timestamp}, NOW()),
+            COALESCE(#{dataUsageBytes}, 0)
+        )
+    </insert>
+
+    <select id="getTrafficLogById" resultMap="NetworkTrafficLogResultMap">
+        SELECT
+            l.*,
+            d.number AS device_number,
+            r.rule_name,
+            r.rule_type
+        FROM network_traffic_logs l
+        LEFT JOIN devices d ON l.device_id = d.id
+        LEFT JOIN network_traffic_rules r ON l.rule_id = r.id
+        WHERE l.id = #{id}
+          AND l.customer_id = #{customerId}
+    </select>
+
+    <select id="getTrafficLogsByDeviceId" resultMap="NetworkTrafficLogResultMap">
+        SELECT
+            l.*,
+            d.number AS device_number,
+            r.rule_name,
+            r.rule_type
+        FROM network_traffic_logs l
+        LEFT JOIN devices d ON l.device_id = d.id
+        LEFT JOIN network_traffic_rules r ON l.rule_id = r.id
+        WHERE l.device_id = #{deviceId}
+          AND l.customer_id = #{customerId}
+        ORDER BY l.timestamp DESC
+    </select>
+
+    <select id="getTrafficLogsByCustomerId" resultMap="NetworkTrafficLogResultMap">
+        SELECT
+            l.*,
+            d.number AS device_number,
+            r.rule_name,
+            r.rule_type
+        FROM network_traffic_logs l
+        LEFT JOIN devices d ON l.device_id = d.id
+        LEFT JOIN network_traffic_rules r ON l.rule_id = r.id
+        WHERE l.customer_id = #{customerId}
+        ORDER BY l.timestamp DESC
+        LIMIT 1000
+    </select>
+
+    <select id="getTrafficLogsByFilter" resultMap="NetworkTrafficLogResultMap">
+        SELECT
+            l.*,
+            d.number AS device_number,
+            r.rule_name,
+            r.rule_type
+        FROM network_traffic_logs l
+        LEFT JOIN devices d ON l.device_id = d.id
+        LEFT JOIN network_traffic_rules r ON l.rule_id = r.id
+        WHERE l.customer_id = #{customerId}
+        <if test="deviceId != null">
+            AND l.device_id = #{deviceId}
+        </if>
+        <if test="action != null">
+            AND l.action = #{action}
+        </if>
+        <if test="domain != null">
+            AND l.domain LIKE CONCAT('%', #{domain}, '%')
+        </if>
+        <if test="startDate != null">
+            AND l.timestamp &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND l.timestamp &lt;= #{endDate}
+        </if>
+        ORDER BY l.timestamp DESC
+        LIMIT 1000
+    </select>
+
+    <delete id="deleteOldTrafficLogs">
+        DELETE FROM network_traffic_logs
+        WHERE customer_id = #{customerId}
+          AND timestamp &lt; #{beforeDate}
+    </delete>
+
+    <!-- ==================== Statistics ==================== -->
+
+    <select id="getBlockedTrafficCountByDevice" resultType="Long">
+        SELECT COUNT(*) FROM network_traffic_logs
+        WHERE device_id = #{deviceId}
+          AND customer_id = #{customerId}
+          AND action = 'BLOCKED'
+    </select>
+
+    <select id="getTotalTrafficCountByDevice" resultType="Long">
+        SELECT COUNT(*) FROM network_traffic_logs
+        WHERE device_id = #{deviceId}
+          AND customer_id = #{customerId}
+    </select>
+
+    <select id="getBlockedTrafficBytesByDevice" resultType="Long">
+        SELECT COALESCE(SUM(data_usage_bytes), 0) FROM network_traffic_logs
+        WHERE device_id = #{deviceId}
+          AND customer_id = #{customerId}
+          AND action = 'BLOCKED'
+    </select>
+
+    <!-- ==================== Device Network Settings ==================== -->
+
+    <resultMap id="DeviceNetworkSettingsResultMap" type="DeviceNetworkSettings">
+        <id property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="deviceNumber" column="device_number"/>
+        <result property="filteringEnabled" column="filtering_enabled"/>
+        <result property="loggingEnabled" column="logging_enabled"/>
+        <result property="strictMode" column="strict_mode"/>
+        <result property="proxyHost" column="proxy_host"/>
+        <result property="proxyPort" column="proxy_port"/>
+        <result property="proxyEnabled" column="proxy_enabled"/>
+        <result property="dnsOverHttpsEnabled" column="dns_over_https_enabled"/>
+        <result property="dnsOverHttpsUrl" column="dns_over_https_url"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insertDeviceNetworkSettings" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO device_network_settings (
+            device_id,
+            customer_id,
+            filtering_enabled,
+            logging_enabled,
+            strict_mode,
+            proxy_host,
+            proxy_port,
+            proxy_enabled,
+            dns_over_https_enabled,
+            dns_over_https_url,
+            updated_at
+        ) VALUES (
+            #{deviceId},
+            #{customerId},
+            COALESCE(#{filteringEnabled}, FALSE),
+            COALESCE(#{loggingEnabled}, TRUE),
+            COALESCE(#{strictMode}, FALSE),
+            #{proxyHost},
+            #{proxyPort},
+            COALESCE(#{proxyEnabled}, FALSE),
+            COALESCE(#{dnsOverHttpsEnabled}, FALSE),
+            #{dnsOverHttpsUrl},
+            NOW()
+        )
+    </insert>
+
+    <select id="getDeviceNetworkSettings" resultMap="DeviceNetworkSettingsResultMap">
+        SELECT
+            s.*,
+            d.number AS device_number
+        FROM device_network_settings s
+        LEFT JOIN devices d ON s.device_id = d.id
+        WHERE s.device_id = #{deviceId}
+          AND s.customer_id = #{customerId}
+    </select>
+
+    <update id="updateDeviceNetworkSettings">
+        UPDATE device_network_settings
+        SET
+            filtering_enabled = #{filteringEnabled},
+            logging_enabled = #{loggingEnabled},
+            strict_mode = #{strictMode},
+            proxy_host = #{proxyHost},
+            proxy_port = #{proxyPort},
+            proxy_enabled = #{proxyEnabled},
+            dns_over_https_enabled = #{dnsOverHttpsEnabled},
+            dns_over_https_url = #{dnsOverHttpsUrl},
+            updated_at = NOW()
+        WHERE device_id = #{deviceId}
+          AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteDeviceNetworkSettings">
+        DELETE FROM device_network_settings
+        WHERE device_id = #{deviceId}
+          AND customer_id = #{customerId}
+    </delete>
+
+</mapper>

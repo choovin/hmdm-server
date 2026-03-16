@@ -63,6 +63,11 @@ public class PushMessage implements Serializable {
     public static final String TYPE_REMOTE_CONTROL_ICE_CANDIDATE = "remoteControlICECandidate";
     public static final String TYPE_REMOTE_CONTROL_COMMAND = "remoteControlCommand";
 
+    // Network traffic filtering types
+    public static final String TYPE_UPDATE_NETWORK_RULES = "updateNetworkRules";
+    public static final String TYPE_UPDATE_NETWORK_SETTINGS = "updateNetworkSettings";
+    public static final String TYPE_SYNC_NETWORK_CONFIG = "syncNetworkConfig";
+
     /**
      * <p>Constructs new <code>PushMessage</code> instance. This implementation does nothing.</p>
      */
