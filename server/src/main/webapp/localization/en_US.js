@@ -1,6 +1,13 @@
 if (! document.localization) document.localization = [];
 
 document.localization ['en_US'] = {
+    'login.welcome': 'Welcome back',
+    'login.subtitle': 'Sign in to continue to your account',
+    'login.remember': 'Remember me',
+    'login.feature.security': 'Enterprise-grade security',
+    'login.feature.devices': 'Batch device management',
+    'login.feature.cloud': 'Real-time cloud sync',
+
     'login.username': 'Username or email',
     'login.username.placeholder': 'Enter your username or email',
     'login.password': 'Password:',
@@ -973,11 +980,11 @@ document.localization ['en_US'] = {
     'breadcrumb.config.details': 'Details',
     'breadcrumb.application.versions': 'Versions',
 
-    'app.name': 'Headwind MDM',
-    'app.vendor.name':"h-mdm.com",
-    'app.vendor.link':"https://h-mdm.com",
-    'app.description': 'is an open source mobile device management system',
-    'app.title': '${appName} Web Panel',
+    'app.name': 'Runnode MDM',
+    'app.vendor.name':"runnode.cn",
+    'app.vendor.link':"https://runnode.cn",
+    'app.description': 'is a mobile device management (MDM) system designed for Android devices',
+    'app.title': '${appName} Admin Panel',
 
     'box.show.my.apps.only': 'Display my applications only',
     'configuration.app.version.upgrade.message': 'Installed version ${installedVersion}, available version ${latestVersion}',

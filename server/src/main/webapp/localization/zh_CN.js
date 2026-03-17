@@ -1,6 +1,13 @@
 if (! document.localization) document.localization = [];		
 		
 document.localization ['zh_CN'] = {
+    'login.welcome': '欢迎回来',
+    'login.subtitle': '登录您的账户以继续',
+    'login.remember': '记住我',
+    'login.feature.security': '企业级安全保障',
+    'login.feature.devices': '批量设备管理',
+    'login.feature.cloud': '云端实时同步',
+
     'login.username' : "用户名或电子邮件",
     'login.username.placeholder':"输入您的用户名或电子邮件",
     'login.password' : "密码",
@@ -1010,11 +1017,11 @@ document.localization ['zh_CN'] = {
     'breadcrumb.config.details' : "详情",
     'breadcrumb.application.versions':"版本",
 		
-    'app.name':"Headwind MDM",
-    'app.vendor.name':"h-mdm.com",
-    'app.vendor.link':"https://h-mdm.com",
-    'app.description':"开源码流动设备管理系统",
-    'app.title':"${appName} Web面板",
+    'app.name':"Runnode MDM",
+    'app.vendor.name':"runnode.cn",
+    'app.vendor.link':"https://runnode.cn",
+    'app.description':"是一款专为 Android 设备 设计的移动设备管理（MDM）系统",
+    'app.title':"${appName} 管理后台",
 		
     'box.show.my.apps.only':"仅显示我的应用程式",
     'configuration.app.version.upgrade.message':"已安装版本${installedVersion}，可用版本${latestVersion}",

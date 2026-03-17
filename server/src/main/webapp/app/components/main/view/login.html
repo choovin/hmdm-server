@@ -1,82 +1,126 @@
 <!-- Localization completed -->
-<!-- Modern Login Page -->
-<div class="modern-login-page" ng-if="!isIE">
-    <!-- Background decoration -->
-    <div class="login-background">
-        <div class="login-bg-circle circle-1"></div>
-        <div class="login-bg-circle circle-2"></div>
-        <div class="login-bg-circle circle-3"></div>
+<!-- Modern Beautiful Login Page -->
+<div class="login-page-wrapper" ng-if="!isIE">
+    <!-- Animated Background -->
+    <div class="login-bg-animation">
+        <div class="bg-gradient"></div>
+        <div class="bg-particles">
+            <div class="particle particle-1"></div>
+            <div class="particle particle-2"></div>
+            <div class="particle particle-3"></div>
+            <div class="particle particle-4"></div>
+            <div class="particle particle-5"></div>
+        </div>
+        <div class="bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
     </div>
 
-    <!-- Login Container -->
-    <div class="modern-login-container">
-        <!-- Logo Section -->
-        <div class="modern-login-logo" ng-if="rebranding">
-            <div class="logo-icon">
-                <img src="rest/public/logo" alt="Logo">
+    <!-- Main Container -->
+    <div class="login-main-container">
+        <!-- Brand Section (Left) -->
+        <div class="login-brand-section" ng-if="rebranding">
+            <div class="brand-content">
+                <div class="brand-logo">
+                    <img src="rest/public/logo" alt="Logo" ng-if="rebranding.logoUrl">
+                    <div class="logo-default" ng-if="!rebranding.logoUrl">
+                        <span class="material-icons">shield</span>
+                    </div>
+                </div>
+                <h1 class="brand-title">{{rebranding.appName || 'Runnode MDM'}}</h1>
+                <p class="brand-description" localized>app.description</p>
+
+                <div class="brand-features">
+                    <div class="feature-item">
+                        <span class="material-icons">security</span>
+                        <span localized>login.feature.security</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="material-icons">devices</span>
+                        <span localized>login.feature.devices</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="material-icons">cloud_sync</span>
+                        <span localized>login.feature.cloud</span>
+                    </div>
+                </div>
             </div>
-            <h1 class="logo-text">{{rebranding.appName}}</h1>
-            <p class="logo-subtitle" localized>app.description</p>
+            <div class="brand-footer">
+                <span>&copy; {{rebranding.year || 2026}} {{rebranding.vendorName || 'Runnode'}}</span>
+            </div>
         </div>
 
-        <!-- Login Card -->
-        <div class="modern-login-card" ng-class="{'has-error': errorMessage, 'has-success': successMessage}">
-            <!-- Alert Messages -->
-            <div class="login-alert login-alert-error" ng-if='errorMessage'>
-                <span class="material-icons">error_outline</span>
-                <span>{{errorMessage}}</span>
-            </div>
-            <div class="login-alert login-alert-success" ng-if='successMessage'>
-                <span class="material-icons">check_circle</span>
-                <span>{{successMessage}}</span>
-            </div>
-
-            <!-- Login Form -->
-            <form name='loginForm' ng-submit='onLogin()'>
-                <div class='form-group'>
-                    <label for='username' localized>login.username</label>
-                    <div class="input-with-icon">
-                        <span class="material-icons input-icon">person</span>
-                        <input type='text' class='form-control' id='username'
-                               ng-model='login.username' localized-placeholder="login.username.placeholder"
-                               required/>
-                    </div>
-                </div>
-                <div class='form-group'>
-                    <label for='password' localized>login.password</label>
-                    <div class="input-with-icon">
-                        <span class="material-icons input-icon">lock</span>
-                        <input type='password' class='form-control' id='password'
-                               ng-model='login.password' localized-placeholder='login.password.placeholder'
-                               required/>
-                    </div>
+        <!-- Login Section (Right) -->
+        <div class="login-form-section">
+            <div class="login-card">
+                <div class="login-header">
+                    <h2 localized>login.welcome</h2>
+                    <p localized>login.subtitle</p>
                 </div>
 
-                <div class="login-actions">
-                    <div class="login-links">
-                        <a ng-if="canRecover" class="action-link" ng-click="recoverPassword()" localized>login.password.recovery</a>
-                        <div ng-if="rebranding.signupLink" class="signup-link">
-                            <span localized>login.no.account</span>
-                            <a class="action-link" href="{{rebranding.signupLink}}" localized>login.signup</a>
-                        </div>
-                        <div ng-if="!rebranding.signupLink && canSignup" class="signup-link">
-                            <span localized>login.no.account</span>
-                            <a class="action-link" ng-click="signup()" localized>login.signup</a>
+                <!-- Alert Messages -->
+                <div class="login-alert login-alert-error" ng-if='errorMessage'>
+                    <span class="material-icons">error_outline</span>
+                    <span>{{errorMessage}}</span>
+                </div>
+                <div class="login-alert login-alert-success" ng-if='successMessage'>
+                    <span class="material-icons">check_circle</span>
+                    <span>{{successMessage}}</span>
+                </div>
+
+                <!-- Login Form -->
+                <form name='loginForm' ng-submit='onLogin()' class="login-form">
+                    <div class='form-group-custom'>
+                        <label for='username' localized>login.username</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon material-icons">person_outline</span>
+                            <input type='text' class='form-control-custom' id='username'
+                                   ng-model='login.username' localized-placeholder="login.username.placeholder"
+                                   required/>
+                            <span class="input-status material-icons" ng-if="login.username">check_circle</span>
                         </div>
                     </div>
 
-                    <button type='submit' class='btn btn-primary btn-login'
-                            ng-disabled='loginForm.$invalid' localized>
+                    <div class='form-group-custom'>
+                        <label for='password' localized>login.password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon material-icons">lock_outline</span>
+                            <input type='password' class='form-control-custom' id='password'
+                                   ng-model='login.password' localized-placeholder='login.password.placeholder'
+                                   required/>
+                        </div>
+                    </div>
+
+                    <div class="login-options">
+                        <label class="checkbox-custom">
+                            <input type="checkbox" ng-model="login.remember">
+                            <span class="checkmark"></span>
+                            <span localized>login.remember</span>
+                        </label>
+                        <a ng-if="canRecover" class="forgot-link" ng-click="recoverPassword()" localized>login.password.recovery</a>
+                    </div>
+
+                    <button type='submit' class='btn-login-submit'
+                            ng-disabled='loginForm.$invalid'>
                         <span localized>login.submit</span>
                         <span class="material-icons">arrow_forward</span>
                     </button>
-                </div>
-            </form>
-        </div>
+                </form>
 
-        <!-- Footer -->
-        <div class="modern-login-footer" ng-if="rebranding">
-            <span>{{rebranding.appName}}</span> <span localized>app.description</span>. (c) {{rebranding.year}} <a href="{{rebranding.vendorLink}}">{{rebranding.vendorName}}</a>
+                <!-- Signup Link -->
+                <div class="login-footer" ng-if="rebranding.signupLink || canSignup">
+                    <span localized>login.no.account</span>
+                    <a ng-if="rebranding.signupLink" href="{{rebranding.signupLink}}" localized>login.signup</a>
+                    <a ng-if="!rebranding.signupLink && canSignup" ng-click="signup()" localized>login.signup</a>
+                </div>
+            </div>
+
+            <!-- Version Info -->
+            <div class="login-version">
+                <span>{{localization.localize('app.name')}} v5.38.4</span>
+            </div>
         </div>
     </div>
 </div>
