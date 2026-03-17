@@ -49,7 +49,7 @@ angular.module('headwind-kiosk',
     .constant("LOCALIZATION_BUNDLES", [
         'en_US', 'ru_RU', 'fr_FR', 'pt_PT', 'ar_AE', 'es_ES', 'de_DE',
         'zh_TW', 'zh_CN', 'ja_JP', 'tr_TR', 'vi_VN', 'it_IT'])
-    .constant("APP_VERSION", "5.38.1") // Update this value on each commit
+    .constant("APP_VERSION", "5.38.2") // Update this value on each commit
     .constant("ENGLISH", "en_US")
     .constant("DEFAULT_LANGUAGE", "zh_CN") // Default language changed to Chinese
     .provider('getBrowserLanguage', function (DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES) {
