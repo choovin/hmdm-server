@@ -43,7 +43,7 @@ public class LDAPSyncLog implements Serializable, CustomerData {
     public static final String STATUS_PARTIAL = "PARTIAL";
 
     private Integer id;
-    private Integer customerId;
+    private int customerId;
     private String syncType;
     private String status;
     private Integer usersSynced;
@@ -66,12 +66,12 @@ public class LDAPSyncLog implements Serializable, CustomerData {
     }
 
     @Override
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
     @Override
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 

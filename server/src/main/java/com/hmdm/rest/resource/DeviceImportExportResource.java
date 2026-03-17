@@ -34,7 +34,7 @@ public class DeviceImportExportResource {
     @Path("/import-jobs")
     public Response getImportJobs() {
         List<DeviceImportJob> jobs = dao.getImportJobs();
-        return Response.ok(jobs);
+        return Response.OK(jobs);
     }
 
     @ApiOperation(value = "Create import job")
@@ -42,10 +42,10 @@ public class DeviceImportExportResource {
     @Path("/import-jobs")
     public Response createImportJob(DeviceImportJob job) {
         if (job == null || job.getImportType() == null) {
-            return Response.error(Response.ERROR_CODE_VALIDATION_ERROR, "Import type required");
+            return Response.ERROR("Validation error", "Import type required");
         }
         DeviceImportJob created = dao.createImportJob(job);
-        return Response.ok(created);
+        return Response.OK(created);
     }
 
     // Export Jobs
@@ -54,7 +54,7 @@ public class DeviceImportExportResource {
     @Path("/export-jobs")
     public Response getExportJobs() {
         List<DeviceExportJob> jobs = dao.getExportJobs();
-        return Response.ok(jobs);
+        return Response.OK(jobs);
     }
 
     @ApiOperation(value = "Create export job")
@@ -62,10 +62,10 @@ public class DeviceImportExportResource {
     @Path("/export-jobs")
     public Response createExportJob(DeviceExportJob job) {
         if (job == null || job.getExportType() == null) {
-            return Response.error(Response.ERROR_CODE_VALIDATION_ERROR, "Export type required");
+            return Response.ERROR("Validation error", "Export type required");
         }
         DeviceExportJob created = dao.createExportJob(job);
-        return Response.ok(created);
+        return Response.OK(created);
     }
 
     @ApiOperation(value = "Export devices to CSV")
@@ -76,7 +76,7 @@ public class DeviceImportExportResource {
         DeviceExportJob job = new DeviceExportJob();
         job.setExportType(DeviceExportJob.TYPE_CSV);
         job = dao.createExportJob(job);
-        return Response.ok(job);
+        return Response.OK(job);
     }
 
     @ApiOperation(value = "Export devices to Excel")
@@ -86,6 +86,6 @@ public class DeviceImportExportResource {
         DeviceExportJob job = new DeviceExportJob();
         job.setExportType(DeviceExportJob.TYPE_EXCEL);
         job = dao.createExportJob(job);
-        return Response.ok(job);
+        return Response.OK(job);
     }
 }

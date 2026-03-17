@@ -131,4 +131,26 @@ public class PushService {
             });
         }
     }
+
+    /**
+     * <p>Sends a contacts sync command to a device.</p>
+     *
+     * @param deviceId an ID of device to sync contacts.
+     */
+    @Transactional
+    public void syncContacts(Integer deviceId) {
+        sendSimpleMessage(deviceId, PushMessage.TYPE_SYNC_CONTACTS);
+    }
+
+    /**
+     * <p>Sends a contacts update command to multiple devices.</p>
+     *
+     * @param deviceIds list of device IDs to update contacts.
+     */
+    @Transactional
+    public void syncContactsBulk(List<Integer> deviceIds) {
+        if (deviceIds != null) {
+            deviceIds.forEach(this::syncContacts);
+        }
+    }
 }

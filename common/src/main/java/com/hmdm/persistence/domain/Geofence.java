@@ -43,7 +43,7 @@ public class Geofence implements CustomerData, Serializable {
     private Integer id;
 
     @ApiModelProperty(hidden = true)
-    private Integer customerId;
+    private int customerId;
 
     @ApiModelProperty("Name of the geofence")
     private String name;
@@ -79,12 +79,12 @@ public class Geofence implements CustomerData, Serializable {
     }
 
     @Override
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
     @Override
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 

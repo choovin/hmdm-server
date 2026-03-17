@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hmdm.persistence.mapper.DeviceContactMapper">
+
+    <resultMap id="DeviceContactResultMap" type="DeviceContact">
+        <id property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="deviceNumber" column="device_number"/>
+        <result property="contactId" column="contact_id"/>
+        <result property="displayName" column="display_name"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="email" column="email"/>
+        <result property="company" column="company"/>
+        <result property="jobTitle" column="job_title"/>
+        <result property="department" column="department"/>
+        <result property="notes" column="notes"/>
+        <result property="isManaged" column="is_managed"/>
+        <result property="isSynced" column="is_synced"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="DeviceContactPhoneResultMap" type="DeviceContactPhone">
+        <id property="id" column="id"/>
+        <result property="contactId" column="contact_id"/>
+        <result property="phoneType" column="phone_type"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="isPrimary" column="is_primary"/>
+    </resultMap>
+
+    <resultMap id="DeviceContactEmailResultMap" type="DeviceContactEmail">
+        <id property="id" column="id"/>
+        <result property="contactId" column="contact_id"/>
+        <result property="emailType" column="email_type"/>
+        <result property="email" column="email"/>
+        <result property="isPrimary" column="is_primary"/>
+    </resultMap>
+
+    <insert id="insertContact" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO device_contacts (device_id, customer_id, contact_id, display_name, first_name, last_name,
+            phone_number, email, company, job_title, department, notes, is_managed, created_at, updated_at)
+        VALUES (#{deviceId}, #{customerId}, #{contactId}, #{displayName}, #{firstName}, #{lastName},
+            #{phoneNumber}, #{email}, #{company}, #{jobTitle}, #{department}, #{notes}, #{isManaged}, NOW(), NOW())
+    </insert>
+
+    <select id="getContactById" resultMap="DeviceContactResultMap">
+        SELECT c.*, d.number AS device_number FROM device_contacts c
+        JOIN devices d ON c.device_id = d.id
+        WHERE c.id = #{id} AND c.customer_id = #{customerId}
+    </select>
+
+    <select id="getContactsByDeviceId" resultMap="DeviceContactResultMap">
+        SELECT c.*, d.number AS device_number FROM device_contacts c
+        JOIN devices d ON c.device_id = d.id
+        WHERE c.device_id = #{deviceId} AND c.customer_id = #{customerId}
+        ORDER BY c.display_name
+    </select>
+
+    <select id="searchContacts" resultMap="DeviceContactResultMap">
+        SELECT c.*, d.number AS device_number FROM device_contacts c
+        JOIN devices d ON c.device_id = d.id
+        WHERE c.customer_id = #{customerId}
+        <if test="deviceId != null">AND c.device_id = #{deviceId}</if>
+        AND (c.display_name ILIKE '%' || #{query} || '%'
+            OR c.phone_number ILIKE '%' || #{query} || '%'
+            OR c.email ILIKE '%' || #{query} || '%')
+        ORDER BY c.display_name
+    </select>
+
+    <update id="updateContact">
+        UPDATE device_contacts SET
+            display_name = #{displayName}, first_name = #{firstName}, last_name = #{lastName},
+            phone_number = #{phoneNumber}, email = #{email}, company = #{company},
+            job_title = #{jobTitle}, department = #{department}, notes = #{notes},
+            is_managed = #{isManaged}, is_synced = #{isSynced}, updated_at = NOW()
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteContact">
+        DELETE FROM device_contacts WHERE id = #{id} AND customer_id = #{customerId}
+    </delete>
+
+    <insert id="insertContactPhone" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO device_contact_phones (contact_id, phone_type, phone_number, is_primary)
+        VALUES (#{contactId}, #{phoneType}, #{phoneNumber}, #{isPrimary})
+    </insert>
+
+    <select id="getPhonesByContactId" resultMap="DeviceContactPhoneResultMap">
+        SELECT * FROM device_contact_phones WHERE contact_id = #{contactId}
+    </select>
+
+    <delete id="deletePhonesByContactId">
+        DELETE FROM device_contact_phones WHERE contact_id = #{contactId}
+    </delete>
+
+    <insert id="insertContactEmail" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO device_contact_emails (contact_id, email_type, email, is_primary)
+        VALUES (#{contactId}, #{emailType}, #{email}, #{isPrimary})
+    </insert>
+
+    <select id="getEmailsByContactId" resultMap="DeviceContactEmailResultMap">
+        SELECT * FROM device_contact_emails WHERE contact_id = #{contactId}
+    </select>
+
+    <delete id="deleteEmailsByContactId">
+        DELETE FROM device_contact_emails WHERE contact_id = #{contactId}
+    </delete>
+
+</mapper>

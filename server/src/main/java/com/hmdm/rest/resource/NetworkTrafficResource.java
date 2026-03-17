@@ -37,8 +37,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
 
-import static com.hmdm.rest.json.Response.ERROR_CODE_VALIDATION_ERROR;
-
 /**
  * <p>REST API resource for network traffic filtering.</p>
  *
@@ -64,7 +62,7 @@ public class NetworkTrafficResource {
     @Path("/rules")
     public Response getAllTrafficRules() {
         List<NetworkTrafficRule> rules = networkTrafficDAO.getTrafficRulesByCustomer();
-        return Response.ok(rules);
+        return Response.OK(rules);
     }
 
     @ApiOperation(value = "Get traffic rules by configuration ID")
@@ -73,7 +71,7 @@ public class NetworkTrafficResource {
     public Response getTrafficRulesByConfiguration(
             @ApiParam("Configuration ID") @PathParam("configId") Integer configId) {
         List<NetworkTrafficRule> rules = networkTrafficDAO.getTrafficRulesByConfiguration(configId);
-        return Response.ok(rules);
+        return Response.OK(rules);
     }
 
     @ApiOperation(value = "Get enabled traffic rules by configuration ID")
@@ -82,7 +80,7 @@ public class NetworkTrafficResource {
     public Response getEnabledTrafficRulesByConfiguration(
             @ApiParam("Configuration ID") @PathParam("configId") Integer configId) {
         List<NetworkTrafficRule> rules = networkTrafficDAO.getEnabledTrafficRulesByConfiguration(configId);
-        return Response.ok(rules);
+        return Response.OK(rules);
     }
 
     @ApiOperation(value = "Get traffic rule by ID")
@@ -92,9 +90,9 @@ public class NetworkTrafficResource {
             @ApiParam("Rule ID") @PathParam("id") Integer id) {
         NetworkTrafficRule rule = networkTrafficDAO.getTrafficRuleById(id);
         if (rule == null) {
-            return Response.error(Response.ERROR_CODE_NOT_FOUND, "Traffic rule not found");
+            return Response.ERROR("Not found", "Traffic rule not found");
         }
-        return Response.ok(rule);
+        return Response.OK(rule);
     }
 
     @ApiOperation(value = "Create a new traffic rule")
@@ -103,19 +101,19 @@ public class NetworkTrafficResource {
     public Response createTrafficRule(
             @ApiParam("Traffic rule data") NetworkTrafficRule rule) {
         if (rule == null || rule.getRuleName() == null || rule.getRuleName().isEmpty()) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Rule name is required");
+            return Response.ERROR("Validation error", "Rule name is required");
         }
         if (rule.getRuleType() == null || rule.getRuleType().isEmpty()) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Rule type is required");
+            return Response.ERROR("Validation error", "Rule type is required");
         }
         if (rule.getTrafficType() == null || rule.getTrafficType().isEmpty()) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Traffic type is required");
+            return Response.ERROR("Validation error", "Traffic type is required");
         }
         if (rule.getPattern() == null || rule.getPattern().isEmpty()) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Pattern is required");
+            return Response.ERROR("Validation error", "Pattern is required");
         }
         NetworkTrafficRule created = networkTrafficDAO.createTrafficRule(rule);
-        return Response.ok(created);
+        return Response.OK(created);
     }
 
     @ApiOperation(value = "Update a traffic rule")
@@ -125,14 +123,14 @@ public class NetworkTrafficResource {
             @ApiParam("Rule ID") @PathParam("id") Integer id,
             @ApiParam("Traffic rule data") NetworkTrafficRule rule) {
         if (rule == null) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Rule data is required");
+            return Response.ERROR("Validation error", "Rule data is required");
         }
         rule.setId(id);
         int updated = networkTrafficDAO.updateTrafficRule(rule);
         if (updated > 0) {
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Traffic rule not found");
+        return Response.ERROR("Not found", "Traffic rule not found");
     }
 
     @ApiOperation(value = "Update traffic rule enabled status")
@@ -142,13 +140,13 @@ public class NetworkTrafficResource {
             @ApiParam("Rule ID") @PathParam("id") Integer id,
             @ApiParam("Enabled status") @QueryParam("enabled") Boolean enabled) {
         if (enabled == null) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Enabled status is required");
+            return Response.ERROR("Validation error", "Enabled status is required");
         }
         int updated = networkTrafficDAO.updateTrafficRuleEnabled(id, enabled);
         if (updated > 0) {
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Traffic rule not found");
+        return Response.ERROR("Not found", "Traffic rule not found");
     }
 
     @ApiOperation(value = "Delete a traffic rule")
@@ -158,9 +156,9 @@ public class NetworkTrafficResource {
             @ApiParam("Rule ID") @PathParam("id") Integer id) {
         int deleted = networkTrafficDAO.deleteTrafficRule(id);
         if (deleted > 0) {
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Traffic rule not found");
+        return Response.ERROR("Not found", "Traffic rule not found");
     }
 
     // ==================== Traffic Logs ====================
@@ -171,7 +169,7 @@ public class NetworkTrafficResource {
     public Response getTrafficLogsByDevice(
             @ApiParam("Device ID") @PathParam("deviceId") Integer deviceId) {
         List<NetworkTrafficLog> logs = networkTrafficDAO.getTrafficLogsByDevice(deviceId);
-        return Response.ok(logs);
+        return Response.OK(logs);
     }
 
     @ApiOperation(value = "Get all traffic logs for current customer")
@@ -179,7 +177,7 @@ public class NetworkTrafficResource {
     @Path("/logs")
     public Response getAllTrafficLogs() {
         List<NetworkTrafficLog> logs = networkTrafficDAO.getTrafficLogsByCustomer();
-        return Response.ok(logs);
+        return Response.OK(logs);
     }
 
     @ApiOperation(value = "Get traffic logs with filter")
@@ -194,7 +192,7 @@ public class NetworkTrafficResource {
         Date startDate = startDateTimestamp != null ? new Date(startDateTimestamp) : null;
         Date endDate = endDateTimestamp != null ? new Date(endDateTimestamp) : null;
         List<NetworkTrafficLog> logs = networkTrafficDAO.getTrafficLogsByFilter(deviceId, action, domain, startDate, endDate);
-        return Response.ok(logs);
+        return Response.OK(logs);
     }
 
     @ApiOperation(value = "Log a traffic event")
@@ -203,13 +201,13 @@ public class NetworkTrafficResource {
     public Response logTrafficEvent(
             @ApiParam("Traffic log data") NetworkTrafficLog log) {
         if (log == null || log.getDeviceId() == null) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Device ID is required");
+            return Response.ERROR("Validation error", "Device ID is required");
         }
         if (log.getAction() == null || log.getAction().isEmpty()) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Action is required");
+            return Response.ERROR("Validation error", "Action is required");
         }
         NetworkTrafficLog created = networkTrafficDAO.logTraffic(log);
-        return Response.ok(created);
+        return Response.OK(created);
     }
 
     // ==================== Statistics ====================
@@ -228,7 +226,7 @@ public class NetworkTrafficResource {
         stats.totalCount = totalCount != null ? totalCount : 0L;
         stats.blockedBytes = blockedBytes != null ? blockedBytes : 0L;
 
-        return Response.ok(stats);
+        return Response.OK(stats);
     }
 
     // ==================== Device Network Settings ====================
@@ -239,7 +237,7 @@ public class NetworkTrafficResource {
     public Response getDeviceNetworkSettings(
             @ApiParam("Device ID") @PathParam("deviceId") Integer deviceId) {
         DeviceNetworkSettings settings = networkTrafficDAO.getOrCreateDeviceNetworkSettings(deviceId);
-        return Response.ok(settings);
+        return Response.OK(settings);
     }
 
     @ApiOperation(value = "Update device network settings")
@@ -249,7 +247,7 @@ public class NetworkTrafficResource {
             @ApiParam("Device ID") @PathParam("deviceId") Integer deviceId,
             @ApiParam("Network settings") DeviceNetworkSettings settings) {
         if (settings == null) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Settings are required");
+            return Response.ERROR("Validation error", "Settings are required");
         }
         settings.setDeviceId(deviceId);
 
@@ -257,13 +255,13 @@ public class NetworkTrafficResource {
         DeviceNetworkSettings existing = networkTrafficDAO.getDeviceNetworkSettings(deviceId);
         if (existing == null) {
             DeviceNetworkSettings created = networkTrafficDAO.createDeviceNetworkSettings(settings);
-            return Response.ok(created);
+            return Response.OK(created);
         } else {
             int updated = networkTrafficDAO.updateDeviceNetworkSettings(settings);
             if (updated > 0) {
-                return Response.ok();
+                return Response.OK();
             }
-            return Response.error(Response.ERROR_CODE_UNKNOWN_ERROR, "Failed to update settings");
+            return Response.ERROR("Unknown error", "Failed to update settings");
         }
     }
 
@@ -287,7 +285,7 @@ public class NetworkTrafficResource {
         result.logsDeleted = logsDeleted;
         result.rulesDeleted = rulesDeleted;
 
-        return Response.ok(result);
+        return Response.OK(result);
     }
 
     // Helper classes for responses

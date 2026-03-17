@@ -35,7 +35,7 @@ public class LDAPConfiguration implements Serializable, CustomerData {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private Integer customerId;
+    private int customerId;
     private Boolean enabled;
     private String serverHost;
     private Integer serverPort;
@@ -73,12 +73,12 @@ public class LDAPConfiguration implements Serializable, CustomerData {
     }
 
     @Override
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
     @Override
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 

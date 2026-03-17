@@ -45,7 +45,7 @@ public class RemoteControlSession implements Serializable, CustomerData {
 
     private Integer id;
     private Integer deviceId;
-    private Integer customerId;
+    private int customerId;
     private Integer userId;
     private String deviceNumber;
     private String userName;
@@ -84,12 +84,12 @@ public class RemoteControlSession implements Serializable, CustomerData {
     }
 
     @Override
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
     @Override
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 

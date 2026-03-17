@@ -112,7 +112,6 @@
                 <configuration>
                     <filesets>
                         <fileset><directory>target</directory></fileset>
-                        <fileset><directory>src/main/webapp/lib</directory></fileset>
                     </filesets>
                 </configuration>
             </plugin>
@@ -197,6 +196,7 @@
                 <version>1.7.6</version>
 
                 <configuration>
+                    <skip>false</skip>
                     <workingDirectory>webtarget</workingDirectory>
                     <!-- 使用国内镜像下载 Node.js -->
                     <nodeDownloadRoot>https://cdn.npmmirror.com/binaries/node/</nodeDownloadRoot>

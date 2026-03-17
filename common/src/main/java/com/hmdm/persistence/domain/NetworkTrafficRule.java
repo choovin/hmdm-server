@@ -46,7 +46,7 @@ public class NetworkTrafficRule implements Serializable, CustomerData {
     public static final String TRAFFIC_TYPE_APP = "APP";
 
     private Integer id;
-    private Integer customerId;
+    private int customerId;
     private Integer configurationId;
     private String ruleName;
     private String ruleType;
@@ -70,12 +70,12 @@ public class NetworkTrafficRule implements Serializable, CustomerData {
     }
 
     @Override
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
     @Override
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 

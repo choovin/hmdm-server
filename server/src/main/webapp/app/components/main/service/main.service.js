@@ -186,6 +186,35 @@ angular.module('headwind-kiosk')
             hasActiveSessions: {url: 'rest/private/remote-control/sessions/device/:deviceId/has-active', method: 'GET'}
         });
     })
+    .factory('contactService', function ($resource) {
+        return $resource('', {}, {
+            getContactsByDevice: {url: 'rest/private/device-contacts/device/:deviceId', method: 'GET'},
+            getContactById: {url: 'rest/private/device-contacts/:id', method: 'GET'},
+            createContact: {url: 'rest/private/device-contacts', method: 'POST'},
+            updateContact: {url: 'rest/private/device-contacts/:id', method: 'PUT'},
+            deleteContact: {url: 'rest/private/device-contacts/:id', method: 'DELETE'},
+            searchContacts: {url: 'rest/private/device-contacts/search', method: 'GET'},
+            syncContactsToDevice: {url: 'rest/private/device-contacts/sync/:deviceId', method: 'POST'},
+            syncContactsToDevices: {url: 'rest/private/device-contacts/sync', method: 'POST'}
+        });
+    })
+    .factory('whiteLabelService', function ($resource) {
+        return $resource('', {}, {
+            getRebrandingSettings: {url: 'rest/private/white-label/rebranding', method: 'GET'},
+            updateRebrandingSettings: {url: 'rest/private/white-label/rebranding', method: 'PUT'},
+            getAllBuilds: {url: 'rest/private/white-label/builds', method: 'GET'},
+            getBuildById: {url: 'rest/private/white-label/builds/:id', method: 'GET'},
+            createBuild: {url: 'rest/private/white-label/builds', method: 'POST'},
+            updateBuild: {url: 'rest/private/white-label/builds/:id', method: 'PUT'},
+            deleteBuild: {url: 'rest/private/white-label/builds/:id', method: 'DELETE'},
+            triggerBuild: {url: 'rest/private/white-label/builds/:id/trigger', method: 'POST'},
+            getAllEmailTemplates: {url: 'rest/private/white-label/email-templates', method: 'GET'},
+            getEmailTemplate: {url: 'rest/private/white-label/email-templates/:type', method: 'GET'},
+            saveEmailTemplate: {url: 'rest/private/white-label/email-templates', method: 'PUT'},
+            deleteEmailTemplate: {url: 'rest/private/white-label/email-templates/:id', method: 'DELETE'}
+        });
+    })
+    .factory('summaryService', function ($resource) {
         return $resource('', {}, {
             getDeviceStat: {url: 'rest/private/summary/devices', method: 'GET'}
         });

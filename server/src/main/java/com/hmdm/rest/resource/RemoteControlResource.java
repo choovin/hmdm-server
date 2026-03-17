@@ -34,7 +34,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-import static com.hmdm.rest.json.Response.ERROR_CODE_VALIDATION_ERROR;
 
 /**
  * <p>REST API resource for remote control sessions.</p>
@@ -59,7 +58,7 @@ public class RemoteControlResource {
     @Path("/sessions")
     public Response getAllSessions() {
         List<RemoteControlSession> sessions = remoteControlDAO.getAllSessions();
-        return Response.ok(sessions);
+        return Response.OK(sessions);
     }
 
     @ApiOperation(value = "Get sessions by device ID")
@@ -68,7 +67,7 @@ public class RemoteControlResource {
     public Response getSessionsByDevice(
             @ApiParam("Device ID") @PathParam("deviceId") Integer deviceId) {
         List<RemoteControlSession> sessions = remoteControlDAO.getSessionsByDevice(deviceId);
-        return Response.ok(sessions);
+        return Response.OK(sessions);
     }
 
     @ApiOperation(value = "Get active sessions by device ID")
@@ -77,7 +76,7 @@ public class RemoteControlResource {
     public Response getActiveSessionsByDevice(
             @ApiParam("Device ID") @PathParam("deviceId") Integer deviceId) {
         List<RemoteControlSession> sessions = remoteControlDAO.getActiveSessionsByDevice(deviceId);
-        return Response.ok(sessions);
+        return Response.OK(sessions);
     }
 
     @ApiOperation(value = "Get session by ID")
@@ -87,9 +86,9 @@ public class RemoteControlResource {
             @ApiParam("Session ID") @PathParam("id") Integer id) {
         RemoteControlSession session = remoteControlDAO.getSessionById(id);
         if (session == null) {
-            return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+            return Response.ERROR("Not found", "Session not found");
         }
-        return Response.ok(session);
+        return Response.OK(session);
     }
 
     @ApiOperation(value = "Get session by token")
@@ -99,9 +98,9 @@ public class RemoteControlResource {
             @ApiParam("Session Token") @PathParam("token") String token) {
         RemoteControlSession session = remoteControlDAO.getSessionByToken(token);
         if (session == null) {
-            return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+            return Response.ERROR("Not found", "Session not found");
         }
-        return Response.ok(session);
+        return Response.OK(session);
     }
 
     @ApiOperation(value = "Create a new remote control session")
@@ -110,14 +109,14 @@ public class RemoteControlResource {
     public Response createSession(
             @ApiParam("Session data") RemoteControlSession session) {
         if (session == null || session.getDeviceId() == null) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Device ID is required");
+            return Response.ERROR("Validation error", "Device ID is required");
         }
         if (session.getSessionType() == null) {
             session.setSessionType(RemoteControlSession.TYPE_VIEW);
         }
         RemoteControlSession created = remoteControlDAO.createSession(
                 session.getDeviceId(), session.getSessionType());
-        return Response.ok(created);
+        return Response.OK(created);
     }
 
     @ApiOperation(value = "Update a session")
@@ -127,14 +126,14 @@ public class RemoteControlResource {
             @ApiParam("Session ID") @PathParam("id") Integer id,
             @ApiParam("Session data") RemoteControlSession session) {
         if (session == null) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Session data is required");
+            return Response.ERROR("Validation error", "Session data is required");
         }
         session.setId(id);
         int updated = remoteControlDAO.updateSession(session);
         if (updated > 0) {
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+        return Response.ERROR("Not found", "Session not found");
     }
 
     @ApiOperation(value = "Update session status")
@@ -144,13 +143,13 @@ public class RemoteControlResource {
             @ApiParam("Session ID") @PathParam("id") Integer id,
             @ApiParam("Status") @QueryParam("status") String status) {
         if (status == null || status.isEmpty()) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Status is required");
+            return Response.ERROR("Validation error", "Status is required");
         }
         int updated = remoteControlDAO.updateSessionStatus(id, status);
         if (updated > 0) {
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+        return Response.ERROR("Not found", "Session not found");
     }
 
     @ApiOperation(value = "Update session WebRTC data")
@@ -163,9 +162,9 @@ public class RemoteControlResource {
             @ApiParam("ICE candidates") @QueryParam("candidates") String candidates) {
         int updated = remoteControlDAO.updateSessionWebRTCData(id, offer, answer, candidates);
         if (updated > 0) {
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+        return Response.ERROR("Not found", "Session not found");
     }
 
     @ApiOperation(value = "Mark session as connecting")
@@ -176,9 +175,9 @@ public class RemoteControlResource {
         int updated = remoteControlDAO.updateSessionStatus(id, RemoteControlSession.STATUS_CONNECTING);
         if (updated > 0) {
             remoteControlDAO.logAudit(id, null, "SESSION_CONNECTING", null);
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+        return Response.ERROR("Not found", "Session not found");
     }
 
     @ApiOperation(value = "Mark session as connected")
@@ -190,9 +189,9 @@ public class RemoteControlResource {
         int updated = remoteControlDAO.markSessionConnected(id, remoteAddress);
         if (updated > 0) {
             remoteControlDAO.logAudit(id, null, "SESSION_CONNECTED", "Remote address: " + remoteAddress);
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+        return Response.ERROR("Not found", "Session not found");
     }
 
     @ApiOperation(value = "Mark session as disconnected")
@@ -204,9 +203,9 @@ public class RemoteControlResource {
         int updated = remoteControlDAO.markSessionDisconnected(id, durationSeconds);
         if (updated > 0) {
             remoteControlDAO.logAudit(id, null, "SESSION_DISCONNECTED", "Duration: " + durationSeconds + "s");
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+        return Response.ERROR("Not found", "Session not found");
     }
 
     @ApiOperation(value = "Mark session as error")
@@ -218,9 +217,9 @@ public class RemoteControlResource {
         int updated = remoteControlDAO.markSessionError(id, errorMessage);
         if (updated > 0) {
             remoteControlDAO.logAudit(id, null, "SESSION_ERROR", errorMessage);
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+        return Response.ERROR("Not found", "Session not found");
     }
 
     @ApiOperation(value = "Delete a session")
@@ -230,9 +229,9 @@ public class RemoteControlResource {
             @ApiParam("Session ID") @PathParam("id") Integer id) {
         int deleted = remoteControlDAO.deleteSession(id);
         if (deleted > 0) {
-            return Response.ok();
+            return Response.OK();
         }
-        return Response.error(Response.ERROR_CODE_NOT_FOUND, "Session not found");
+        return Response.ERROR("Not found", "Session not found");
     }
 
     @ApiOperation(value = "Check if device has active sessions")
@@ -241,7 +240,7 @@ public class RemoteControlResource {
     public Response hasActiveSessions(
             @ApiParam("Device ID") @PathParam("deviceId") Integer deviceId) {
         boolean hasActive = remoteControlDAO.hasActiveSessions(deviceId);
-        return Response.ok(hasActive);
+        return Response.OK(hasActive);
     }
 
     @ApiOperation(value = "Delete old sessions")
@@ -253,7 +252,7 @@ public class RemoteControlResource {
             daysToKeep = 30;
         }
         int deleted = remoteControlDAO.deleteOldSessions(daysToKeep);
-        return Response.ok(deleted);
+        return Response.OK(deleted);
     }
 
     @ApiOperation(value = "Log audit action")
@@ -265,9 +264,9 @@ public class RemoteControlResource {
             @ApiParam("Action") @QueryParam("action") String action,
             @ApiParam("Action details") @QueryParam("details") String details) {
         if (action == null || action.isEmpty()) {
-            return Response.error(ERROR_CODE_VALIDATION_ERROR, "Action is required");
+            return Response.ERROR("Validation error", "Action is required");
         }
         remoteControlDAO.logAudit(sessionId, deviceId, action, details);
-        return Response.ok();
+        return Response.OK();
     }
 }

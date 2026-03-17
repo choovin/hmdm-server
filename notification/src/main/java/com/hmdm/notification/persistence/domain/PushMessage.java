@@ -68,6 +68,11 @@ public class PushMessage implements Serializable {
     public static final String TYPE_UPDATE_NETWORK_SETTINGS = "updateNetworkSettings";
     public static final String TYPE_SYNC_NETWORK_CONFIG = "syncNetworkConfig";
 
+    // Device contacts sync types
+    public static final String TYPE_SYNC_CONTACTS = "syncContacts";
+    public static final String TYPE_UPDATE_CONTACTS = "updateContacts";
+    public static final String TYPE_DELETE_CONTACTS = "deleteContacts";
+
     /**
      * <p>Constructs new <code>PushMessage</code> instance. This implementation does nothing.</p>
      */

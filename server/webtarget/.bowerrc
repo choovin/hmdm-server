@@ -1,0 +1,4 @@
+{
+  "registry": "https://registry.bower.io",
+  "shorthand-resolver": "https://github.com/{{owner}}/{{package}}.git"
+}

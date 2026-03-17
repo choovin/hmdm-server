@@ -46,7 +46,7 @@ public class DeviceExportJob implements Serializable, CustomerData {
     public static final String STATUS_EXPIRED = "EXPIRED";
 
     private Integer id;
-    private Integer customerId;
+    private int customerId;
     private Integer userId;
     private String userName;
     private String exportType;
@@ -77,12 +77,12 @@ public class DeviceExportJob implements Serializable, CustomerData {
     }
 
     @Override
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
     @Override
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 

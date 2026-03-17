@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hmdm.persistence.mapper.WhiteLabelMapper">
+
+    <resultMap id="RebrandingSettingsResultMap" type="RebrandingSettings">
+        <result property="customerId" column="id"/>
+        <result property="customLogo" column="custom_logo"/>
+        <result property="customFavicon" column="custom_favicon"/>
+        <result property="customCss" column="custom_css"/>
+        <result property="primaryColor" column="primary_color"/>
+        <result property="secondaryColor" column="secondary_color"/>
+        <result property="accentColor" column="accent_color"/>
+        <result property="customEmailHeader" column="custom_email_header"/>
+        <result property="customEmailFooter" column="custom_email_footer"/>
+        <result property="customEmailSubjectPrefix" column="custom_email_subject_prefix"/>
+        <result property="customLoginPageHtml" column="custom_login_page_html"/>
+        <result property="hidePoweredBy" column="hide_powered_by"/>
+        <result property="customCopyrightText" column="custom_copyright_text"/>
+        <result property="enableCustomDomain" column="enable_custom_domain"/>
+        <result property="customDomain" column="custom_domain"/>
+    </resultMap>
+
+    <resultMap id="WhiteLabelBuildResultMap" type="WhiteLabelBuild">
+        <id property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="buildName" column="build_name"/>
+        <result property="appName" column="app_name"/>
+        <result property="packageName" column="package_name"/>
+        <result property="versionCode" column="version_code"/>
+        <result property="versionName" column="version_name"/>
+        <result property="iconPath" column="icon_path"/>
+        <result property="splashScreenPath" column="splash_screen_path"/>
+        <result property="customStrings" column="custom_strings"/>
+        <result property="customColors" column="custom_colors"/>
+        <result property="serverUrl" column="server_url"/>
+        <result property="buildStatus" column="build_status"/>
+        <result property="buildLog" column="build_log"/>
+        <result property="downloadUrl" column="download_url"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="builtAt" column="built_at"/>
+    </resultMap>
+
+    <resultMap id="EmailTemplateResultMap" type="EmailTemplate">
+        <id property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="templateType" column="template_type"/>
+        <result property="subject" column="subject"/>
+        <result property="bodyHtml" column="body_html"/>
+        <result property="bodyText" column="body_text"/>
+        <result property="isCustom" column="is_custom"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- Rebranding Settings -->
+    <select id="getRebrandingSettings" resultMap="RebrandingSettingsResultMap">
+        SELECT id, custom_logo, custom_favicon, custom_css, primary_color, secondary_color, accent_color,
+               custom_email_header, custom_email_footer, custom_email_subject_prefix, custom_login_page_html,
+               hide_powered_by, custom_copyright_text, enable_custom_domain, custom_domain
+        FROM customers WHERE id = #{customerId}
+    </select>
+
+    <update id="updateRebrandingSettings">
+        UPDATE customers SET
+            custom_logo = #{customLogo},
+            custom_favicon = #{customFavicon},
+            custom_css = #{customCss},
+            primary_color = #{primaryColor},
+            secondary_color = #{secondaryColor},
+            accent_color = #{accentColor},
+            custom_email_header = #{customEmailHeader},
+            custom_email_footer = #{customEmailFooter},
+            custom_email_subject_prefix = #{customEmailSubjectPrefix},
+            custom_login_page_html = #{customLoginPageHtml},
+            hide_powered_by = #{hidePoweredBy},
+            custom_copyright_text = #{customCopyrightText},
+            enable_custom_domain = #{enableCustomDomain},
+            custom_domain = #{customDomain}
+        WHERE id = #{customerId}
+    </update>
+
+    <!-- White Label Builds -->
+    <select id="getAllBuilds" resultMap="WhiteLabelBuildResultMap">
+        SELECT * FROM white_label_builds WHERE customer_id = #{customerId} ORDER BY created_at DESC
+    </select>
+
+    <select id="getBuildById" resultMap="WhiteLabelBuildResultMap">
+        SELECT * FROM white_label_builds WHERE id = #{id} AND customer_id = #{customerId}
+    </select>
+
+    <select id="getBuildByPackageName" resultMap="WhiteLabelBuildResultMap">
+        SELECT * FROM white_label_builds WHERE package_name = #{packageName} AND customer_id = #{customerId}
+    </select>
+
+    <insert id="insertBuild" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO white_label_builds (customer_id, build_name, app_name, package_name, version_code, version_name,
+            icon_path, splash_screen_path, custom_strings, custom_colors, server_url, build_status, created_at, updated_at)
+        VALUES (#{customerId}, #{buildName}, #{appName}, #{packageName}, #{versionCode}, #{versionName},
+            #{iconPath}, #{splashScreenPath}, #{customStrings}, #{customColors}, #{serverUrl}, #{buildStatus},
+            NOW(), NOW())
+    </insert>
+
+    <update id="updateBuild">
+        UPDATE white_label_builds SET
+            build_name = #{buildName},
+            app_name = #{appName},
+            version_code = #{versionCode},
+            version_name = #{versionName},
+            icon_path = #{iconPath},
+            splash_screen_path = #{splashScreenPath},
+            custom_strings = #{customStrings},
+            custom_colors = #{customColors},
+            server_url = #{serverUrl},
+            updated_at = NOW()
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <update id="updateBuildStatus">
+        UPDATE white_label_builds SET
+            build_status = #{buildStatus},
+            build_log = #{buildLog},
+            download_url = #{downloadUrl},
+            built_at = CASE WHEN #{buildStatus} = 'completed' THEN NOW() ELSE built_at END,
+            updated_at = NOW()
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteBuild">
+        DELETE FROM white_label_builds WHERE id = #{id} AND customer_id = #{customerId}
+    </delete>
+
+    <!-- Email Templates -->
+    <select id="getAllEmailTemplates" resultMap="EmailTemplateResultMap">
+        SELECT * FROM email_templates WHERE customer_id = #{customerId} OR customer_id = 0 ORDER BY template_type
+    </select>
+
+    <select id="getEmailTemplate" resultMap="EmailTemplateResultMap">
+        SELECT * FROM email_templates
+        WHERE customer_id = #{customerId} AND template_type = #{templateType}
+        UNION ALL
+        SELECT * FROM email_templates
+        WHERE customer_id = 0 AND template_type = #{templateType}
+        AND NOT EXISTS (SELECT 1 FROM email_templates WHERE customer_id = #{customerId} AND template_type = #{templateType})
+        LIMIT 1
+    </select>
+
+    <insert id="insertEmailTemplate" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO email_templates (customer_id, template_type, subject, body_html, body_text, is_custom, created_at, updated_at)
+        VALUES (#{customerId}, #{templateType}, #{subject}, #{bodyHtml}, #{bodyText}, #{isCustom}, NOW(), NOW())
+    </insert>
+
+    <update id="updateEmailTemplate">
+        UPDATE email_templates SET
+            subject = #{subject},
+            body_html = #{bodyHtml},
+            body_text = #{bodyText},
+            is_custom = #{isCustom},
+            updated_at = NOW()
+        WHERE id = #{id} AND customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteEmailTemplate">
+        DELETE FROM email_templates WHERE id = #{id} AND customer_id = #{customerId}
+    </delete>
+
+</mapper>

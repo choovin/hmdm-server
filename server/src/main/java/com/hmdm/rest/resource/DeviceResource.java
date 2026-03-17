@@ -468,7 +468,7 @@ public class DeviceResource {
             this.pushService.sendRemoteCommand(id, PushMessage.TYPE_REBOOT);
             return Response.OK();
         } catch (Exception e) {
-            log.error("Failed to send reboot command to device #{}"، id, e);
+            log.error("Failed to send reboot command to device #{}", id, e);
             return Response.INTERNAL_ERROR();
         }
     }
@@ -493,7 +493,7 @@ public class DeviceResource {
             this.pushService.sendRemoteCommand(id, PushMessage.TYPE_LOCK);
             return Response.OK();
         } catch (Exception e) {
-            log.error("Failed to send lock command to device #{}"، id, e);
+            log.error("Failed to send lock command to device #{}", id, e);
             return Response.INTERNAL_ERROR();
         }
     }
@@ -518,7 +518,7 @@ public class DeviceResource {
             this.pushService.sendRemoteCommand(id, PushMessage.TYPE_FACTORY_RESET);
             return Response.OK();
         } catch (Exception e) {
-            log.error("Failed to send factory reset command to device #{}"، id, e);
+            log.error("Failed to send factory reset command to device #{}", id, e);
             return Response.INTERNAL_ERROR();
         }
     }

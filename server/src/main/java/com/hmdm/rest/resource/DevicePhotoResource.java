@@ -112,7 +112,7 @@ public class DevicePhotoResource {
             List<DevicePhoto> photos = this.devicePhotoDAO.getDevicePhotosByDeviceId(deviceId);
             return Response.OK(photos);
         } catch (Exception e) {
-            log.error("Failed to retrieve device photos for device #{}"، deviceId, e);
+            log.error("Failed to retrieve device photos for device #{}", deviceId, e);
             return Response.INTERNAL_ERROR();
         }
     }
@@ -156,7 +156,7 @@ public class DevicePhotoResource {
                 return Response.ERROR();
             }
         } catch (Exception e) {
-            log.error("Failed to retrieve device photo #{}"، id, e);
+            log.error("Failed to retrieve device photo #{}", id, e);
             return Response.INTERNAL_ERROR();
         }
     }
@@ -208,7 +208,7 @@ public class DevicePhotoResource {
             this.devicePhotoDAO.deleteDevicePhoto(id);
             return Response.OK();
         } catch (Exception e) {
-            log.error("Failed to delete device photo #{}"، id, e);
+            log.error("Failed to delete device photo #{}", id, e);
             return Response.INTERNAL_ERROR();
         }
     }
@@ -248,7 +248,7 @@ public class DevicePhotoResource {
 
             return Response.OK(request);
         } catch (Exception e) {
-            log.error("Failed to request photo upload for device #{}"، deviceId, e);
+            log.error("Failed to request photo upload for device #{}", deviceId, e);
             return Response.INTERNAL_ERROR();
         }
     }
@@ -288,7 +288,7 @@ public class DevicePhotoResource {
             List<PhotoUploadRequest> requests = this.devicePhotoDAO.getPendingPhotoUploadRequests(deviceId);
             return Response.OK(requests);
         } catch (Exception e) {
-            log.error("Failed to retrieve pending photo upload requests for device #{}"، deviceId, e);
+            log.error("Failed to retrieve pending photo upload requests for device #{}", deviceId, e);
             return Response.INTERNAL_ERROR();
         }
     }
@@ -310,7 +310,7 @@ public class DevicePhotoResource {
             this.devicePhotoDAO.updatePhotoUploadRequestStatus(id, status, photoCount, errorMessage);
             return Response.OK();
         } catch (Exception e) {
-            log.error("Failed to update photo upload request status #{}"، id, e);
+            log.error("Failed to update photo upload request status #{}", id, e);
             return Response.INTERNAL_ERROR();
         }
     }

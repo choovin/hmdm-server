@@ -39,7 +39,7 @@ public class NetworkTrafficLog implements Serializable, CustomerData {
 
     private Integer id;
     private Integer deviceId;
-    private Integer customerId;
+    private int customerId;
     private Integer ruleId;
     private String deviceNumber;
     private String url;
@@ -75,12 +75,12 @@ public class NetworkTrafficLog implements Serializable, CustomerData {
     }
 
     @Override
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
     @Override
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 

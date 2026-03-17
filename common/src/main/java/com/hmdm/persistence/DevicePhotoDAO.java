@@ -49,8 +49,8 @@ public class DevicePhotoDAO {
      */
     @Transactional
     public void insertDevicePhoto(DevicePhoto photo) {
-        if (photo.getCustomerId() == null) {
-            photo.setCustomerId(SecurityContext.get().getCurrentCustomerId().orElse(null));
+        if (photo.getCustomerId() == 0) {
+            photo.setCustomerId(SecurityContext.get().getCurrentUser().get().getCustomerId());
         }
         this.devicePhotoMapper.insertDevicePhoto(photo);
     }
@@ -61,7 +61,10 @@ public class DevicePhotoDAO {
     public DevicePhoto getDevicePhotoById(Integer id) {
         DevicePhoto photo = this.devicePhotoMapper.getDevicePhotoById(id);
         if (photo != null) {
-            SecurityContext.get().checkCurrentCustomerAccess(photo.getCustomerId());
+            int currentCustomerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
+            if (photo.getCustomerId() != currentCustomerId) {
+                throw new SecurityException("Access denied to photo from different customer");
+            }
         }
         return photo;
     }
@@ -77,7 +80,7 @@ public class DevicePhotoDAO {
      * Gets all photos for current customer.
      */
     public List<DevicePhoto> getDevicePhotosByCustomerId() {
-        Integer customerId = SecurityContext.get().getCurrentCustomerId().orElse(null);
+        int customerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
         return this.devicePhotoMapper.getDevicePhotosByCustomerId(customerId);
     }
 
@@ -85,7 +88,7 @@ public class DevicePhotoDAO {
      * Searches device photos with filters.
      */
     public List<DevicePhoto> searchDevicePhotos(Integer deviceId, String search) {
-        Integer customerId = SecurityContext.get().getCurrentCustomerId().orElse(null);
+        int customerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
         if (search != null && !search.isEmpty()) {
             search = "%" + search + "%";
         }
@@ -129,8 +132,8 @@ public class DevicePhotoDAO {
      */
     @Transactional
     public PhotoUploadRequest createPhotoUploadRequest(PhotoUploadRequest request) {
-        if (request.getCustomerId() == null) {
-            request.setCustomerId(SecurityContext.get().getCurrentCustomerId().orElse(null));
+        if (request.getCustomerId() == 0) {
+            request.setCustomerId(SecurityContext.get().getCurrentUser().get().getCustomerId());
         }
         request.setStatus(PhotoUploadRequest.STATUS_PENDING);
         this.devicePhotoMapper.insertPhotoUploadRequest(request);
@@ -143,7 +146,10 @@ public class DevicePhotoDAO {
     public PhotoUploadRequest getPhotoUploadRequestById(Integer id) {
         PhotoUploadRequest request = this.devicePhotoMapper.getPhotoUploadRequestById(id);
         if (request != null) {
-            SecurityContext.get().checkCurrentCustomerAccess(request.getCustomerId());
+            int currentCustomerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
+            if (request.getCustomerId() != currentCustomerId) {
+                throw new SecurityException("Access denied to request from different customer");
+            }
         }
         return request;
     }
@@ -170,7 +176,7 @@ public class DevicePhotoDAO {
      * Gets all photo upload requests for current customer.
      */
     public List<PhotoUploadRequest> getPhotoUploadRequestsByCustomerId() {
-        Integer customerId = SecurityContext.get().getCurrentCustomerId().orElse(null);
+        int customerId = SecurityContext.get().getCurrentUser().get().getCustomerId();
         return this.devicePhotoMapper.getPhotoUploadRequestsByCustomerId(customerId);
     }
 

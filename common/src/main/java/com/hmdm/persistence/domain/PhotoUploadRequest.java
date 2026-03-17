@@ -41,7 +41,7 @@ public class PhotoUploadRequest implements Serializable, CustomerData {
 
     private Integer id;
     private Integer deviceId;
-    private Integer customerId;
+    private int customerId;
     private String deviceNumber;
     private String status;
     private Date requestedAt;
@@ -70,12 +70,12 @@ public class PhotoUploadRequest implements Serializable, CustomerData {
     }
 
     @Override
-    public Integer getCustomerId() {
+    public int getCustomerId() {
         return customerId;
     }
 
     @Override
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
 
