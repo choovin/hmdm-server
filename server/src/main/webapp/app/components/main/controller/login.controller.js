@@ -5,6 +5,21 @@ angular.module('headwind-kiosk')
         $scope.login = {};
         $scope.transmitPassword = false;
 
+        // Language switching
+        var savedLang = localStorage.getItem('hmdm-language') || getBrowserLanguage();
+        if (savedLang !== 'zh_CN' && savedLang !== 'en_US') {
+            savedLang = 'zh_CN';
+        }
+        $scope.currentLang = savedLang;
+
+        // Switch language function
+        $scope.switchLanguage = function(lang) {
+            $scope.currentLang = lang;
+            localStorage.setItem('hmdm-language', lang);
+            // Reload the page to apply language change
+            window.location.reload();
+        };
+
         $scope.rebranding = null;
         rebranding.query(function(value) {
             $scope.rebranding = value;

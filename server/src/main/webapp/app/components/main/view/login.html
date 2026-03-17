@@ -20,6 +20,12 @@
 
     <!-- Main Container -->
     <div class="login-main-container">
+        <!-- Language Switcher (Top Right) -->
+        <div class="language-switcher">
+            <button class="lang-btn" ng-class="{active: currentLang === 'zh_CN'}" ng-click="switchLanguage('zh_CN')">中文</button>
+            <button class="lang-btn" ng-class="{active: currentLang === 'en_US'}" ng-click="switchLanguage('en_US')">EN</button>
+        </div>
+
         <!-- Brand Section (Left) -->
         <div class="login-brand-section" ng-if="rebranding">
             <div class="brand-content">
