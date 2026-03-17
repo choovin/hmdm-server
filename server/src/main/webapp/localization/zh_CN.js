@@ -804,6 +804,13 @@ document.localization ['zh_CN'] = {
     'tab.license' : "软件许可證",
     'tab.hints':"提示",
     'tab.plugins':"插件",
+    'tab.contacts': "设备通讯录",
+    'tab.ldap': "LDAP集成",
+    'tab.remote.control': "远程控制",
+    'tab.commands': "远程命令",
+    'tab.network.filter': "网络过滤",
+    'tab.export.import': "导入导出",
+    'tab.white.label': "白标软件",
 
     'tab.configeditor.common.settings':"通用设置",
     'tab.configeditor.design.settings':"设计设置",
@@ -1288,5 +1295,58 @@ document.localization ['zh_CN'] = {
     'permission.plugin_whitelabel_access': '白标定制/品牌重塑',
     'permission.plugin_whitelabel_build_apk': '构建自定义APK',
     'permission.plugin_whitelabel_email_templates': '管理邮件模板',
-    'permission.plugin_whitelabel_custom_domain': '自定义域名设置'
+    'permission.plugin_whitelabel_custom_domain': '自定义域名设置',
+
+    // White Label UI Keys
+    'tab.white.label': '白标软件',
+
+    // Section Headings
+    'heading.branding': '品牌设置',
+    'heading.logos': 'Logo设置',
+    'heading.colors': '颜色设置',
+    'heading.mobile.app': '移动应用',
+    'heading.features': '功能设置',
+    'heading.preview': '实时预览',
+
+    // Buttons
+    'button.hide.preview': '隐藏预览',
+    'button.show.preview': '显示预览',
+    'button.saving': '保存中...',
+    'button.save.changes': '保存更改',
+    'button.generate.mobile.app': '生成移动应用',
+    'button.primary': '主要按钮',
+    'button.secondary': '次要按钮',
+    'button.reset.defaults': '恢复默认',
+
+    // Labels
+    'label.app.name': '应用名称',
+    'label.company.name': '公司名称',
+    'label.support.email': '支持邮箱',
+    'label.support.phone': '支持电话',
+    'label.website.url': '网站地址',
+    'label.logo': 'Logo',
+    'label.favicon': '网站图标',
+    'label.primary.color': '主色调',
+    'label.secondary.color': '次色调',
+    'label.accent.color': '强调色',
+    'label.color.presets': '颜色预设',
+    'label.mobile.app.name': '移动应用名称',
+    'label.mobile.app.icon': '移动应用图标',
+    'label.splash.screen': '启动画面',
+    'label.show.powered.by': '显示"Powered by"',
+    'label.show.help.links': '显示帮助链接',
+    'label.enable.custom.domain': '启用自定义域名',
+    'label.custom.domain': '自定义域名',
+
+    // Messages
+    'message.upload.logo': '点击上传Logo',
+    'message.upload.icon': '点击上传图标',
+    'message.upload.splash': '点击上传启动画面',
+    'message.preview.sample.text': '这是预览示例文本，展示您的品牌设置效果。',
+
+    // Help Text
+    'help.logo.size': '推荐尺寸: 200x50px, 支持 PNG, SVG',
+    'help.favicon.size': '推荐尺寸: 32x32px, 支持 ICO, PNG',
+    'help.icon.size': '推荐尺寸: 512x512px, 支持 PNG',
+    'help.splash.size': '推荐尺寸: 1080x1920px, 支持 PNG, JPG'
 };		

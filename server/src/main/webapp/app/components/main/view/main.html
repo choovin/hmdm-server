@@ -49,6 +49,18 @@
                             <span class="nav-text" ng-show="!sidebarCollapsed">文件</span>
                         </a>
                     </li>
+                    <li class="nav-item" ng-class="{'active': isActive('contacts')}" ng-if="hasPermission('plugin_contacts_access')">
+                        <a ng-click="navigateTo('contacts')">
+                            <span class="material-icons nav-icon">contacts</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">通讯录</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" ng-class="{'active': isActive('ldap')}" ng-if="hasPermission('settings')">
+                        <a ng-click="navigateTo('ldap')">
+                            <span class="material-icons nav-icon">account_balance</span>
+                            <span class="nav-text" ng-show="!sidebarCollapsed">LDAP</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
 

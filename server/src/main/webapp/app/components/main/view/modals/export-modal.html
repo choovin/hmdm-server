@@ -1,0 +1,84 @@
+<!-- Localization completed -->
+<!-- Export Modal -->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span class="material-icons">cloud_download</span>
+        {{localization.localize('heading.export.devices')}}
+    </h3>
+    <button class="close" ng-click="cancel()">&times;</button>
+</div>
+
+<div class="modal-body">
+    <form class="export-form">
+        <!-- Export Format -->
+        <div class="form-group">
+            <label class="form-label" for="exportFormat">
+                <span class="material-icons">category</span>
+                {{localization.localize('label.export.format')}}
+            </label>
+            <select class="form-control" id="exportFormat" ng-model="exportData.format" ng-options="format.id as localization.localize(format.name) for format in formats">
+            </select>
+        </div>
+
+        <!-- Export Options -->
+        <div class="form-group">
+            <label class="form-label">
+                <span class="material-icons">settings</span>
+                {{localization.localize('label.export.options')}}
+            </label>
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" ng-model="exportData.includeConfig">
+                    <span class="checkbox-text">{{localization.localize('label.include.config')}}</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" ng-model="exportData.includeApps">
+                    <span class="checkbox-text">{{localization.localize('label.include.apps')}}</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" ng-model="exportData.includeLocation">
+                    <span class="checkbox-text">{{localization.localize('label.include.location')}}</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Device Selection -->
+        <div class="form-group">
+            <label class="form-label">
+                <span class="material-icons">devices</span>
+                {{localization.localize('label.select.devices')}}
+            </label>
+            <div class="select-all-row">
+                <label class="checkbox-label">
+                    <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()">
+                    <span class="checkbox-text">{{localization.localize('label.select.all.devices')}}</span>
+                </label>
+            </div>
+            <div class="device-selection-list">
+                <div class="device-item" ng-repeat="device in devices">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ng-model="device.selected">
+                        <span class="device-number">{{device.number}}</span>
+                        <span class="device-status" ng-class="device.status">{{device.status}}</span>
+                    </label>
+                </div>
+                <div class="empty-text" ng-if="!devices || devices.length === 0">
+                    {{localization.localize('message.no.devices')}}
+                </div>
+            </div>
+            <p class="help-text">{{localization.localize('help.export.devices')}}</p>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="startExport()" ng-disabled="isExporting">
+        <span class="material-icons" ng-if="!isExporting">cloud_download</span>
+        <span class="material-icons spinning" ng-if="isExporting">refresh</span>
+        {{isExporting ? localization.localize('button.exporting') : localization.localize('button.start.export')}}
+    </button>
+    <button class="btn btn-default" ng-click="cancel()">
+        <span class="material-icons">close</span>
+        {{localization.localize('button.cancel')}}
+    </button>
+</div>

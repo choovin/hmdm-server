@@ -1,0 +1,300 @@
+<!-- Localization completed -->
+<!-- LDAP Integration Page -->
+<div class="modern-content" ng-controller="LdapController">
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <h3 class="toolbar-title">
+                <span class="material-icons">account_balance</span>
+                {{localization.localize('heading.ldap')}}
+            </h3>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn btn-default btn-modern" ng-click="testConnection()" ng-if="ldapConfig.enabled">
+                <span class="material-icons">network_check</span>
+                <span>{{localization.localize('button.test.connection')}}</span>
+            </button>
+            <button class="btn btn-primary btn-modern" ng-click="saveConfig()">
+                <span class="material-icons">save</span>
+                <span>{{localization.localize('button.save')}}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- LDAP Configuration Card -->
+        <div class="card ldap-config-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">settings</span>
+                    {{localization.localize('heading.ldap.config')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <form class="ldap-form">
+                    <!-- Enable LDAP -->
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" ng-model="ldapConfig.enabled">
+                            <span class="checkbox-text">{{localization.localize('label.ldap.enabled')}}</span>
+                        </label>
+                        <p class="help-text">{{localization.localize('help.ldap.enabled')}}</p>
+                    </div>
+
+                    <div ng-if="ldapConfig.enabled">
+                        <!-- Server URL -->
+                        <div class="form-group">
+                            <label class="form-label" for="ldapUrl">
+                                {{localization.localize('label.ldap.url')}} *
+                            </label>
+                            <input type="text" class="form-control" id="ldapUrl" ng-model="ldapConfig.url" placeholder="ldaps://ldap.example.com:636">
+                            <p class="help-text">{{localization.localize('help.ldap.url')}}</p>
+                        </div>
+
+                        <!-- Base DN -->
+                        <div class="form-group">
+                            <label class="form-label" for="ldapBaseDn">
+                                {{localization.localize('label.ldap.baseDn')}} *
+                            </label>
+                            <input type="text" class="form-control" id="ldapBaseDn" ng-model="ldapConfig.baseDn" placeholder="dc=example,dc=com">
+                            <p class="help-text">{{localization.localize('help.ldap.baseDn')}}</p>
+                        </div>
+
+                        <!-- User Search Filter -->
+                        <div class="form-group">
+                            <label class="form-label" for="ldapUserFilter">
+                                {{localization.localize('label.ldap.userFilter')}}
+                            </label>
+                            <input type="text" class="form-control" id="ldapUserFilter" ng-model="ldapConfig.userFilter" placeholder="(objectClass=person)">
+                            <p class="help-text">{{localization.localize('help.ldap.userFilter')}}</p>
+                        </div>
+
+                        <!-- User Search Base -->
+                        <div class="form-group">
+                            <label class="form-label" for="ldapUserBase">
+                                {{localization.localize('label.ldap.userBase')}}
+                            </label>
+                            <input type="text" class="form-control" id="ldapUserBase" ng-model="ldapConfig.userBase" placeholder="ou=users">
+                            <p class="help-text">{{localization.localize('help.ldap.userBase')}}</p>
+                        </div>
+
+                        <!-- Group Search Filter -->
+                        <div class="form-group">
+                            <label class="form-label" for="ldapGroupFilter">
+                                {{localization.localize('label.ldap.groupFilter')}}
+                            </label>
+                            <input type="text" class="form-control" id="ldapGroupFilter" ng-model="ldapConfig.groupFilter" placeholder="(objectClass=groupOfNames)">
+                            <p class="help-text">{{localization.localize('help.ldap.groupFilter')}}</p>
+                        </div>
+
+                        <!-- Group Search Base -->
+                        <div class="form-group">
+                            <label class="form-label" for="ldapGroupBase">
+                                {{localization.localize('label.ldap.groupBase')}}
+                            </label>
+                            <input type="text" class="form-control" id="ldapGroupBase" ng-model="ldapConfig.groupBase" placeholder="ou=groups">
+                            <p class="help-text">{{localization.localize('help.ldap.groupBase')}}</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- LDAP Authentication Card -->
+        <div class="card ldap-auth-card" ng-if="ldapConfig.enabled">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">vpn_key</span>
+                    {{localization.localize('heading.ldap.auth')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <form class="ldap-form">
+                    <!-- Bind DN -->
+                    <div class="form-group">
+                        <label class="form-label" for="ldapBindDn">
+                            {{localization.localize('label.ldap.bindDn')}}
+                        </label>
+                        <input type="text" class="form-control" id="ldapBindDn" ng-model="ldapConfig.bindDn" placeholder="cn=admin,dc=example,dc=com">
+                        <p class="help-text">{{localization.localize('help.ldap.bindDn')}}</p>
+                    </div>
+
+                    <!-- Bind Password -->
+                    <div class="form-group">
+                        <label class="form-label" for="ldapBindPassword">
+                            {{localization.localize('label.ldap.bindPassword')}}
+                        </label>
+                        <input type="password" class="form-control" id="ldapBindPassword" ng-model="ldapConfig.bindPassword" placeholder="{{localization.localize('placeholder.password')}}">
+                        <p class="help-text">{{localization.localize('help.ldap.bindPassword')}}</p>
+                    </div>
+
+                    <!-- Use LDAP for Authentication -->
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" ng-model="ldapConfig.useForAuthentication">
+                            <span class="checkbox-text">{{localization.localize('label.ldap.useForAuth')}}</span>
+                        </label>
+                        <p class="help-text">{{localization.localize('help.ldap.useForAuth')}}</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- LDAP User Mapping Card -->
+        <div class="card ldap-mapping-card" ng-if="ldapConfig.enabled && ldapConfig.useForAuthentication">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">people</span>
+                    {{localization.localize('heading.ldap.mapping')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <form class="ldap-form">
+                    <!-- User ID Attribute -->
+                    <div class="form-group">
+                        <label class="form-label" for="ldapUserIdAttr">
+                            {{localization.localize('label.ldap.userIdAttr')}} *
+                        </label>
+                        <input type="text" class="form-control" id="ldapUserIdAttr" ng-model="ldapConfig.userIdAttribute" placeholder="uid">
+                        <p class="help-text">{{localization.localize('help.ldap.userIdAttr')}}</p>
+                    </div>
+
+                    <!-- Email Attribute -->
+                    <div class="form-group">
+                        <label class="form-label" for="ldapEmailAttr">
+                            {{localization.localize('label.ldap.emailAttr')}}
+                        </label>
+                        <input type="text" class="form-control" id="ldapEmailAttr" ng-model="ldapConfig.emailAttribute" placeholder="mail">
+                        <p class="help-text">{{localization.localize('help.ldap.emailAttr')}}</p>
+                    </div>
+
+                    <!-- Name Attribute -->
+                    <div class="form-group">
+                        <label class="form-label" for="ldapNameAttr">
+                            {{localization.localize('label.ldap.nameAttr')}}
+                        </label>
+                        <input type="text" class="form-control" id="ldapNameAttr" ng-model="ldapConfig.nameAttribute" placeholder="cn">
+                        <p class="help-text">{{localization.localize('help.ldap.nameAttr')}}</p>
+                    </div>
+
+                    <!-- Auto-create Users -->
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" ng-model="ldapConfig.autoCreateUsers">
+                            <span class="checkbox-text">{{localization.localize('label.ldap.autoCreate')}}</span>
+                        </label>
+                        <p class="help-text">{{localization.localize('help.ldap.autoCreate')}}</p>
+                    </div>
+
+                    <!-- Default Role -->
+                    <div class="form-group" ng-if="ldapConfig.autoCreateUsers">
+                        <label class="form-label" for="ldapDefaultRole">
+                            {{localization.localize('label.ldap.defaultRole')}}
+                        </label>
+                        <select class="form-control" id="ldapDefaultRole" ng-model="ldapConfig.defaultRoleId" ng-options="role.id as role.name for role in roles">
+                            <option value="">{{localization.localize('option.select.role')}}</option>
+                        </select>
+                        <p class="help-text">{{localization.localize('help.ldap.defaultRole')}}</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- LDAP Group Mapping Card -->
+        <div class="card ldap-groups-card" ng-if="ldapConfig.enabled">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">groups</span>
+                    {{localization.localize('heading.ldap.groups')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <form class="ldap-form">
+                    <!-- Sync Groups -->
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" ng-model="ldapConfig.syncGroups">
+                            <span class="checkbox-text">{{localization.localize('label.ldap.syncGroups')}}</span>
+                        </label>
+                        <p class="help-text">{{localization.localize('help.ldap.syncGroups')}}</p>
+                    </div>
+
+                    <div ng-if="ldapConfig.syncGroups">
+                        <!-- Group Name Attribute -->
+                        <div class="form-group">
+                            <label class="form-label" for="ldapGroupNameAttr">
+                                {{localization.localize('label.ldap.groupNameAttr')}}
+                            </label>
+                            <input type="text" class="form-control" id="ldapGroupNameAttr" ng-model="ldapConfig.groupNameAttribute" placeholder="cn">
+                            <p class="help-text">{{localization.localize('help.ldap.groupNameAttr')}}</p>
+                        </div>
+
+                        <!-- Group Member Attribute -->
+                        <div class="form-group">
+                            <label class="form-label" for="ldapGroupMemberAttr">
+                                {{localization.localize('label.ldap.groupMemberAttr')}}
+                            </label>
+                            <input type="text" class="form-control" id="ldapGroupMemberAttr" ng-model="ldapConfig.groupMemberAttribute" placeholder="member">
+                            <p class="help-text">{{localization.localize('help.ldap.groupMemberAttr')}}</p>
+                        </div>
+
+                        <!-- Group Mappings -->
+                        <div class="form-group">
+                            <label class="form-label">{{localization.localize('label.ldap.groupMappings')}}</label>
+                            <div class="group-mappings">
+                                <div class="mapping-row" ng-repeat="mapping in ldapConfig.groupMappings">
+                                    <input type="text" class="form-control" ng-model="mapping.ldapGroup" placeholder="LDAP Group DN">
+                                    <span class="mapping-arrow">→</span>
+                                    <select class="form-control" ng-model="mapping.roleId" ng-options="role.id as role.name for role in roles">
+                                        <option value="">{{localization.localize('option.select.role')}}</option>
+                                    </select>
+                                    <button class="btn btn-icon btn-sm" ng-click="removeGroupMapping($index)">
+                                        <span class="material-icons">delete</span>
+                                    </button>
+                                </div>
+                                <button class="btn btn-default btn-sm" ng-click="addGroupMapping()">
+                                    <span class="material-icons">add</span>
+                                    {{localization.localize('button.add.mapping')}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- LDAP Status Card -->
+        <div class="card ldap-status-card" ng-if="ldapConfig.enabled">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">info</span>
+                    {{localization.localize('heading.ldap.status')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="status-indicator" ng-class="{'success': connectionStatus === 'connected', 'error': connectionStatus === 'error', 'pending': !connectionStatus}">
+                    <span class="material-icons status-icon">
+                        {{connectionStatus === 'connected' ? 'check_circle' : connectionStatus === 'error' ? 'error' : 'pending'}}
+                    </span>
+                    <span class="status-text">
+                        {{connectionStatus ? localization.localize('ldap.status.' + connectionStatus) : localization.localize('ldap.status.notTested')}}
+                    </span>
+                </div>
+                <div class="status-details" ng-if="connectionMessage">
+                    <p>{{connectionMessage}}</p>
+                </div>
+                <div class="ldap-stats" ng-if="ldapStats">
+                    <div class="stat-item">
+                        <span class="stat-label">{{localization.localize('label.ldap.usersFound')}}:</span>
+                        <span class="stat-value">{{ldapStats.userCount}}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">{{localization.localize('label.ldap.groupsFound')}}:</span>
+                        <span class="stat-value">{{ldapStats.groupCount}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

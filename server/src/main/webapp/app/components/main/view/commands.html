@@ -1,0 +1,124 @@
+<!-- Localization completed -->
+<!-- Commands Page -->
+<div class="modern-content" ng-controller="CommandsController">
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <h3 class="toolbar-title">
+                <span class="material-icons">send</span>
+                {{localization.localize('heading.commands')}}
+            </h3>
+        </div>
+        <div class="toolbar-right">
+            <span class="selected-count" ng-if="selectedDevices.length > 0">
+                {{localization.localize('label.selected.devices', selectedDevices.length)}}
+            </span>
+            <button class="btn btn-default btn-modern" ng-click="loadDevices()">
+                <span class="material-icons">refresh</span>
+                <span>{{localization.localize('button.refresh')}}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- Device Selection Card -->
+        <div class="card device-selection-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">devices</span>
+                    {{localization.localize('heading.select.devices')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Search Box -->
+                <div class="search-box">
+                    <input type="text" class="form-control" ng-model="searchQuery" placeholder="{{localization.localize('placeholder.search.devices')}}" ng-keyup="$event.keyCode === 13 && searchDevices()">
+                    <button class="btn btn-icon" ng-click="searchDevices()">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
+
+                <!-- Select All -->
+                <div class="select-all-row">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()">
+                        <span class="checkbox-text">{{localization.localize('label.select.all')}}</span>
+                    </label>
+                </div>
+
+                <!-- Device List -->
+                <div class="device-list">
+                    <div class="device-item" ng-repeat="device in devices">
+                        <label class="checkbox-label">
+                            <input type="checkbox" ng-model="device.selected" ng-change="onDeviceSelect()">
+                            <span class="device-number">{{device.number}}</span>
+                            <span class="device-status" ng-class="device.status">{{device.status}}</span>
+                        </label>
+                    </div>
+                    <div class="empty-text" ng-if="!devices || devices.length === 0">
+                        {{localization.localize('message.no.devices')}}
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container" ng-if="paging.totalPages > 1">
+                    <pagination total-items="paging.totalItems"
+                                items-per-page="paging.pageSize"
+                                ng-model="paging.currentPage"
+                                ng-change="pageChanged()"
+                                max-size="5"
+                                class="pagination-sm"
+                                boundary-links="true"
+                                rotate="false"></pagination>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Commands Card -->
+        <div class="card commands-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">playlist_add</span>
+                    {{localization.localize('heading.available.commands')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="commands-grid">
+                    <div class="command-item" ng-repeat="cmd in availableCommands" ng-click="openCommandModal(cmd)" ng-class="{'disabled': selectedDevices.length === 0}">
+                        <div class="command-icon">
+                            <span class="material-icons">{{cmd.icon}}</span>
+                        </div>
+                        <div class="command-info">
+                            <div class="command-name">{{localization.localize(cmd.name)}}</div>
+                            <div class="command-desc">{{localization.localize(cmd.description)}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Command History Card -->
+        <div class="card command-history-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">history</span>
+                    {{localization.localize('heading.command.history')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="history-list">
+                    <div class="history-item" ng-repeat="history in commandHistory">
+                        <div class="history-command">{{localization.localize(history.commandName)}}</div>
+                        <div class="history-devices">{{history.deviceCount}} {{localization.localize('label.devices')}}</div>
+                        <div class="history-time">{{history.timestamp | date:'yyyy-MM-dd HH:mm'}}</div>
+                        <div class="history-status" ng-class="history.status">{{localization.localize('status.' + history.status)}}</div>
+                    </div>
+                    <div class="empty-text" ng-if="!commandHistory || commandHistory.length === 0">
+                        {{localization.localize('message.no.command.history')}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

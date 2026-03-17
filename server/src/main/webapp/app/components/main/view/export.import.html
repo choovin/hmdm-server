@@ -1,0 +1,137 @@
+<!-- Localization completed -->
+<!-- Export/Import Page -->
+<div class="modern-content" ng-controller="ExportImportController">
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <h3 class="toolbar-title">
+                <span class="material-icons">import_export</span>
+                {{localization.localize('heading.export.import')}}
+            </h3>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn btn-default btn-modern" ng-click="activeTab === 'import' ? loadImportJobs() : loadExportJobs()">
+                <span class="material-icons">refresh</span>
+                <span>{{localization.localize('button.refresh')}}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+        <div class="tab" ng-class="{'active': activeTab === 'import'}" ng-click="switchTab('import')">
+            <span class="material-icons">cloud_upload</span>
+            {{localization.localize('tab.import')}}
+        </div>
+        <div class="tab" ng-class="{'active': activeTab === 'export'}" ng-click="switchTab('export')">
+            <span class="material-icons">cloud_download</span>
+            {{localization.localize('tab.export')}}
+        </div>
+    </div>
+
+    <!-- Import Tab Content -->
+    <div class="tab-content" ng-show="activeTab === 'import'">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">upload_file</span>
+                    {{localization.localize('heading.import.devices')}}
+                </h3>
+                <div class="card-actions">
+                    <button class="btn btn-primary btn-modern" ng-click="openImportModal()">
+                        <span class="material-icons">add</span>
+                        {{localization.localize('button.new.import')}}
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="import-jobs-list">
+                    <div class="job-item" ng-repeat="job in importJobs">
+                        <div class="job-icon">
+                            <span class="material-icons">upload_file</span>
+                        </div>
+                        <div class="job-info">
+                            <div class="job-name">{{job.fileName}}</div>
+                            <div class="job-meta">
+                                <span class="job-format">{{job.format.toUpperCase()}}</span>
+                                <span class="job-time">{{job.createdAt | date:'yyyy-MM-dd HH:mm'}}</span>
+                            </div>
+                        </div>
+                        <div class="job-progress" ng-if="job.status === 'processing'">
+                            <div class="progress-bar">
+                                <div class="progress-fill" ng-style="{'width': job.progress + '%'}"></div>
+                            </div>
+                            <span class="progress-text">{{job.progress}}%</span>
+                        </div>
+                        <div class="job-status" ng-class="job.status">
+                            {{localization.localize('status.' + job.status)}}
+                        </div>
+                        <div class="job-actions">
+                            <button class="btn btn-icon" ng-click="viewJobDetails(job)" title="{{localization.localize('button.view.details')}}">
+                                <span class="material-icons">visibility</span>
+                            </button>
+                            <button class="btn btn-icon btn-danger" ng-click="deleteJob(job, 'import')" ng-if="job.status !== 'processing'" title="{{localization.localize('button.delete')}}">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="empty-text" ng-if="!importJobs || importJobs.length === 0">
+                        {{localization.localize('message.no.import.jobs')}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Tab Content -->
+    <div class="tab-content" ng-show="activeTab === 'export'">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">download</span>
+                    {{localization.localize('heading.export.devices')}}
+                </h3>
+                <div class="card-actions">
+                    <button class="btn btn-primary btn-modern" ng-click="openExportModal()">
+                        <span class="material-icons">add</span>
+                        {{localization.localize('button.new.export')}}
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="export-jobs-list">
+                    <div class="job-item" ng-repeat="job in exportJobs">
+                        <div class="job-icon">
+                            <span class="material-icons">download</span>
+                        </div>
+                        <div class="job-info">
+                            <div class="job-name">{{job.fileName || localization.localize('label.export.job') + ' #' + job.id}}</div>
+                            <div class="job-meta">
+                                <span class="job-format">{{job.format.toUpperCase()}}</span>
+                                <span class="job-device-count">{{job.deviceCount}} {{localization.localize('label.devices')}}</span>
+                                <span class="job-time">{{job.createdAt | date:'yyyy-MM-dd HH:mm'}}</span>
+                            </div>
+                        </div>
+                        <div class="job-status" ng-class="job.status">
+                            {{localization.localize('status.' + job.status)}}
+                        </div>
+                        <div class="job-actions">
+                            <button class="btn btn-icon" ng-click="downloadExport(job)" ng-if="job.status === 'completed'" title="{{localization.localize('button.download')}}">
+                                <span class="material-icons">file_download</span>
+                            </button>
+                            <button class="btn btn-icon" ng-click="viewJobDetails(job)" title="{{localization.localize('button.view.details')}}">
+                                <span class="material-icons">visibility</span>
+                            </button>
+                            <button class="btn btn-icon btn-danger" ng-click="deleteJob(job, 'export')" ng-if="job.status !== 'processing'" title="{{localization.localize('button.delete')}}">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="empty-text" ng-if="!exportJobs || exportJobs.length === 0">
+                        {{localization.localize('message.no.export.jobs')}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

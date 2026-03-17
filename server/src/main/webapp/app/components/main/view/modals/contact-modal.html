@@ -1,0 +1,82 @@
+<!-- Localization completed -->
+<!-- Contact Modal for Add/Edit -->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span class="material-icons">{{isEditing ? 'edit' : 'person_add'}}</span>
+        {{isEditing ? localization.localize('heading.edit.contact') : localization.localize('heading.add.contact')}}
+    </h3>
+    <button class="close" ng-click="cancel()">&times;</button>
+</div>
+
+<div class="modal-body">
+    <form class="contact-form">
+        <div class="form-group">
+            <label class="form-label" for="contactName">
+                <span class="material-icons">person</span>
+                {{localization.localize('label.contact.name')}} *
+            </label>
+            <input type="text" class="form-control" id="contactName" ng-model="contact.name" placeholder="{{localization.localize('placeholder.contact.name')}}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="contactPhone">
+                <span class="material-icons">phone</span>
+                {{localization.localize('label.contact.phone')}}
+            </label>
+            <input type="tel" class="form-control" id="contactPhone" ng-model="contact.phone" placeholder="{{localization.localize('placeholder.contact.phone')}}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="contactEmail">
+                <span class="material-icons">email</span>
+                {{localization.localize('label.contact.email')}}
+            </label>
+            <input type="email" class="form-control" id="contactEmail" ng-model="contact.email" placeholder="{{localization.localize('placeholder.contact.email')}}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="contactCompany">
+                <span class="material-icons">business</span>
+                {{localization.localize('label.contact.company')}}
+            </label>
+            <input type="text" class="form-control" id="contactCompany" ng-model="contact.company" placeholder="{{localization.localize('placeholder.contact.company')}}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="contactTitle">
+                <span class="material-icons">work</span>
+                {{localization.localize('label.contact.title')}}
+            </label>
+            <input type="text" class="form-control" id="contactTitle" ng-model="contact.title" placeholder="{{localization.localize('placeholder.contact.title')}}">
+        </div>
+
+        <div class="form-group" ng-if="isEditing">
+            <label class="form-label">
+                <span class="material-icons">devices</span>
+                {{localization.localize('label.contact.devices')}}
+            </label>
+            <div class="device-list-compact">
+                <div class="device-item-compact" ng-repeat="device in devices">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ng-checked="contact.deviceIds.indexOf(device.id) !== -1" ng-click="toggleDevice(device.id)">
+                        <span class="device-number">{{device.number}}</span>
+                    </label>
+                </div>
+                <div class="empty-text" ng-if="!devices || devices.length === 0">
+                    {{localization.localize('message.no.devices')}}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="saveContact()">
+        <span class="material-icons">save</span>
+        {{localization.localize('button.save')}}
+    </button>
+    <button class="btn btn-default" ng-click="cancel()">
+        <span class="material-icons">close</span>
+        {{localization.localize('button.cancel')}}
+    </button>
+</div>

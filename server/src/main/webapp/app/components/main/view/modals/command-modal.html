@@ -1,0 +1,68 @@
+<!-- Localization completed -->
+<!-- Command Modal -->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span class="material-icons">{{command.icon}}</span>
+        {{localization.localize(command.name)}}
+    </h3>
+    <button class="close" ng-click="cancel()">&times;</button>
+</div>
+
+<div class="modal-body">
+    <form class="command-form">
+        <!-- Command Description -->
+        <div class="form-group">
+            <p class="command-description">{{localization.localize(command.description)}}</p>
+        </div>
+
+        <!-- Target Devices -->
+        <div class="form-group">
+            <label class="form-label">
+                <span class="material-icons">devices</span>
+                {{localization.localize('label.target.devices')}}
+            </label>
+            <div class="target-devices">
+                <span class="device-badge" ng-repeat="device in devices">{{device.number}}</span>
+            </div>
+        </div>
+
+        <!-- Package ID for Install/Uninstall/Run App -->
+        <div class="form-group" ng-if="command.id === 'installApp' || command.id === 'uninstallApp' || command.id === 'runApp'">
+            <label class="form-label" for="packageId">
+                <span class="material-icons">android</span>
+                {{localization.localize('label.package.id')}} *
+            </label>
+            <input type="text" class="form-control" id="packageId" ng-model="commandParams.packageId" placeholder="com.example.app" required>
+            <p class="help-text">{{localization.localize('help.package.id')}}</p>
+        </div>
+
+        <!-- Lock Message -->
+        <div class="form-group" ng-if="command.id === 'lock'">
+            <label class="form-label" for="lockMessage">
+                <span class="material-icons">message</span>
+                {{localization.localize('label.lock.message')}}
+            </label>
+            <textarea class="form-control" id="lockMessage" ng-model="commandParams.message" rows="3" placeholder="{{localization.localize('placeholder.lock.message')}}"></textarea>
+        </div>
+
+        <!-- Confirmation -->
+        <div class="form-group" ng-if="command.id === 'reset' || command.id === 'clearData'">
+            <div class="alert alert-warning">
+                <span class="material-icons">warning</span>
+                <span>{{localization.localize('warning.destructive.command')}}</span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="executeCommand()" ng-disabled="isExecuting || (commandParams.packageId === '' && (command.id === 'installApp' || command.id === 'uninstallApp' || command.id === 'runApp'))">
+        <span class="material-icons" ng-if="!isExecuting">send</span>
+        <span class="material-icons spinning" ng-if="isExecuting">refresh</span>
+        {{isExecuting ? localization.localize('button.executing') : localization.localize('button.execute')}}
+    </button>
+    <button class="btn btn-default" ng-click="cancel()">
+        <span class="material-icons">close</span>
+        {{localization.localize('button.cancel')}}
+    </button>
+</div>

@@ -1,0 +1,95 @@
+<!-- Localization completed -->
+<!-- Filter Modal -->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span class="material-icons">filter_list</span>
+        {{filter.id ? localization.localize('heading.edit.filter') : localization.localize('heading.add.filter')}}
+    </h3>
+    <button class="close" ng-click="cancel()">&times;</button>
+</div>
+
+<div class="modal-body">
+    <form class="filter-form">
+        <!-- Filter Name -->
+        <div class="form-group">
+            <label class="form-label" for="filterName">
+                <span class="material-icons">label</span>
+                {{localization.localize('label.filter.name')}} *
+            </label>
+            <input type="text" class="form-control" id="filterName" ng-model="filter.name" placeholder="{{localization.localize('placeholder.filter.name')}}" required>
+        </div>
+
+        <!-- Filter Type -->
+        <div class="form-group">
+            <label class="form-label">
+                <span class="material-icons">category</span>
+                {{localization.localize('label.filter.type')}}
+            </label>
+            <select class="form-control" ng-model="filter.type" ng-options="type.id as localization.localize(type.name) for type in filterTypes">
+            </select>
+            <p class="help-text">{{localization.localize('help.filter.type')}}</p>
+        </div>
+
+        <!-- Target Devices -->
+        <div class="form-group" ng-if="devices.length > 0">
+            <label class="form-label">
+                <span class="material-icons">devices</span>
+                {{localization.localize('label.target.devices')}}
+            </label>
+            <div class="target-devices">
+                <span class="device-badge" ng-repeat="device in devices">{{device.number}}</span>
+            </div>
+        </div>
+
+        <!-- Filter Rules -->
+        <div class="form-group">
+            <label class="form-label">
+                <span class="material-icons">rule</span>
+                {{localization.localize('label.filter.rules')}}
+            </label>
+            <div class="rules-container">
+                <div class="rule-row" ng-repeat="rule in filter.rules">
+                    <select class="form-control rule-type" ng-model="rule.type">
+                        <option value="domain">{{localization.localize('rule.type.domain')}}</option>
+                        <option value="ip">{{localization.localize('rule.type.ip')}}</option>
+                        <option value="port">{{localization.localize('rule.type.port')}}</option>
+                        <option value="protocol">{{localization.localize('rule.type.protocol')}}</option>
+                    </select>
+                    <input type="text" class="form-control rule-value" ng-model="rule.value" placeholder="{{localization.localize('placeholder.rule.value')}}">
+                    <select class="form-control rule-action" ng-model="rule.action">
+                        <option value="allow">{{localization.localize('rule.action.allow')}}</option>
+                        <option value="block">{{localization.localize('rule.action.block')}}</option>
+                    </select>
+                    <button type="button" class="btn btn-icon btn-danger" ng-click="removeRule($index)" ng-if="filter.rules.length > 1">
+                        <span class="material-icons">remove_circle</span>
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="btn btn-default btn-sm" ng-click="addRule()">
+                <span class="material-icons">add</span>
+                {{localization.localize('button.add.rule')}}
+            </button>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label class="form-label" for="filterDescription">
+                <span class="material-icons">description</span>
+                {{localization.localize('label.description')}}
+            </label>
+            <textarea class="form-control" id="filterDescription" ng-model="filter.description" rows="2" placeholder="{{localization.localize('placeholder.filter.description')}}"></textarea>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="saveFilter()" ng-disabled="isSaving || !filter.name">
+        <span class="material-icons" ng-if="!isSaving">save</span>
+        <span class="material-icons spinning" ng-if="isSaving">refresh</span>
+        {{isSaving ? localization.localize('button.saving') : localization.localize('button.save')}}
+    </button>
+    <button class="btn btn-default" ng-click="cancel()">
+        <span class="material-icons">close</span>
+        {{localization.localize('button.cancel')}}
+    </button>
+</div>

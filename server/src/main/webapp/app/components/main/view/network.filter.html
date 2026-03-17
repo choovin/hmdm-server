@@ -1,0 +1,128 @@
+<!-- Localization completed -->
+<!-- Network Traffic Filtering Page -->
+<div class="modern-content" ng-controller="NetworkFilterController">
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <h3 class="toolbar-title">
+                <span class="material-icons">security</span>
+                {{localization.localize('heading.network.filter')}}
+            </h3>
+        </div>
+        <div class="toolbar-right">
+            <span class="selected-count" ng-if="selectedDevices.length > 0">
+                {{localization.localize('label.selected.devices', selectedDevices.length)}}
+            </span>
+            <button class="btn btn-primary btn-modern" ng-click="openFilterModal()">
+                <span class="material-icons">add</span>
+                <span>{{localization.localize('button.add.filter')}}</span>
+            </button>
+            <button class="btn btn-default btn-modern" ng-click="loadDevices()">
+                <span class="material-icons">refresh</span>
+                <span>{{localization.localize('button.refresh')}}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- Device Selection Card -->
+        <div class="card device-selection-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">devices</span>
+                    {{localization.localize('heading.select.devices')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Search Box -->
+                <div class="search-box">
+                    <input type="text" class="form-control" ng-model="searchQuery" placeholder="{{localization.localize('placeholder.search.devices')}}" ng-keyup="$event.keyCode === 13 && searchDevices()">
+                    <button class="btn btn-icon" ng-click="searchDevices()">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
+
+                <!-- Select All -->
+                <div class="select-all-row">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()">
+                        <span class="checkbox-text">{{localization.localize('label.select.all')}}</span>
+                    </label>
+                </div>
+
+                <!-- Device List -->
+                <div class="device-list">
+                    <div class="device-item" ng-repeat="device in devices">
+                        <label class="checkbox-label">
+                            <input type="checkbox" ng-model="device.selected" ng-change="onDeviceSelect()">
+                            <span class="device-number">{{device.number}}</span>
+                            <span class="device-status" ng-class="device.status">{{device.status}}</span>
+                        </label>
+                    </div>
+                    <div class="empty-text" ng-if="!devices || devices.length === 0">
+                        {{localization.localize('message.no.devices')}}
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container" ng-if="paging.totalPages > 1">
+                    <pagination total-items="paging.totalItems"
+                                items-per-page="paging.pageSize"
+                                ng-model="paging.currentPage"
+                                ng-change="pageChanged()"
+                                max-size="5"
+                                class="pagination-sm"
+                                boundary-links="true"
+                                rotate="false"></pagination>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Rules Card -->
+        <div class="card filter-rules-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">filter_list</span>
+                    {{localization.localize('heading.filter.rules')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="filter-list">
+                    <div class="filter-item" ng-repeat="filter in filters">
+                        <div class="filter-header">
+                            <div class="filter-name">{{filter.name}}</div>
+                            <div class="filter-type-badge" ng-class="filter.type">
+                                {{localization.localize('filter.type.' + filter.type)}}
+                            </div>
+                        </div>
+                        <div class="filter-rules-preview">
+                            <div class="rule-item" ng-repeat="rule in filter.rules | limitTo:3">
+                                <span class="rule-type">{{rule.type}}:</span>
+                                <span class="rule-value">{{rule.value}}</span>
+                            </div>
+                            <div class="more-rules" ng-if="filter.rules.length > 3">
+                                +{{filter.rules.length - 3}} {{localization.localize('label.more.rules')}}
+                            </div>
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn btn-sm btn-primary" ng-click="applyFilter(filter)" ng-disabled="selectedDevices.length === 0">
+                                <span class="material-icons">play_arrow</span>
+                                {{localization.localize('button.apply')}}
+                            </button>
+                            <button class="btn btn-sm btn-default" ng-click="openFilterModal(filter)">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="btn btn-sm btn-danger" ng-click="deleteFilter(filter)">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="empty-text" ng-if="!filters || filters.length === 0">
+                        {{localization.localize('message.no.filters')}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

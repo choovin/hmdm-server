@@ -1,0 +1,289 @@
+<!-- Localization completed -->
+<!-- White Label Page -->
+<div class="modern-content" ng-controller="WhiteLabelController">
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <h3 class="toolbar-title">
+                <span class="material-icons">branding_watermark</span>
+                {{localization.localize('heading.white.label')}}
+            </h3>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn btn-default btn-modern" ng-click="togglePreview()" ng-class="{'active': previewMode}">
+                <span class="material-icons">visibility</span>
+                <span>{{previewMode ? localization.localize('button.hide.preview') : localization.localize('button.show.preview')}}</span>
+            </button>
+            <button class="btn btn-primary btn-modern" ng-click="saveConfig()" ng-disabled="isSaving">
+                <span class="material-icons" ng-if="!isSaving">save</span>
+                <span class="material-icons spinning" ng-if="isSaving">refresh</span>
+                <span>{{isSaving ? localization.localize('button.saving') : localization.localize('button.save.changes')}}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid" ng-class="{'preview-active': previewMode}">
+        <!-- Branding Settings -->
+        <div class="card branding-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">business</span>
+                    {{localization.localize('heading.branding')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label" for="appName">{{localization.localize('label.app.name')}}</label>
+                    <input type="text" class="form-control" id="appName" ng-model="config.appName" placeholder="My MDM">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="companyName">{{localization.localize('label.company.name')}}</label>
+                    <input type="text" class="form-control" id="companyName" ng-model="config.companyName" placeholder="Company Inc.">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="supportEmail">{{localization.localize('label.support.email')}}</label>
+                    <input type="email" class="form-control" id="supportEmail" ng-model="config.supportEmail" placeholder="support@company.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="supportPhone">{{localization.localize('label.support.phone')}}</label>
+                    <input type="tel" class="form-control" id="supportPhone" ng-model="config.supportPhone" placeholder="+1 234 567 890">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="websiteUrl">{{localization.localize('label.website.url')}}</label>
+                    <input type="url" class="form-control" id="websiteUrl" ng-model="config.websiteUrl" placeholder="https://company.com">
+                </div>
+            </div>
+        </div>
+
+        <!-- Logo Settings -->
+        <div class="card logo-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">image</span>
+                    {{localization.localize('heading.logos')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label">{{localization.localize('label.logo')}}</label>
+                    <div class="file-upload-box" ng-class="{'has-image': config.logoUrl}">
+                        <div class="upload-placeholder" ng-if="!config.logoUrl">
+                            <span class="material-icons">cloud_upload</span>
+                            <span>{{localization.localize('message.upload.logo')}}</span>
+                            <input type="file" accept="image/*" onchange="angular.element(this).scope().uploadLogo(this.files)">
+                        </div>
+                        <div class="upload-preview" ng-if="config.logoUrl">
+                            <img ng-src="{{config.logoUrl}}" alt="Logo">
+                            <button class="btn btn-icon btn-danger remove-btn" ng-click="config.logoUrl = null">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="help-text">{{localization.localize('help.logo.size')}}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{localization.localize('label.favicon')}}</label>
+                    <div class="file-upload-box small" ng-class="{'has-image': config.faviconUrl}">
+                        <div class="upload-placeholder" ng-if="!config.faviconUrl">
+                            <span class="material-icons">cloud_upload</span>
+                            <input type="file" accept="image/x-icon,image/png" onchange="angular.element(this).scope().uploadFavicon(this.files)">
+                        </div>
+                        <div class="upload-preview" ng-if="config.faviconUrl">
+                            <img ng-src="{{config.faviconUrl}}" alt="Favicon">
+                            <button class="btn btn-icon btn-danger remove-btn" ng-click="config.faviconUrl = null">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="help-text">{{localization.localize('help.favicon.size')}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Settings -->
+        <div class="card colors-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">palette</span>
+                    {{localization.localize('heading.colors')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Color Presets -->
+                <div class="color-presets">
+                    <label class="form-label">{{localization.localize('label.color.presets')}}</label>
+                    <div class="preset-list">
+                        <div class="preset-item" ng-repeat="preset in colorPresets" ng-click="applyPreset(preset)" title="{{preset.name}}">
+                            <div class="preset-colors">
+                                <span class="color-dot" ng-style="{'background-color': preset.primary}"></span>
+                                <span class="color-dot" ng-style="{'background-color': preset.secondary}"></span>
+                                <span class="color-dot" ng-style="{'background-color': preset.accent}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{localization.localize('label.primary.color')}}</label>
+                    <div class="color-picker">
+                        <input type="color" ng-model="config.primaryColor">
+                        <input type="text" class="form-control" ng-model="config.primaryColor" placeholder="#2196F3">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{localization.localize('label.secondary.color')}}</label>
+                    <div class="color-picker">
+                        <input type="color" ng-model="config.secondaryColor">
+                        <input type="text" class="form-control" ng-model="config.secondaryColor" placeholder="#FFC107">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{localization.localize('label.accent.color')}}</label>
+                    <div class="color-picker">
+                        <input type="color" ng-model="config.accentColor">
+                        <input type="text" class="form-control" ng-model="config.accentColor" placeholder="#4CAF50">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile App Settings -->
+        <div class="card mobile-app-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">phone_android</span>
+                    {{localization.localize('heading.mobile.app')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label" for="mobileAppName">{{localization.localize('label.mobile.app.name')}}</label>
+                    <input type="text" class="form-control" id="mobileAppName" ng-model="config.mobileAppName" placeholder="My MDM Agent">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{localization.localize('label.mobile.app.icon')}}</label>
+                    <div class="file-upload-box" ng-class="{'has-image': config.mobileAppIcon}">
+                        <div class="upload-placeholder" ng-if="!config.mobileAppIcon">
+                            <span class="material-icons">cloud_upload</span>
+                            <span>{{localization.localize('message.upload.icon')}}</span>
+                            <input type="file" accept="image/*" onchange="angular.element(this).scope().uploadAppIcon(this.files)">
+                        </div>
+                        <div class="upload-preview" ng-if="config.mobileAppIcon">
+                            <img ng-src="{{config.mobileAppIcon}}" alt="App Icon">
+                            <button class="btn btn-icon btn-danger remove-btn" ng-click="config.mobileAppIcon = null">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="help-text">{{localization.localize('help.icon.size')}}</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{localization.localize('label.splash.screen')}}</label>
+                    <div class="file-upload-box" ng-class="{'has-image': config.splashScreen}">
+                        <div class="upload-placeholder" ng-if="!config.splashScreen">
+                            <span class="material-icons">cloud_upload</span>
+                            <span>{{localization.localize('message.upload.splash')}}</span>
+                            <input type="file" accept="image/*" onchange="angular.element(this).scope().uploadSplashScreen(this.files)">
+                        </div>
+                        <div class="upload-preview" ng-if="config.splashScreen">
+                            <img ng-src="{{config.splashScreen}}" alt="Splash Screen">
+                            <button class="btn btn-icon btn-danger remove-btn" ng-click="config.splashScreen = null">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="help-text">{{localization.localize('help.splash.size')}}</p>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" ng-click="generateMobileApp()">
+                        <span class="material-icons">build</span>
+                        {{localization.localize('button.generate.mobile.app')}}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Settings -->
+        <div class="card features-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">settings</span>
+                    {{localization.localize('heading.features')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ng-model="config.showPoweredBy">
+                        <span class="checkbox-text">{{localization.localize('label.show.powered.by')}}</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ng-model="config.showHelpLinks">
+                        <span class="checkbox-text">{{localization.localize('label.show.help.links')}}</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ng-model="config.enableCustomDomain">
+                        <span class="checkbox-text">{{localization.localize('label.enable.custom.domain')}}</span>
+                    </label>
+                </div>
+
+                <div class="form-group" ng-if="config.enableCustomDomain">
+                    <label class="form-label" for="customDomain">{{localization.localize('label.custom.domain')}}</label>
+                    <input type="text" class="form-control" id="customDomain" ng-model="config.customDomain" placeholder="mdm.company.com">
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="card preview-card" ng-if="previewMode">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">preview</span>
+                    {{localization.localize('heading.preview')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="preview-container" ng-style="getPreviewStyles()">
+                    <div class="preview-header" ng-style="{'background-color': config.primaryColor}">
+                        <img ng-if="config.logoUrl" ng-src="{{config.logoUrl}}" alt="Logo" class="preview-logo">
+                        <span ng-if="!config.logoUrl" class="preview-app-name">{{config.appName}}</span>
+                    </div>
+                    <div class="preview-content">
+                        <p>{{localization.localize('message.preview.sample.text')}}</p>
+                        <button class="btn btn-primary" ng-style="getPrimaryButtonStyles()">
+                            {{localization.localize('button.primary')}}
+                        </button>
+                        <button class="btn btn-secondary" ng-style="getSecondaryButtonStyles()">
+                            {{localization.localize('button.secondary')}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="page-footer-actions">
+        <button class="btn btn-danger" ng-click="resetToDefaults()">
+            <span class="material-icons">restore</span>
+            {{localization.localize('button.reset.defaults')}}
+        </button>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+<!-- Localization completed -->
+<!-- Job Details Modal -->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span class="material-icons">info</span>
+        {{localization.localize('heading.job.details')}}
+    </h3>
+    <button class="close" ng-click="close()">&times;</button>
+</div>
+
+<div class="modal-body">
+    <div class="job-details">
+        <div class="detail-row">
+            <span class="detail-label">{{localization.localize('label.job.id')}}:</span>
+            <span class="detail-value">{{job.id}}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">{{localization.localize('label.status')}}:</span>
+            <span class="detail-value status-badge" ng-class="job.status">{{localization.localize('status.' + job.status)}}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">{{localization.localize('label.format')}}:</span>
+            <span class="detail-value">{{job.format.toUpperCase()}}</span>
+        </div>
+        <div class="detail-row" ng-if="job.fileName">
+            <span class="detail-label">{{localization.localize('label.file.name')}}:</span>
+            <span class="detail-value">{{job.fileName}}</span>
+        </div>
+        <div class="detail-row" ng-if="job.deviceCount !== undefined">
+            <span class="detail-label">{{localization.localize('label.device.count')}}:</span>
+            <span class="detail-value">{{job.deviceCount}}</span>
+        </div>
+        <div class="detail-row" ng-if="job.createdAt">
+            <span class="detail-label">{{localization.localize('label.created.at')}}:</span>
+            <span class="detail-value">{{job.createdAt | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+        </div>
+        <div class="detail-row" ng-if="job.completedAt">
+            <span class="detail-label">{{localization.localize('label.completed.at')}}:</span>
+            <span class="detail-value">{{job.completedAt | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+        </div>
+        <div class="detail-row" ng-if="job.errorMessage">
+            <span class="detail-label">{{localization.localize('label.error.message')}}:</span>
+            <span class="detail-value error-text">{{job.errorMessage}}</span>
+        </div>
+
+        <!-- Progress for processing jobs -->
+        <div class="detail-row" ng-if="job.status === 'processing' && job.progress !== undefined">
+            <span class="detail-label">{{localization.localize('label.progress')}}:</span>
+            <div class="progress-bar-inline">
+                <div class="progress-fill" ng-style="{'width': job.progress + '%'}"></div>
+            </div>
+            <span class="progress-value">{{job.progress}}%</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="close()">
+        <span class="material-icons">close</span>
+        {{localization.localize('button.close')}}
+    </button>
+</div>

@@ -1,0 +1,85 @@
+<!-- Localization completed -->
+<!-- Import Modal -->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span class="material-icons">cloud_upload</span>
+        {{localization.localize('heading.import.devices')}}
+    </h3>
+    <button class="close" ng-click="cancel()">&times;</button>
+</div>
+
+<div class="modal-body">
+    <form class="import-form">
+        <!-- File Upload -->
+        <div class="form-group">
+            <label class="form-label">
+                <span class="material-icons">attach_file</span>
+                {{localization.localize('label.import.file')}} *
+            </label>
+            <div class="file-upload-area" ng-class="{'has-file': importData.file}">
+                <input type="file" id="importFile" class="file-input" file-model="importData.file" accept=".csv,.xlsx,.json" onchange="angular.element(this).scope().onFileSelect(this.files)">
+                <div class="file-upload-content" ng-if="!importData.file">
+                    <span class="material-icons">cloud_upload</span>
+                    <p>{{localization.localize('message.drop.file.here')}}</p>
+                    <span class="file-types">CSV, XLSX, JSON</span>
+                </div>
+                <div class="file-selected" ng-if="importData.file">
+                    <span class="material-icons">insert_drive_file</span>
+                    <span class="file-name">{{importData.file.name}}</span>
+                    <span class="file-size">({{importData.file.size | number}} bytes)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Format -->
+        <div class="form-group">
+            <label class="form-label" for="importFormat">
+                <span class="material-icons">category</span>
+                {{localization.localize('label.import.format')}}
+            </label>
+            <select class="form-control" id="importFormat" ng-model="importData.format" ng-options="format.id as localization.localize(format.name) for format in formats">
+            </select>
+        </div>
+
+        <!-- Import Mode -->
+        <div class="form-group">
+            <label class="form-label" for="importMode">
+                <span class="material-icons">settings</span>
+                {{localization.localize('label.import.mode')}}
+            </label>
+            <select class="form-control" id="importMode" ng-model="importData.mode" ng-options="mode.id as localization.localize(mode.name) for mode in modes">
+            </select>
+            <p class="help-text">{{localization.localize('help.import.mode')}}</p>
+        </div>
+
+        <!-- Skip Errors -->
+        <div class="form-group">
+            <label class="checkbox-label">
+                <input type="checkbox" ng-model="importData.skipErrors">
+                <span class="checkbox-text">{{localization.localize('label.skip.errors')}}</span>
+            </label>
+            <p class="help-text">{{localization.localize('help.skip.errors')}}</p>
+        </div>
+
+        <!-- Upload Progress -->
+        <div class="form-group" ng-if="isUploading">
+            <label class="form-label">{{localization.localize('label.upload.progress')}}</label>
+            <div class="progress-bar">
+                <div class="progress-fill" ng-style="{'width': uploadProgress + '%'}"></div>
+            </div>
+            <span class="progress-text">{{uploadProgress}}%</span>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="startImport()" ng-disabled="isUploading || !importData.file">
+        <span class="material-icons" ng-if="!isUploading">cloud_upload</span>
+        <span class="material-icons spinning" ng-if="isUploading">refresh</span>
+        {{isUploading ? localization.localize('button.uploading') : localization.localize('button.start.import')}}
+    </button>
+    <button class="btn btn-default" ng-click="cancel()">
+        <span class="material-icons">close</span>
+        {{localization.localize('button.cancel')}}
+    </button>
+</div>

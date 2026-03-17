@@ -193,6 +193,83 @@ angular.module('headwind-kiosk',
                     openTab: function () {return "LOCATIONS"}
                 }
             })
+            .state('contacts', {
+                url: '/contacts',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.contacts" | localize}}'
+                },
+                resolve: {
+                    openTab: function () {return "CONTACTS"}
+                }
+            })
+            .state('ldap', {
+                url: '/ldap',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.ldap" | localize}}'
+                },
+                resolve: {
+                    openTab: function () {return "LDAP"}
+                }
+            })
+            .state('remotecontrol', {
+                url: '/remotecontrol',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.remote.control" | localize}}'
+                },
+                resolve: {
+                    openTab: function () {return "REMOTECONTROL"}
+                }
+            })
+            .state('commands', {
+                url: '/commands',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.commands" | localize}}'
+                },
+                resolve: {
+                    openTab: function () {return "COMMANDS"}
+                }
+            })
+            .state('networkfilter', {
+                url: '/networkfilter',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.network.filter" | localize}}'
+                },
+                resolve: {
+                    openTab: function () {return "NETWORKFILTER"}
+                }
+            })
+            .state('exportimport', {
+                url: '/exportimport',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.export.import" | localize}}'
+                },
+                resolve: {
+                    openTab: function () {return "EXPORTIMPORT"}
+                }
+            })
+            .state('whitelabel', {
+                url: '/whitelabel',
+                templateUrl: 'app/components/main/view/content.html',
+                controller: 'TabController',
+                ncyBreadcrumb: {
+                    label: '{{"breadcrumb.white.label" | localize}}'
+                },
+                resolve: {
+                    openTab: function () {return "WHITELABEL"}
+                }
+            })
             .state('designSettings', {
                 url: '/designSettings',
                 templateUrl: 'app/components/main/view/content.html',

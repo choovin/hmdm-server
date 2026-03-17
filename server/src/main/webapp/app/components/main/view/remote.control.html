@@ -1,0 +1,117 @@
+<!-- Localization completed -->
+<!-- Remote Control Page -->
+<div class="modern-content" ng-controller="RemoteControlController">
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <h3 class="toolbar-title">
+                <span class="material-icons">touch_app</span>
+                {{localization.localize('heading.remote.control')}}
+            </h3>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn btn-primary btn-modern" ng-click="startRemoteControl()" ng-disabled="!selectedDevice || isConnecting || connectionStatus === 'connected'">
+                <span class="material-icons">play_arrow</span>
+                <span>{{localization.localize('button.start.session')}}</span>
+            </button>
+            <button class="btn btn-danger btn-modern" ng-click="stopRemoteControl()" ng-disabled="!remoteSession">
+                <span class="material-icons">stop</span>
+                <span>{{localization.localize('button.stop.session')}}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- Device Selection Card -->
+        <div class="card device-selection-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">devices</span>
+                    {{localization.localize('heading.select.device')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Search Box -->
+                <div class="search-box">
+                    <input type="text" class="form-control" ng-model="searchQuery" placeholder="{{localization.localize('placeholder.search.devices')}}" ng-keyup="$event.keyCode === 13 && searchDevices()">
+                    <button class="btn btn-icon" ng-click="searchDevices()">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
+
+                <!-- Device List -->
+                <div class="device-list">
+                    <div class="device-item" ng-repeat="device in devices" ng-class="{'selected': selectedDevice === device}" ng-click="selectDevice(device)">
+                        <div class="device-info">
+                            <div class="device-number">{{device.number}}</div>
+                            <div class="device-status" ng-class="device.status">{{device.status}}</div>
+                        </div>
+                    </div>
+                    <div class="empty-text" ng-if="!devices || devices.length === 0">
+                        {{localization.localize('message.no.devices')}}
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container" ng-if="paging.totalPages > 1">
+                    <pagination total-items="paging.totalItems"
+                                items-per-page="paging.pageSize"
+                                ng-model="paging.currentPage"
+                                ng-change="pageChanged()"
+                                max-size="5"
+                                class="pagination-sm"
+                                boundary-links="true"
+                                rotate="false"></pagination>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remote Control Session Card -->
+        <div class="card remote-session-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">screen_share</span>
+                    {{localization.localize('heading.remote.session')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Connection Status -->
+                <div class="status-indicator" ng-class="{'success': connectionStatus === 'connected', 'error': connectionStatus === 'error', 'pending': connectionStatus === 'connecting'}">
+                    <span class="material-icons status-icon">
+                        {{connectionStatus === 'connected' ? 'check_circle' : connectionStatus === 'error' ? 'error' : connectionStatus === 'connecting' ? 'sync' : 'pending'}}
+                    </span>
+                    <span class="status-text">
+                        {{connectionStatus ? localization.localize('remote.status.' + connectionStatus) : localization.localize('remote.status.notStarted')}}
+                    </span>
+                </div>
+
+                <!-- Selected Device Info -->
+                <div class="selected-device-info" ng-if="selectedDevice">
+                    <div class="info-row">
+                        <span class="info-label">{{localization.localize('label.device.number')}}:</span>
+                        <span class="info-value">{{selectedDevice.number}}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">{{localization.localize('label.device.status')}}:</span>
+                        <span class="info-value">{{selectedDevice.status}}</span>
+                    </div>
+                </div>
+
+                <!-- Remote Screen -->
+                <div class="remote-screen-container" ng-if="connectionStatus === 'connected'">
+                    <div class="remote-screen" ng-style="{'background-image': 'url(' + screenStream + ')'}">
+                        <div class="remote-placeholder" ng-if="!screenStream">
+                            <span class="material-icons">smartphone</span>
+                            <p>{{localization.localize('message.remote.screen.placeholder')}}</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-default btn-sm" ng-click="takeScreenshot()">
+                        <span class="material-icons">camera_alt</span>
+                        {{localization.localize('button.take.screenshot')}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

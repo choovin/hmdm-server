@@ -12,6 +12,14 @@ angular.module('headwind-kiosk')
             'APPS': '应用管理',
             'CONFS': '配置管理',
             'FILES': '文件管理',
+            'LOCATIONS': '位置跟踪',
+            'CONTACTS': '设备通讯录',
+            'LDAP': 'LDAP集成',
+            'REMOTECONTROL': '远程控制',
+            'COMMANDS': '远程命令',
+            'NETWORKFILTER': '网络过滤',
+            'EXPORTIMPORT': '导入导出',
+            'WHITELABEL': '白标软件',
             'DESIGN': '默认设计',
             'COMMON': '通用设置',
             'USERS': '用户管理',
@@ -32,6 +40,14 @@ angular.module('headwind-kiosk')
             APPS: 'applications',
             CONFS: 'configurations',
             FILES: 'files',
+            LOCATIONS: 'locations',
+            CONTACTS: 'contacts',
+            LDAP: 'ldap',
+            REMOTECONTROL: 'remotecontrol',
+            COMMANDS: 'commands',
+            NETWORKFILTER: 'networkfilter',
+            EXPORTIMPORT: 'exportimport',
+            WHITELABEL: 'whitelabel',
             DESIGN: 'designSettings',
             COMMON: 'commonSettings',
             USERS: 'users',
@@ -90,7 +106,9 @@ angular.module('headwind-kiosk')
         // Check if current page should show view toggle
         $scope.showViewToggle = function() {
             return openTab === 'DEVICES' || openTab === 'APPS' || openTab === 'CONFS' ||
-                   openTab === 'FILES' || openTab === 'USERS' || openTab === 'GROUPS';
+                   openTab === 'FILES' || openTab === 'USERS' || openTab === 'GROUPS' ||
+                   openTab === 'CONTACTS' || openTab === 'REMOTECONTROL' || openTab === 'COMMANDS' ||
+                   openTab === 'NETWORKFILTER' || openTab === 'EXPORTIMPORT' || openTab === 'WHITELABEL';
         };
 
         // Handle view mode change

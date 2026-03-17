@@ -46,6 +46,41 @@
                     <ng-include src="'app/components/main/view/locations.html'" ng-if="activeTab === 'LOCATIONS'"></ng-include>
                 </tab>
 
+                <tab active="act.CONTACTS" ng-if="hasPermission('plugin_contacts_access')" ng-click="openTab('CONTACTS')">
+                    <tab-heading localized-change-tracking>tab.contacts</tab-heading>
+                    <ng-include src="'app/components/main/view/contacts.html'" ng-if="activeTab === 'CONTACTS'"></ng-include>
+                </tab>
+
+                <tab active="act.LDAP" ng-if="hasPermission('settings')" ng-click="openTab('LDAP')">
+                    <tab-heading localized-change-tracking>tab.ldap</tab-heading>
+                    <ng-include src="'app/components/main/view/ldap.html'" ng-if="activeTab === 'LDAP'"></ng-include>
+                </tab>
+
+                <tab active="act.REMOTECONTROL" ng-if="hasPermission('remote_control')" ng-click="openTab('REMOTECONTROL')">
+                    <tab-heading localized-change-tracking>tab.remote.control</tab-heading>
+                    <ng-include src="'app/components/main/view/remote.control.html'" ng-if="activeTab === 'REMOTECONTROL'"></ng-include>
+                </tab>
+
+                <tab active="act.COMMANDS" ng-if="hasPermission('remote_control')" ng-click="openTab('COMMANDS')">
+                    <tab-heading localized-change-tracking>tab.commands</tab-heading>
+                    <ng-include src="'app/components/main/view/commands.html'" ng-if="activeTab === 'COMMANDS'"></ng-include>
+                </tab>
+
+                <tab active="act.NETWORKFILTER" ng-if="hasPermission('settings')" ng-click="openTab('NETWORKFILTER')">
+                    <tab-heading localized-change-tracking>tab.network.filter</tab-heading>
+                    <ng-include src="'app/components/main/view/network.filter.html'" ng-if="activeTab === 'NETWORKFILTER'"></ng-include>
+                </tab>
+
+                <tab active="act.EXPORTIMPORT" ng-if="hasPermission('settings')" ng-click="openTab('EXPORTIMPORT')">
+                    <tab-heading localized-change-tracking>tab.export.import</tab-heading>
+                    <ng-include src="'app/components/main/view/export.import.html'" ng-if="activeTab === 'EXPORTIMPORT'"></ng-include>
+                </tab>
+
+                <tab active="act.WHITELABEL" ng-if="hasPermission('settings')" ng-click="openTab('WHITELABEL')">
+                    <tab-heading localized-change-tracking>tab.white.label</tab-heading>
+                    <ng-include src="'app/components/main/view/white.label.html'" ng-if="activeTab === 'WHITELABEL'"></ng-include>
+                </tab>
+
                 <li ng-if="hasPermission('settings')"
                         class="dropdown" uib-dropdown ng-class="{'active': settingsTabActive}">
                     <a class="dropdown-toggle" uib-dropdown-toggle href="#"><span localized-change-tracking>menu.settings</span><span class="caret"></span></a>

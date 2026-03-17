@@ -1,0 +1,146 @@
+<!-- Localization completed -->
+<!-- Modern Device Contacts Page -->
+<div class="modern-content" ng-controller="ContactsController">
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="search-box">
+                <input type="text"
+                       class="form-control search-input"
+                       ng-model="searchQuery"
+                       ng-change="searchContacts()"
+                       placeholder="{{localization.localize('search.contact')}}">
+                <span class="search-icon material-icons">search</span>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <button class="btn btn-primary btn-modern" ng-click="openAddContactModal()">
+                <span class="material-icons">person_add</span>
+                <span>{{localization.localize('button.contact.add')}}</span>
+            </button>
+            <button class="btn btn-default btn-modern" ng-click="syncContactsToDevices()" ng-if="selectedContacts.length > 0">
+                <span class="material-icons">sync</span>
+                <span>{{localization.localize('button.contacts.sync')}}</span>
+            </button>
+            <button class="btn btn-default btn-modern" ng-click="refreshContacts()">
+                <span class="material-icons">refresh</span>
+                <span>{{localization.localize('button.refresh')}}</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- Contacts List Card -->
+        <div class="card contacts-list-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">contacts</span>
+                    {{localization.localize('heading.contacts')}}
+                </h3>
+                <div class="card-actions">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()">
+                        {{localization.localize('button.select.all')}}
+                    </label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="contact-list">
+                    <div class="contact-item" ng-repeat="contact in contacts | filter:searchQuery" ng-class="{'selected': contact.selected}">
+                        <div class="contact-checkbox">
+                            <input type="checkbox" ng-model="contact.selected" ng-change="onContactSelect()">
+                        </div>
+                        <div class="contact-avatar">
+                            <span class="material-icons" ng-if="!contact.photo">account_circle</span>
+                            <img ng-if="contact.photo" ng-src="{{contact.photo}}" alt="{{contact.name}}">
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">{{contact.name}}</div>
+                            <div class="contact-phone" ng-if="contact.phone">
+                                <span class="material-icons">phone</span>
+                                {{contact.phone}}
+                            </div>
+                            <div class="contact-email" ng-if="contact.email">
+                                <span class="material-icons">email</span>
+                                {{contact.email}}
+                            </div>
+                        </div>
+                        <div class="contact-device" ng-if="contact.deviceNumber">
+                            <span class="device-badge">
+                                <span class="material-icons">devices</span>
+                                {{contact.deviceNumber}}
+                            </span>
+                        </div>
+                        <div class="contact-actions">
+                            <button class="btn btn-icon" ng-click="editContact(contact)" title="{{localization.localize('tooltip.edit')}}">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="btn btn-icon" ng-click="deleteContact(contact)" title="{{localization.localize('tooltip.delete')}}">
+                                <span class="material-icons">delete</span>
+                            </button>
+                            <button class="btn btn-icon" ng-click="syncToDevice(contact)" title="{{localization.localize('tooltip.sync.to.device')}}">
+                                <span class="material-icons">sync</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" ng-if="!contacts || contacts.length === 0">
+                    <span class="material-icons empty-icon">contacts</span>
+                    <h4>{{localization.localize('heading.no.contacts')}}</h4>
+                    <p>{{localization.localize('message.no.contacts.description')}}</p>
+                    <button class="btn btn-primary" ng-click="openAddContactModal()">
+                        {{localization.localize('button.contact.add')}}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Selection Card -->
+        <div class="card device-selection-card" ng-if="showDeviceSelection">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="material-icons">devices</span>
+                    {{localization.localize('heading.select.devices')}}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="device-search">
+                    <input type="text" class="form-control" ng-model="deviceSearch" placeholder="{{localization.localize('search.device')}}">
+                </div>
+                <div class="device-list">
+                    <div class="device-item" ng-repeat="device in devices | filter:deviceSearch">
+                        <label class="checkbox-label">
+                            <input type="checkbox" ng-model="device.selected">
+                            <span class="device-number">{{device.number}}</span>
+                            <span class="device-imei" ng-if="device.imei">({{device.imei}})</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="device-actions">
+                    <button class="btn btn-primary" ng-click="confirmSyncToDevices()">
+                        {{localization.localize('button.sync.selected')}}
+                    </button>
+                    <button class="btn btn-default" ng-click="cancelDeviceSelection()">
+                        {{localization.localize('button.cancel')}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" ng-if="paging.totalPages > 1">
+        <pagination total-items="paging.totalItems"
+                    ng-model="paging.currentPage"
+                    items-per-page="paging.pageSize"
+                    max-size="5"
+                    class="pagination-sm"
+                    boundary-links="true"
+                    rotate="false"
+                    ng-change="pageChanged()">
+        </pagination>
+    </div>
+</div>
