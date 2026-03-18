@@ -1,39 +1,15 @@
 // Localization completed
+/**
+ * 标签页控制器
+ * 负责管理主界面的标签页导航，包括原生的10个Enterprise功能
+ */
 angular.module('headwind-kiosk')
     .controller('TabController', function ($scope, $rootScope, $timeout, userService, authService, openTab, $state,
                                            pluginService, localization, hintService) {
 
         $scope.localization = localization;
 
-        // Page titles for modern layout
-        var pageTitles = {
-            'SUMMARY': '概览',
-            'DEVICES': '设备管理',
-            'APPS': '应用管理',
-            'CONFS': '配置管理',
-            'FILES': '文件管理',
-            'LOCATIONS': '位置跟踪',
-            'CONTACTS': '设备通讯录',
-            'LDAP': 'LDAP集成',
-            'REMOTECONTROL': '远程控制',
-            'COMMANDS': '远程命令',
-            'NETWORKFILTER': '网络过滤',
-            'EXPORTIMPORT': '导入导出',
-            'WHITELABEL': '白标软件',
-            'DESIGN': '默认设计',
-            'COMMON': '通用设置',
-            'USERS': '用户管理',
-            'ROLES': '角色管理',
-            'GROUPS': '分组管理',
-            'ICONS': '图标管理',
-            'LANG': '语言设置',
-            'PLUGINS': '插件管理'
-        };
-
-        // View mode (table/card) - persist to localStorage
-        const VIEW_MODE_KEY = 'hmdm-view-mode';
-        $scope.viewMode = localStorage.getItem(VIEW_MODE_KEY) || 'table';
-
+        // 路由映射：将标签名称映射到AngularJS状态
         var routes = {
             SUMMARY: 'summary',
             DEVICES: 'main',
@@ -59,25 +35,26 @@ angular.module('headwind-kiosk')
             PLUGINS: 'pluginSettings'
         };
 
+        // 加载可用插件列表
         var loadData = function () {
             pluginService.getAvailablePlugins(function (response) {
                 if (response.status === 'OK') {
                     if (response.data) {
-                        // Helper function to filter plugins by template property
+                        // 辅助函数：根据模板属性过滤插件
                         function filterPlugins(plugins, templateProperty) {
                             return plugins.filter(function(plugin) {
                                 return !!plugin[templateProperty];
                             });
                         }
 
-                        // Plugins available for Functions tab
+                        // 功能插件（Functions标签页）
                         $scope.functionsPlugins = filterPlugins(response.data, 'functionsViewTemplate');
                         $scope.functionsPlugins.forEach(function (plugin) {
                             let ID = 'plugin-' + plugin.identifier;
                             routes[ID] = ID;
                         });
 
-                        // Plugins available for Settings tab
+                        // 设置插件（Settings标签页）
                         $scope.settingsPlugins = filterPlugins(response.data, 'settingsViewTemplate');
                         $scope.settingsPlugins.forEach(function (plugin) {
                             let ID = 'plugin-settings-' + plugin.identifier;
@@ -93,39 +70,26 @@ angular.module('headwind-kiosk')
 
         $scope.currentUser = {};
 
+        // 权限检查
         $scope.hasPermission = authService.hasPermission;
+
+        // 检查是否可以管理角色
         $scope.canManageRoles = function() {
             return authService.isSingleCustomer() || authService.isSuperAdmin();
         };
 
-        // Get page title for modern layout
-        $scope.getPageTitle = function() {
-            return pageTitles[openTab] || 'MDM Server';
-        };
-
-        // Check if current page should show view toggle
-        $scope.showViewToggle = function() {
-            return openTab === 'DEVICES' || openTab === 'APPS' || openTab === 'CONFS' ||
-                   openTab === 'FILES' || openTab === 'USERS' || openTab === 'GROUPS' ||
-                   openTab === 'CONTACTS' || openTab === 'REMOTECONTROL' || openTab === 'COMMANDS' ||
-                   openTab === 'NETWORKFILTER' || openTab === 'EXPORTIMPORT' || openTab === 'WHITELABEL';
-        };
-
-        // Handle view mode change
-        $scope.onViewModeChange = function(mode) {
-            $scope.viewMode = mode;
-            localStorage.setItem(VIEW_MODE_KEY, mode);
-            $rootScope.$broadcast('viewModeChanged', mode);
-        };
-
+        // 当前激活的标签
         $scope.activeTab = openTab;
 
+        // 标签激活状态映射
         $scope.act = {};
         $scope.act[openTab] = true;
 
+        // 初始化插件数组
         $scope.functionsPlugins = [];
         $scope.settingsPlugins = [];
 
+        // 打开标签页
         $scope.openTab = function (tabName) {
             if (tabName === $scope.activeTab) {
                 return;
@@ -135,19 +99,17 @@ angular.module('headwind-kiosk')
             }
         };
 
+        // 监听插件更新事件
         var listener = $scope.$on('aero_PLUGINS_UPDATED', loadData);
         $scope.$on('$destroy', listener);
 
+        // 获取当前用户信息
         userService.getCurrent(function (response) {
             if (response.data) {
                 $scope.currentUser = response.data;
             }
         });
 
-        // hintService start is fired by the controllers themselves after they are loaded all required content
-//        $timeout(function () {
-//            hintService.onStateChangeSuccess();
-//        }, 100);
-
+        // 初始化加载数据
         loadData();
     });
