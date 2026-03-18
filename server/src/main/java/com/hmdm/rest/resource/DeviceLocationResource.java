@@ -104,7 +104,7 @@ public class DeviceLocationResource {
             // Batch insert location data
             for (DeviceLocation location : locations) {
                 location.setDeviceId(deviceId);
-                deviceLocationDAO.insertLocation(location);
+                deviceLocationDAO.insertDeviceLocation(location);
             }
 
             log.info("Device {} location updated, count: {}", number, locations.size());

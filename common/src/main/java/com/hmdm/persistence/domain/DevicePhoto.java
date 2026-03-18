@@ -34,6 +34,10 @@ public class DevicePhoto implements Serializable, CustomerData {
 
     private static final long serialVersionUID = 1L;
 
+    // Status constants
+    public static final String STATUS_PENDING = "pending";
+    public static final String STATUS_UPLOADED = "uploaded";
+
     private Integer id;
     private Integer deviceId;
     private int customerId;
@@ -48,6 +52,8 @@ public class DevicePhoto implements Serializable, CustomerData {
     private String tags;
     private Boolean uploadedByDevice;
     private Date createdAt;
+    private Date uploadTime;
+    private String status;
     private Date takenAt;
     private Double latitude;
     private Double longitude;
@@ -167,6 +173,22 @@ public class DevicePhoto implements Serializable, CustomerData {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(Date uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getTakenAt() {

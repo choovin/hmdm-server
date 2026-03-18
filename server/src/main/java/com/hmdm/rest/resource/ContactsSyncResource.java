@@ -103,8 +103,8 @@ public class ContactsSyncResource {
             List<ContactData.ContactEntry> contactEntries = contacts.stream()
                     .map(c -> {
                         ContactData.ContactEntry entry = new ContactData.ContactEntry();
-                        entry.setName(c.getName());
-                        entry.setPhone(c.getPhone());
+                        entry.setName(c.getFullName());
+                        entry.setPhone(c.getPhoneNumber());
                         entry.setEmail(c.getEmail());
                         return entry;
                     })
@@ -113,7 +113,7 @@ public class ContactsSyncResource {
             String jsonResponse = toJsonArray(contactEntries);
 
             log.info("Retrieved {} contacts for device {}", contacts.size(), number);
-            return Response.ok(jsonResponse).build();
+            return Response.OK(jsonResponse);
         } catch (Exception e) {
             log.error("Failed to get contacts for device {}", number, e);
             return Response.ERROR("error.internal.server", "Failed to get contacts");
@@ -156,8 +156,8 @@ public class ContactsSyncResource {
             for (ContactData.ContactEntry entry : contacts.getContacts()) {
                 DeviceContact contact = new DeviceContact();
                 contact.setDeviceId(deviceId);
-                contact.setName(entry.getName());
-                contact.setPhone(entry.getPhone());
+                contact.setDisplayName(entry.getName());
+                contact.setPhoneNumber(entry.getPhone());
                 contact.setEmail(entry.getEmail());
 
                 deviceContactDAO.createContact(contact);

@@ -100,7 +100,8 @@ public class NetworkFilterResource {
                 return Response.ERROR("device.not.found", "Device not found");
             }
 
-            Integer configId = networkTrafficDAO.getConfigIdByDeviceId(deviceId);
+            Device device = deviceDAO.getDeviceByNumber(number);
+            Integer configId = device != null ? device.getConfigurationId() : null;
             if (configId == null) {
                 return Response.OK(new java.util.ArrayList<>());
             }
