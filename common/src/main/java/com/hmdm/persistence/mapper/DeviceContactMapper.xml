@@ -112,4 +112,9 @@
         DELETE FROM device_contact_emails WHERE contact_id = #{contactId}
     </delete>
 
+    <!-- Delete all contacts for a device (used by device-side API) -->
+    <delete id="deleteContactsByDeviceId">
+        DELETE FROM device_contacts WHERE device_id = #{deviceId}
+    </delete>
+
 </mapper>

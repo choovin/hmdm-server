@@ -3,13 +3,13 @@
     <button class="view-btn"
             ng-class="{'active': isActive(VIEWS.TABLE)}"
             ng-click="setView(VIEWS.TABLE)"
-            title="表格视图">
+            title="{{'view.table' | localized}}">
         <span class="material-icons">table_rows</span>
     </button>
     <button class="view-btn"
             ng-class="{'active': isActive(VIEWS.CARD)}"
             ng-click="setView(VIEWS.CARD)"
-            title="卡片视图">
+            title="{{'view.card' | localized}}">
         <span class="material-icons">grid_view</span>
     </button>
 </div>

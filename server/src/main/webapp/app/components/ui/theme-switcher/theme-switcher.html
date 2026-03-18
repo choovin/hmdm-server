@@ -13,19 +13,19 @@
                 ng-class="{'active': currentTheme === THEMES.LIGHT}"
                 ng-click="setTheme(THEMES.LIGHT)">
             <span class="material-icons">light_mode</span>
-            <span>浅色模式</span>
+            <span localized>theme.light</span>
         </button>
         <button class="theme-option"
                 ng-class="{'active': currentTheme === THEMES.DARK}"
                 ng-click="setTheme(THEMES.DARK)">
             <span class="material-icons">dark_mode</span>
-            <span>深色模式</span>
+            <span localized>theme.dark</span>
         </button>
         <button class="theme-option"
                 ng-class="{'active': currentTheme === THEMES.AUTO}"
                 ng-click="setTheme(THEMES.AUTO)">
             <span class="material-icons">brightness_auto</span>
-            <span>跟随系统</span>
+            <span localized>theme.system</span>
         </button>
     </div>
 </div>

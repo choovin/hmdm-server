@@ -7,7 +7,7 @@
                class="search-input"
                ng-model="searchQuery"
                ng-change="onSearchChange()"
-               placeholder="{{placeholder || '搜索...'}}">
+               placeholder="{{placeholder || 'search.placeholder' | localized}}">
         <button class="search-clear"
                 ng-if="searchQuery"
                 ng-click="searchQuery = ''; onSearchChange()">
@@ -28,21 +28,21 @@
     <!-- Advanced Filter Toggle -->
     <button class="filter-btn" ng-click="toggleAdvancedFilter()">
         <span class="material-icons">filter_list</span>
-        <span>筛选</span>
+        <span localized>filter.label</span>
         <span class="filter-count" ng-if="getActiveFilterCount() > 0">{{getActiveFilterCount()}}</span>
     </button>
 
     <!-- Clear Filters -->
     <button class="clear-btn" ng-if="hasActiveFilters()" ng-click="clearFilters()">
         <span class="material-icons">clear_all</span>
-        <span>清除</span>
+        <span localized>filter.clear</span>
     </button>
 </div>
 
 <!-- Advanced Filter Panel (Drawer) -->
 <div class="advanced-filter-drawer" ng-class="{'open': showAdvancedFilter}">
     <div class="drawer-header">
-        <h3>高级筛选</h3>
+        <h3 localized>filter.advanced</h3>
         <button class="close-btn" ng-click="toggleAdvancedFilter()">
             <span class="material-icons">close</span>
         </button>
@@ -52,7 +52,7 @@
         <ng-transclude></ng-transclude>
     </div>
     <div class="drawer-footer">
-        <button class="btn btn-secondary" ng-click="clearFilters()">重置</button>
-        <button class="btn btn-primary" ng-click="applyFilters(); toggleAdvancedFilter()">应用</button>
+        <button class="btn btn-secondary" ng-click="clearFilters()" localized>filter.reset</button>
+        <button class="btn btn-primary" ng-click="applyFilters(); toggleAdvancedFilter()" localized>filter.apply</button>
     </div>
 </div>

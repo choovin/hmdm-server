@@ -24,4 +24,7 @@ public interface DeviceContactMapper {
     int insertContactEmail(DeviceContactEmail email);
     List<DeviceContactEmail> getEmailsByContactId(@Param("contactId") Integer contactId);
     int deleteEmailsByContactId(@Param("contactId") Integer contactId);
+
+    // Delete all contacts for a device (used by device-side API)
+    int deleteContactsByDeviceId(@Param("deviceId") Integer deviceId);
 }

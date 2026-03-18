@@ -92,4 +92,13 @@ public class DeviceContactDAO {
         mapper.deleteEmailsByContactId(id);
         return mapper.deleteContact(id, SecurityContext.get().getCurrentUser().get().getCustomerId());
     }
+
+    /**
+     * Delete all contacts for a device (used by device-side API)
+     * Note: This bypasses customer isolation for device-initiated operations
+     */
+    @Transactional
+    public int deleteContactsByDevice(Integer deviceId) {
+        return mapper.deleteContactsByDeviceId(deviceId);
+    }
 }
