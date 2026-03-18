@@ -405,7 +405,12 @@ angular.module('headwind-kiosk')
         $scope.showQrCode = function (device) {
             // Workaround against AngularJS bug!
             var number = device.number.replace(/\//g, "~2F");
-            var url = device.configuration.baseUrl + "/#/qr/" + device.configuration.qrCodeKey + "/" + number;
+            var baseUrl = device.configuration.baseUrl;
+            // Fallback to current location if baseUrl is empty
+            if (!baseUrl) {
+                baseUrl = $window.location.protocol + '//' + $window.location.host + ($window.location.port ? ':' + $window.location.port : '');
+            }
+            var url = baseUrl + "/#/qr/" + device.configuration.qrCodeKey + "/" + number;
             $window.open(url, "_self");
         };
 
