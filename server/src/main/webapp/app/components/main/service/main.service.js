@@ -198,8 +198,49 @@ angular.module('headwind-kiosk')
             syncContactsToDevices: {url: 'rest/private/device-contacts/sync', method: 'POST'}
         });
     })
+    .factory('commandService', function ($resource) {
+        return $resource('', {}, {
+            getCommands: {url: 'rest/private/commands/list', method: 'GET'},
+            getCommandHistory: {url: 'rest/private/commands/history', method: 'GET'},
+            executeCommand: {url: 'rest/private/commands/execute', method: 'POST'}
+        });
+    })
+    .factory('networkFilterService', function ($resource) {
+        return $resource('', {}, {
+            getAllFilters: {url: 'rest/private/network-filter/list', method: 'GET'},
+            getRules: {url: 'rest/private/network-filter/rules', method: 'GET'},
+            saveFilter: {url: 'rest/private/network-filter/save', method: 'POST'},
+            deleteFilter: {url: 'rest/private/network-filter/delete/:id', method: 'DELETE'},
+            applyFilter: {url: 'rest/private/network-filter/apply', method: 'POST'},
+            getWhitelist: {url: 'rest/private/network-filter/whitelist', method: 'GET'},
+            updateWhitelist: {url: 'rest/private/network-filter/whitelist', method: 'PUT'}
+        });
+    })
+    .factory('exportImportService', function ($resource) {
+        return $resource('', {}, {
+            getImportJobs: {url: 'rest/private/export-import/import/jobs', method: 'GET'},
+            getExportJobs: {url: 'rest/private/export-import/export/jobs', method: 'GET'},
+            deleteImportJob: {url: 'rest/private/export-import/import/jobs/:id', method: 'DELETE'},
+            deleteExportJob: {url: 'rest/private/export-import/export/jobs/:id', method: 'DELETE'},
+            downloadExport: {url: 'rest/private/export-import/export/download/:id', method: 'GET'},
+            importDevices: {url: 'rest/private/export-import/import', method: 'POST'},
+            exportDevices: {url: 'rest/private/export-import/export', method: 'POST'},
+            getJobs: {url: 'rest/private/export-import/jobs', method: 'GET'},
+            createJob: {url: 'rest/private/export-import/jobs', method: 'POST'},
+            getJobStatus: {url: 'rest/private/export-import/jobs/:id', method: 'GET'},
+            downloadTemplate: {url: 'rest/private/export-import/template', method: 'GET'}
+        });
+    })
     .factory('whiteLabelService', function ($resource) {
         return $resource('', {}, {
+            getConfig: {url: 'rest/private/white-label/config', method: 'GET'},
+            saveConfig: {url: 'rest/private/white-label/config', method: 'POST'},
+            resetConfig: {url: 'rest/private/white-label/config/reset', method: 'POST'},
+            generateMobileApp: {url: 'rest/private/white-label/generate', method: 'POST'},
+            uploadLogo: {url: 'rest/private/white-label/upload/logo', method: 'POST'},
+            uploadFavicon: {url: 'rest/private/white-label/upload/favicon', method: 'POST'},
+            uploadAppIcon: {url: 'rest/private/white-label/upload/app-icon', method: 'POST'},
+            uploadSplashScreen: {url: 'rest/private/white-label/upload/splash', method: 'POST'},
             getRebrandingSettings: {url: 'rest/private/white-label/rebranding', method: 'GET'},
             updateRebrandingSettings: {url: 'rest/private/white-label/rebranding', method: 'PUT'},
             getAllBuilds: {url: 'rest/private/white-label/builds', method: 'GET'},

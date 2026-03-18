@@ -833,6 +833,22 @@ document.localization ['en_US'] = {
     'search.placeholder.to': 'To ...',
     'search.placeholder.user': 'Type the user name',
 
+    // Theme Switcher
+    'theme.light': 'Light Mode',
+    'theme.dark': 'Dark Mode',
+    'theme.system': 'Follow System',
+
+    // View Toggle
+    'view.table': 'Table View',
+    'view.card': 'Card View',
+
+    // Search Filter
+    'filter.label': 'Filter',
+    'filter.clear': 'Clear',
+    'filter.advanced': 'Advanced Filter',
+    'filter.reset': 'Reset',
+    'filter.apply': 'Apply',
+
     'table.heading.customer.name': 'Name',
     'table.heading.customer.desc': 'Description',
     'table.heading.customer.registration.time': 'Registered',
@@ -1171,6 +1187,33 @@ document.localization ['en_US'] = {
     'button.contact.edit': 'Edit Contact',
     'button.contact.delete': 'Delete Contact',
     'button.contact.sync': 'Sync to Device',
+
+    // Additional Contacts Page Translations
+    'button.refresh': 'Refresh',
+    'button.select.all': 'Select All',
+    'button.sync.selected': 'Sync Selected',
+    'heading.no.contacts': 'No Contacts',
+    'heading.edit.contact': 'Edit Contact',
+    'heading.add.contact': 'Add Contact',
+    'heading.select.devices': 'Select Devices',
+    'label.contact.name': 'Name',
+    'label.contact.phone': 'Phone',
+    'label.contact.email': 'Email',
+    'label.contact.company': 'Company',
+    'label.contact.title': 'Title',
+    'label.contact.devices': 'Devices',
+    'placeholder.contact.name': 'Enter contact name',
+    'placeholder.contact.phone': 'Enter phone number',
+    'placeholder.contact.email': 'Enter email address',
+    'placeholder.contact.company': 'Enter company name',
+    'placeholder.contact.title': 'Enter job title',
+    'search.contact': 'Search contacts...',
+    'search.device': 'Search devices...',
+    'tooltip.edit': 'Edit',
+    'tooltip.delete': 'Delete',
+    'tooltip.sync.to.device': 'Sync to device',
+    'message.no.contacts.description': 'No contacts found. Click "Add Contact" to create one.',
+    'message.no.devices': 'No devices available',
 
     'table.heading.contact.name': 'Name',
     'table.heading.contact.phone': 'Phone',
