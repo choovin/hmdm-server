@@ -1,6 +1,91 @@
 <!-- Localization completed -->
 <nav class='navbar navbar-default navbar-fixed-top header'>
     <div class='nav navbar-nav navbar-left logo-text'><a ng-click='mainPanel()'>{{appName}}</a></div>
+
+    <!-- 中间导航菜单：从 content.html 移动过来 -->
+    <ul class='nav navbar-nav navbar-center' ng-if="isAuth() && !isHidden() && !isControlPanel">
+        <!-- 概览 -->
+        <li ng-class="{'active': activeTab === 'SUMMARY'}" ng-click="openTab('SUMMARY')">
+            <a><span style="opacity: 0.7" class='glyphicon glyphicon-th-large'></span></a>
+        </li>
+        <!-- 设备 -->
+        <li ng-class="{'active': activeTab === 'DEVICES'}" ng-click="openTab('DEVICES')">
+            <a localized-change-tracking>tab.devices</a>
+        </li>
+        <!-- 应用 -->
+        <li ng-if="hasPermission('applications')" ng-class="{'active': activeTab === 'APPS'}" ng-click="openTab('APPS')">
+            <a localized-change-tracking>tab.applications</a>
+        </li>
+        <!-- 配置 -->
+        <li ng-if="hasPermission('configurations')" ng-class="{'active': activeTab === 'CONFS'}" ng-click="openTab('CONFS')">
+            <a localized-change-tracking>tab.configurations</a>
+        </li>
+        <!-- 文件 -->
+        <li ng-if="hasPermission('files')" ng-class="{'active': activeTab === 'FILES'}" ng-click="openTab('FILES')">
+            <a localized-change-tracking>tab.files</a>
+        </li>
+        <!-- 位置跟踪（Enterprise功能） -->
+        <li ng-if="hasPermission('locations')" ng-class="{'active': activeTab === 'LOCATIONS'}" ng-click="openTab('LOCATIONS')">
+            <a localized-change-tracking>tab.locations</a>
+        </li>
+        <!-- 设备联系人（Enterprise功能） -->
+        <li ng-if="hasPermission('plugin_contacts_access')" ng-class="{'active': activeTab === 'CONTACTS'}" ng-click="openTab('CONTACTS')">
+            <a localized-change-tracking>tab.contacts</a>
+        </li>
+        <!-- LDAP集成（Enterprise功能） -->
+        <li ng-if="hasPermission('settings')" ng-class="{'active': activeTab === 'LDAP'}" ng-click="openTab('LDAP')">
+            <a localized-change-tracking>tab.ldap</a>
+        </li>
+        <!-- 远程控制（Enterprise功能） -->
+        <li ng-if="hasPermission('remote_control')" ng-class="{'active': activeTab === 'REMOTECONTROL'}" ng-click="openTab('REMOTECONTROL')">
+            <a localized-change-tracking>tab.remote.control</a>
+        </li>
+        <!-- 远程命令（Enterprise功能） -->
+        <li ng-if="hasPermission('remote_control')" ng-class="{'active': activeTab === 'COMMANDS'}" ng-click="openTab('COMMANDS')">
+            <a localized-change-tracking>tab.commands</a>
+        </li>
+        <!-- 网络过滤（Enterprise功能） -->
+        <li ng-if="hasPermission('settings')" ng-class="{'active': activeTab === 'NETWORKFILTER'}" ng-click="openTab('NETWORKFILTER')">
+            <a localized-change-tracking>tab.network.filter</a>
+        </li>
+        <!-- 导入导出（Enterprise功能） -->
+        <li ng-if="hasPermission('settings')" ng-class="{'active': activeTab === 'EXPORTIMPORT'}" ng-click="openTab('EXPORTIMPORT')">
+            <a localized-change-tracking>tab.export.import</a>
+        </li>
+        <!-- 白标软件（Enterprise功能） -->
+        <li ng-if="hasPermission('settings')" ng-class="{'active': activeTab === 'WHITELABEL'}" ng-click="openTab('WHITELABEL')">
+            <a localized-change-tracking>tab.white.label</a>
+        </li>
+        <!-- 设置下拉菜单 -->
+        <li ng-if="hasPermission('settings')" class="dropdown" uib-dropdown ng-class="{'active': settingsTabActive}">
+            <a class="dropdown-toggle" uib-dropdown-toggle href="#">
+                <span localized-change-tracking>menu.settings</span><span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" uib-dropdown-menu>
+                <li><a ng-click="openTab('DESIGN')" localized-change-tracking>tab.default.design</a></li>
+                <li><a ng-click="openTab('COMMON')" localized-change-tracking>tab.common.settings</a></li>
+                <li><a ng-click="openTab('USERS')" localized-change-tracking>tab.users</a></li>
+                <li><a ng-click="openTab('ROLES')" localized-change-tracking>tab.roles</a></li>
+                <li><a ng-click="openTab('GROUPS')" localized-change-tracking>tab.groups</a></li>
+                <li><a ng-click="openTab('ICONS')" localized-change-tracking>tab.icons</a></li>
+                <li><a ng-click="openTab('LANG')" localized-change-tracking>tab.language</a></li>
+                <li ng-if="hasPermission('plugins_customer_access_management')"><a ng-click="openTab('PLUGINS')" localized-change-tracking>tab.plugins</a></li>
+            </ul>
+        </li>
+        <!-- 插件功能下拉菜单 -->
+        <li class="dropdown" uib-dropdown ng-if="functionsPlugins.length > 0" ng-class="{'active': pluginsTabActive}">
+            <a class="dropdown-toggle" uib-dropdown-toggle href="#">
+                <span localized-change-tracking>menu.functions</span><span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" uib-dropdown-menu>
+                <li ng-repeat="plugin in functionsPlugins"
+                    ng-if="!plugin.functionsPermission || hasPermission(plugin.functionsPermission)">
+                    <a ng-click="openTab('plugin-' + plugin.identifier)">{{localization.localize(plugin.nameLocalizationKey)}}</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
     <ul class='nav navbar-nav navbar-right'>
         <li ng-if="expiryWarning"><a id='headerExpiryWarning' class="expiry-warning" localized-change-tracking>account.expired.short</a></li>
         <li class='hide-on-small-screen'>

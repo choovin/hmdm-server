@@ -98,6 +98,63 @@
     color: yellow !important;
 }
 
+/* 顶栏中间导航菜单样式 */
+.navbar-nav.navbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.navbar-nav.navbar-center > li {
+    display: inline-block;
+    float: none;
+}
+
+.navbar-nav.navbar-center > li > a {
+    color: #fff;
+    padding: 15px 12px;
+    line-height: 20px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.navbar-nav.navbar-center > li > a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-nav.navbar-center > li.active > a {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+}
+
+.navbar-nav.navbar-center .dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.navbar-nav.navbar-center .dropdown-menu > li > a {
+    color: #333;
+    padding: 8px 20px;
+}
+
+.navbar-nav.navbar-center .dropdown-menu > li > a:hover {
+    background-color: #f5f5f5;
+}
+
+.navbar-nav.navbar-center .caret {
+    margin-left: 5px;
+    border-top-color: #fff;
+}
+
 .login-logo {
     margin: 50px auto 0 auto;
     white-space: nowrap;
@@ -157,7 +214,7 @@
 }
 
 .content-wrapper {
-    padding: 70px 0px 0px 0px;
+    padding: 60px 0px 0px 0px;
     height: 100%;
 }
 

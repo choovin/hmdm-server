@@ -1,13 +1,140 @@
 // Localization completed
 angular.module( 'headwind-kiosk' )
 .controller( 'HeaderController', function( $scope, $rootScope, $state, $modal, $timeout, $interval, $filter, $window,
-                                           authService, localization, hintService, rebranding, alertService, Idle ) {
+                                           authService, localization, hintService, rebranding, alertService, Idle,
+                                           pluginService, userService ) {
     $scope.isControlPanel = false;
     $scope.authService = authService;
     $scope.showExitReportMode = false;
 
+    // Tab navigation properties
+    $scope.activeTab = 'DEVICES';
+    $scope.functionsPlugins = [];
+    $scope.settingsPlugins = [];
+
+    // Route mappings for tab navigation
+    var tabRoutes = {
+        'SUMMARY': 'summary',
+        'DEVICES': 'main',
+        'APPS': 'applications',
+        'CONFS': 'configurations',
+        'FILES': 'files',
+        'LOCATIONS': 'locations',
+        'CONTACTS': 'contacts',
+        'LDAP': 'ldap',
+        'REMOTECONTROL': 'remotecontrol',
+        'COMMANDS': 'commands',
+        'NETWORKFILTER': 'networkfilter',
+        'EXPORTIMPORT': 'exportimport',
+        'WHITELABEL': 'whitelabel',
+        'DESIGN': 'designSettings',
+        'COMMON': 'commonSettings',
+        'USERS': 'users',
+        'ROLES': 'roles',
+        'GROUPS': 'groups',
+        'ICONS': 'icons',
+        'LANG': 'langSettings',
+        'PLUGINS': 'pluginSettings'
+    };
+
+    // Settings tab names for active state check
+    var settingsTabs = ['DESIGN', 'COMMON', 'USERS', 'ROLES', 'GROUPS', 'ICONS', 'LANG', 'PLUGINS'];
+
+    // Permission check function
+    $scope.hasPermission = function(permission) {
+        return authService.hasPermission(permission);
+    };
+
+    // Open tab function
+    $scope.openTab = function(tabName) {
+        if (tabName === $scope.activeTab) {
+            return;
+        }
+
+        // Update active tab
+        $scope.activeTab = tabName;
+
+        // Update settings dropdown active state
+        $scope.settingsTabActive = settingsTabs.indexOf(tabName) !== -1;
+
+        // Update plugins dropdown active state
+        $scope.pluginsTabActive = tabName.indexOf('plugin-') === 0;
+
+        // Navigate to route if exists
+        if (tabRoutes[tabName]) {
+            $state.transitionTo(tabRoutes[tabName]);
+        } else if (tabName.indexOf('plugin-') === 0) {
+            $state.transitionTo(tabName);
+        }
+    };
+
+    // Load plugins for dropdown menus
+    var loadPlugins = function() {
+        pluginService.getAvailablePlugins(function(response) {
+            if (response.status === 'OK' && response.data) {
+                // Filter function plugins
+                $scope.functionsPlugins = response.data.filter(function(plugin) {
+                    return !!plugin.functionsViewTemplate;
+                });
+
+                // Filter settings plugins
+                $scope.settingsPlugins = response.data.filter(function(plugin) {
+                    return !!plugin.settingsViewTemplate;
+                });
+
+                // Register plugin routes
+                $scope.functionsPlugins.forEach(function(plugin) {
+                    var id = 'plugin-' + plugin.identifier;
+                    tabRoutes[id] = id;
+                });
+
+                $scope.settingsPlugins.forEach(function(plugin) {
+                    var id = 'plugin-settings-' + plugin.identifier;
+                    tabRoutes[id] = id;
+                });
+            }
+        });
+    };
+
+    // Sync active tab with current state
+    var syncActiveTabWithState = function() {
+        var currentState = $state.current.name;
+
+        // Find tab by route
+        for (var tab in tabRoutes) {
+            if (tabRoutes[tab] === currentState) {
+                $scope.activeTab = tab;
+                $scope.settingsTabActive = settingsTabs.indexOf(tab) !== -1;
+                $scope.pluginsTabActive = tab.indexOf('plugin-') === 0;
+                return;
+            }
+        }
+
+        // Handle plugin states
+        if (currentState && currentState.indexOf('plugin-') === 0) {
+            $scope.activeTab = currentState;
+            $scope.pluginsTabActive = true;
+        }
+    };
+
+    // Initialize
+    loadPlugins();
+    syncActiveTabWithState();
+
+    // Load current user
+    $scope.currentUser = {};
+    userService.getCurrent(function(response) {
+        if (response.data) {
+            $scope.currentUser = response.data;
+        }
+    });
+
     // Store event listener references for cleanup
     var listeners = [];
+
+    // Listen for state changes to sync active tab
+    listeners.push($scope.$on('$stateChangeSuccess', syncActiveTabWithState));
+    listeners.push($scope.$on('aero_PLUGINS_UPDATED', loadPlugins));
 
     // Page titles mapping for modern layout - using localized strings
     var pageTitleKeys = {

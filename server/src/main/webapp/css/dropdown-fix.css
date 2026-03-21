@@ -1,0 +1,238 @@
+/* HMDM Admin Panel UI Fixes
+ * Fixes: dropdown cutoff, upload button visibility, font size
+ */
+
+/* ===========================================
+   1. GLOBAL FONT SIZE INCREASE
+   =========================================== */
+* {
+    font-size: 15px !important;
+}
+
+body {
+    font-size: 15px !important;
+}
+
+html {
+    font-size: 15px !important;
+}
+
+/* ===========================================
+   2. UPLOAD BUTTON VISIBILITY FIX (Files Page)
+   =========================================== */
+.btn-upload,
+.btn.btn-primary,
+button.btn-primary,
+a.btn-primary,
+.btn-success,
+#uploadBtn,
+.upload-btn,
+.file-upload-btn,
+.btn-file-upload {
+    position: relative !important;
+    z-index: 100 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: inline-block !important;
+}
+
+/* Files page toolbar */
+.btn-toolbar {
+    position: relative !important;
+    z-index: 100 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: center !important;
+}
+
+.btn-toolbar::before {
+    content: '' !important;
+    display: block !important;
+}
+
+/* Ensure upload area is accessible */
+.file-upload-area,
+.upload-area,
+.dropzone {
+    position: relative !important;
+    z-index: 50 !important;
+    pointer-events: auto !important;
+}
+
+/* ===========================================
+   3. DROPDOWN MENU FIX (Device Actions)
+   =========================================== */
+.table-responsive,
+.table-scrollable,
+.panel-body > .table,
+.devices-table-wrapper {
+    overflow: visible !important;
+}
+
+.table {
+    overflow: visible !important;
+}
+
+.table > tbody > tr > td {
+    overflow: visible !important;
+}
+
+.table > tbody > tr {
+    overflow: visible !important;
+}
+
+/* Fix for Bootstrap btn-group dropdowns */
+.btn-group {
+    position: relative !important;
+    display: inline-flex !important;
+    vertical-align: middle !important;
+}
+
+.btn-group > .btn {
+    position: relative !important;
+    z-index: auto !important;
+}
+
+.btn-group.open > .dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    display: block !important;
+    min-width: 180px !important;
+    padding: 5px 0 !important;
+    margin: 2px 0 0 !important;
+    background-color: #fff !important;
+    border: 1px solid rgba(0,0,0,.15) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175) !important;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175) !important;
+}
+
+.dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    display: none !important;
+    float: left !important;
+    min-width: 180px !important;
+    padding: 5px 0 !important;
+    margin: 2px 0 0 !important;
+    background-color: #fff !important;
+    border: 1px solid rgba(0,0,0,.15) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175) !important;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175) !important;
+    background-clip: padding-box !important;
+}
+
+.open > .dropdown-menu,
+.btn-group.open > .dropdown-menu {
+    display: block !important;
+}
+
+/* Device Actions Dropdown - Critical Fix */
+.deviceActions {
+    white-space: nowrap !important;
+    position: relative !important;
+}
+
+.deviceActions .btn-group {
+    position: relative !important;
+    z-index: 1000 !important;
+}
+
+.deviceActions .dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: auto !important;
+    right: 0 !important;
+    margin-top: 5px !important;
+    z-index: 9999 !important;
+    overflow: visible !important;
+}
+
+/* Ensure dropdowns appear above table */
+.panel,
+.panel-default,
+.panel-primary {
+    overflow: visible !important;
+}
+
+.panel-body {
+    overflow: visible !important;
+}
+
+/* ===========================================
+   4. TABLE ROW OVERFLOW FIX
+   =========================================== */
+.table-container,
+.table-wrapper,
+.devices-list,
+.devices-panel {
+    overflow: visible !important;
+}
+
+.panel > .table {
+    overflow: visible !important;
+}
+
+/* ===========================================
+   5. ICON AND TEXT SIZING
+   =========================================== */
+.material-icons,
+.glyphicon,
+.fa,
+.fas,
+.far,
+.fab {
+    font-size: 18px !important;
+}
+
+.list-group-item-text {
+    font-size: 14px !important;
+}
+
+.text-muted {
+    font-size: 13px !important;
+}
+
+/* ===========================================
+   6. FORM CONTROLS
+   =========================================== */
+.form-control {
+    font-size: 15px !important;
+    padding: 8px 12px !important;
+}
+
+.input-group-btn .btn {
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+}
+
+/* ===========================================
+   7. MODAL AND OVERLAY FIXES
+   =========================================== */
+.modal,
+.modal-dialog,
+.modal-content {
+    z-index: 10000 !important;
+}
+
+.modal-backdrop {
+    z-index: 9999 !important;
+}
+
+/* ===========================================
+   8. PAGINATION FIX
+   =========================================== */
+.pagination {
+    font-size: 14px !important;
+}
+
+.pagination > li > a {
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+}

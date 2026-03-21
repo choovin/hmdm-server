@@ -102,7 +102,7 @@
 
     <delete id="deleteOldPhotos">
         DELETE FROM device_photos
-        WHERE created_at &lt; CURRENT_TIMESTAMP - INTERVAL '${days} days'
+        WHERE created_at < CURRENT_TIMESTAMP - (INTERVAL '1 day' * #{days})
     </delete>
 
     <!-- Photo Upload Request queries -->
@@ -148,7 +148,7 @@
     <delete id="deleteOldPhotoUploadRequests">
         DELETE FROM photo_upload_requests
         WHERE status IN ('COMPLETED', 'FAILED', 'CANCELLED')
-        AND completed_at &lt; CURRENT_TIMESTAMP - INTERVAL '${days} days'
+        AND completed_at < CURRENT_TIMESTAMP - (INTERVAL '1 day' * #{days})
     </delete>
 
 </mapper>
