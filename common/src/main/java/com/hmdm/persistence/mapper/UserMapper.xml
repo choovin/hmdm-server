@@ -135,6 +135,11 @@
         WHERE users.passwordResetToken = #{token}
     </select>
 
+    <select id="findByAuthToken" resultMap="userLite">
+        <include refid="userDataSelect"/>
+        WHERE users.authToken = #{token}
+    </select>
+
     <select id="findById" resultMap="userLite">
         <include refid="userDataSelect"/>
         WHERE users.id=#{userId}

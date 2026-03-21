@@ -63,6 +63,10 @@ public class UserDAO extends AbstractDAO<User> {
         return getSingleRecord(() -> mapper.findById( id ), SecurityException::onUserAccessViolation);
     }
 
+    public User getUserByAuthToken(String token) {
+        return getSingleRecord(() -> mapper.findByAuthToken(token), SecurityException::onUserAccessViolation);
+    }
+
 
     @Transactional
     public void updatePassword(User user ) {

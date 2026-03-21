@@ -72,6 +72,24 @@ public class AuthFilter implements Filter {
             return;
         }
 
+        // Check Bearer Token authentication
+        if (servletRequest instanceof HttpServletRequest && servletResponse instanceof HttpServletResponse) {
+            String authHeader = ((HttpServletRequest) servletRequest).getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                User user = validateBearerToken(token);
+                if (user != null) {
+                    try {
+                        SecurityContext.init(user);
+                        filterChain.doFilter(servletRequest, servletResponse);
+                    } finally {
+                        SecurityContext.release();
+                    }
+                    return;
+                }
+            }
+        }
+
         // Check that the user is authenticated and forbid access to app if not
         User currentUser = null;
         if (servletRequest instanceof HttpServletRequest && servletResponse instanceof HttpServletResponse) {
@@ -117,5 +135,12 @@ public class AuthFilter implements Filter {
         } finally {
             SecurityContext.release();
         }
+    }
+
+    private User validateBearerToken(String token) {
+        if (token == null || token.isEmpty()) {
+            return null;
+        }
+        return userDAO.getUserByAuthToken(token);
     }
 }

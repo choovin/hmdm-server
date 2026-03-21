@@ -40,6 +40,8 @@ public interface UserMapper {
 
     User findByPasswordResetToken(@Param("token") String token);
 
+    User findByAuthToken(@Param("token") String token);
+
     User findById(@Param("userId") Integer userId);
 
     List<User> findAll(@Param("customerId") Integer customerId);
