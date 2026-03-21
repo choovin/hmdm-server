@@ -215,20 +215,11 @@
                     </execution>
 
                     <execution>
-                        <id>install yarn</id>
+                        <id>npm install</id>
                         <goals><goal>npm</goal></goals>
 
                         <configuration>
-                            <arguments>install -g yarn</arguments>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>npm install</id>
-                        <goals><goal>yarn</goal></goals>
-
-                        <configuration>
-                            <arguments>install --frozen-lockfile --registry https://registry.npmmirror.com || yarn install --registry https://registry.npmmirror.com</arguments>
+                            <arguments>install --registry https://registry.npmmirror.com</arguments>
                         </configuration>
                     </execution>
 
