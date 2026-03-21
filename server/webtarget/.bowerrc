@@ -1,4 +1,4 @@
 {
-  "registry": "https://registry.npmmirror.com",
+  "registry": "https://registry.bower.io",
   "shorthand-resolver": "https://ghfast.top/https://github.com/{{owner}}/{{package}}.git"
 }
