@@ -64,7 +64,9 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public User getUserByAuthToken(String token) {
-        return getSingleRecord(() -> mapper.findByAuthToken(token), SecurityException::onUserAccessViolation);
+        // This method is called during Bearer token authentication, BEFORE SecurityContext is set.
+        // The token IS the authentication — skip the getSingleRecord security check.
+        return mapper.findByAuthToken(token);
     }
 
 

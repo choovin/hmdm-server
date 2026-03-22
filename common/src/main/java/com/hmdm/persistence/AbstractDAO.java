@@ -120,7 +120,14 @@ public abstract class AbstractDAO<T extends CustomerData> {
         if (recordOpt.isPresent()) {
             T record = recordOpt.get();
 
-            return SecurityContext.get()
+            SecurityContext sc = SecurityContext.get();
+            if (sc == null) {
+                // Called outside of security context (e.g., during Bearer token auth).
+                // Return the record directly since there's no current user to verify against.
+                return record;
+            }
+
+            return sc
                     .getCurrentUser()
                     .filter(u -> u.getCustomerId() == record.getCustomerId())
                     .map(u -> record)

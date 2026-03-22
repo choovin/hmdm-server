@@ -46,20 +46,20 @@
 
     <resultMap id="userLite" type="User">
         <id property="id" column="id" />
-        <id property="name" column="name" />
-        <id property="login" column="login" />
-        <id property="email" column="email" />
-        <id property="customerId" column="customerId" />
-        <id property="masterCustomer" column="masterCustomer" />
-        <id property="allDevicesAvailable" column="allDevicesAvailable" />
-        <id property="allConfigAvailable" column="allConfigAvailable" />
-        <id property="passwordReset" column="passwordReset" />
-        <id property="authToken" column="authToken" />
-        <id property="passwordResetToken" column="passwordResetToken" />
-        <id property="authData" column="authData" />
-        <id property="twoFactorSecret" column="twoFactorSecret" />
-        <id property="twoFactorAccepted" column="twoFactorAccepted" />
-        <id property="lastLoginFail" column="lastLoginFail" />
+        <result property="name" column="name" />
+        <result property="login" column="login" />
+        <result property="email" column="email" />
+        <result property="customerId" column="customerId" />
+        <result property="masterCustomer" column="masterCustomer" />
+        <result property="allDevicesAvailable" column="allDevicesAvailable" />
+        <result property="allConfigAvailable" column="allConfigAvailable" />
+        <result property="passwordReset" column="passwordReset" />
+        <result property="authToken" column="authToken" />
+        <result property="passwordResetToken" column="passwordResetToken" />
+        <result property="authData" column="authData" />
+        <result property="twoFactorSecret" column="twoFactorSecret" />
+        <result property="twoFactorAccepted" column="twoFactorAccepted" />
+        <result property="lastLoginFail" column="lastLoginFail" />
         <association property="userRole" resultMap="userRoleLite"/>
         <collection property="groups" ofType="com.hmdm.rest.json.LookupItem">
             <result property="id" column="groupId"/>
