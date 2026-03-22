@@ -1,6 +1,6 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('CommandsController', function ($scope, $modal, localization, deviceService, commandService, alertService) {
+    .controller('CommandsController', function ($scope, $uibModal, localization, deviceService, commandService, alertService) {
 
         $scope.localization = localization;
         $scope.devices = [];
@@ -97,7 +97,7 @@ angular.module('headwind-kiosk')
                 return;
             }
 
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'app/components/main/view/modals/command-modal.html',
                 controller: 'CommandModalController',
                 resolve: {
@@ -128,7 +128,7 @@ angular.module('headwind-kiosk')
         $scope.loadDevices();
         $scope.loadCommandHistory();
     })
-    .controller('CommandModalController', function ($scope, $modalInstance, command, devices, commandService, localization, alertService) {
+    .controller('CommandModalController', function ($scope, $uibModalInstance, command, devices, commandService, localization, alertService) {
         $scope.localization = localization;
         $scope.command = command;
         $scope.devices = devices;
@@ -166,7 +166,7 @@ angular.module('headwind-kiosk')
             commandService.executeCommand(params, function(response) {
                 $scope.isExecuting = false;
                 if (response.status === 'OK') {
-                    $modalInstance.close(response.data);
+                    $uibModalInstance.close(response.data);
                     alertService.showSuccessMessage(
                         localization.localize('success.command.executed')
                     );
@@ -180,7 +180,7 @@ angular.module('headwind-kiosk')
 
         // Cancel
         $scope.cancel = function() {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         $scope.initParams();

@@ -29,6 +29,23 @@ module.exports = function( grunt ) {
     grunt.loadNpmTasks( 'grunt-contrib-clean' );
     grunt.loadNpmTasks( 'grunt-contrib-copy' );
 
-    grunt.registerTask( 'resolve', [ 'clean:dist', 'copy' ] );
+    // Fix angular-ui-mask: replace CommonJS mask.js with browser-compatible dist/mask.js
+    grunt.registerTask( 'fix-mask', 'Fix angular-ui-mask for browser', function() {
+        var distMaskJs = 'lib/angular-ui-mask/dist/mask.js';
+        if (grunt.file.exists(distMaskJs)) {
+            // Fix in lib directory
+            var maskJsLib = 'lib/angular-ui-mask/mask.js';
+            grunt.log.writeln('Fixing ' + maskJsLib + ' with ' + distMaskJs);
+            grunt.file.copy(distMaskJs, maskJsLib);
+            // Fix in webapp/lib directory (final destination)
+            var maskJsWebapp = '../src/main/webapp/lib/angular-ui-mask/mask.js';
+            grunt.log.writeln('Fixing ' + maskJsWebapp + ' with ' + distMaskJs);
+            grunt.file.copy(distMaskJs, maskJsWebapp);
+        } else {
+            grunt.log.error('dist/mask.js not found in angular-ui-mask');
+        }
+    });
+
+    grunt.registerTask( 'resolve', [ 'clean:dist', 'copy', 'fix-mask' ] );
     grunt.registerTask( 'remove-node-modules', [ 'clean:nodeModules'] );
 };

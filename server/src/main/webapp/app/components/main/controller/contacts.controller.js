@@ -1,6 +1,6 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('ContactsController', function ($scope, $modal, $timeout, localization, contactService, deviceService,
+    .controller('ContactsController', function ($scope, $uibModal, $timeout, localization, contactService, deviceService,
                                                authService, alertService) {
 
         $scope.localization = localization;
@@ -88,7 +88,7 @@ angular.module('headwind-kiosk')
 
         // Open add contact modal
         $scope.openAddContactModal = function() {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'app/components/main/view/modals/contact-modal.html',
                 controller: 'ContactModalController',
                 resolve: {
@@ -105,7 +105,7 @@ angular.module('headwind-kiosk')
 
         // Edit contact
         $scope.editContact = function(contact) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'app/components/main/view/modals/contact-modal.html',
                 controller: 'ContactModalController',
                 resolve: {
@@ -228,7 +228,7 @@ angular.module('headwind-kiosk')
         // Initialize
         $scope.loadContacts();
     })
-    .controller('ContactModalController', function ($scope, $modalInstance, contact, contactService, deviceService,
+    .controller('ContactModalController', function ($scope, $uibModalInstance, contact, contactService, deviceService,
                                                    localization, alertService) {
         $scope.localization = localization;
         $scope.isEditing = !!contact;
@@ -270,7 +270,7 @@ angular.module('headwind-kiosk')
 
             saveFunc(params, $scope.contact, function(response) {
                 if (response.status === 'OK') {
-                    $modalInstance.close(response.data);
+                    $uibModalInstance.close(response.data);
                     alertService.showSuccessMessage(
                         $scope.isEditing ?
                             localization.localize('success.contact.updated') :
@@ -286,7 +286,7 @@ angular.module('headwind-kiosk')
 
         // Cancel
         $scope.cancel = function() {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         $scope.loadDevices();

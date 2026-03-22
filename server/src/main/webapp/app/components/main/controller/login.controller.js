@@ -5,6 +5,18 @@ angular.module('headwind-kiosk')
         $scope.login = {};
         $scope.transmitPassword = false;
 
+        // 记住密码功能 - 从 localStorage 读取保存的凭据
+        var savedCredentials = localStorage.getItem('hmdm-remembered');
+        if (savedCredentials) {
+            try {
+                var creds = JSON.parse(savedCredentials);
+                $scope.login.username = creds.username || '';
+                $scope.login.remember = !!creds.username;
+            } catch (e) {
+                $scope.login.remember = false;
+            }
+        }
+
         // Language switching
         var savedLang = localStorage.getItem('hmdm-language') || getBrowserLanguage();
         if (savedLang !== 'zh_CN' && savedLang !== 'en_US') {
@@ -43,6 +55,15 @@ angular.module('headwind-kiosk')
 
         var loginHandler = function (response) {
             if (response.status === 'OK') {
+                // 记住密码功能 - 登录成功后保存凭据
+                if ($scope.login.remember && $scope.login.username) {
+                    localStorage.setItem('hmdm-remembered', JSON.stringify({
+                        username: $scope.login.username
+                    }));
+                } else {
+                    localStorage.removeItem('hmdm-remembered');
+                }
+
                 if (response.data.passwordReset) {
                     $state.transitionTo('passwordReset', {"token": response.data.passwordResetToken});
                 } else if (response.data.twoFactor) {

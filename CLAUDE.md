@@ -86,6 +86,37 @@ hmdm-server/
 - 数据库配置: `server/src/main/resources/db.properties` (需从模板创建)
 - 前端入口: `server/src/main/webapp/index.html`
 
+## 前端问题排查
+
+### 登录页面白屏
+
+常见原因及解决方案：
+
+| 错误 | 解决方案 |
+|------|----------|
+| `$modal is not defined` | angular-ui-bootstrap 2.5.6 使用 `$uibModal`，需批量替换 |
+| mask.js CommonJS 错误 | Gruntfile.js 中添加 fix-mask 任务复制 dist/mask.js |
+
+**前端控制器批量替换 `$modal` → `$uibModal`**:
+```bash
+find server/src/main/webapp/app -name "*.js" -exec grep -l "\$modal" {} \; | while read f; do
+  sed -i 's/\$modal/\$uibModal/g' "$f"
+done
+```
+
+### 记住密码功能
+
+登录控制器: `server/src/main/webapp/app/components/main/controller/login.controller.js`
+
+实现逻辑：
+- 登录成功时: `localStorage.setItem('hmdm-remembered', JSON.stringify({username: ...}))`
+- 页面加载时: 从 localStorage 读取用户名并填充
+
+## 管理后台默认账号密码
+
+- 用户名: `admin`
+- 密码: `admin`
+
 ---
 
 # gstack

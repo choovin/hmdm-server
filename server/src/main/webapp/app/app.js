@@ -482,7 +482,14 @@ angular.module('headwind-kiosk',
             ]
         }
     ])
-    .config(['$ocLazyLoadProvider', 'SUPPORTED_LIBS', function($ocLazyLoadProvider, SUPPORTED_LIBS) {
+    
+    // Fix: Create $modal alias for $uibModal (angular-ui-bootstrap 2.x changed $modal to $uibModal)
+    .config(['$provide', function ($provide) {
+        $provide.decorator('$uibModal', function ($delegate) { return $delegate; });
+        $provide.factory('$modal', ['$uibModal', function ($uibModal) { return $uibModal; }]);
+    }])
+
+.config(['$ocLazyLoadProvider', 'SUPPORTED_LIBS', function($ocLazyLoadProvider, SUPPORTED_LIBS) {
         $ocLazyLoadProvider.config({
             events: true,
             modules: angular.copy(SUPPORTED_LIBS, [])

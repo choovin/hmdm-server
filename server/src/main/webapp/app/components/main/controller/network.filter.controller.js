@@ -1,6 +1,6 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('NetworkFilterController', function ($scope, $modal, localization, deviceService, networkFilterService, alertService) {
+    .controller('NetworkFilterController', function ($scope, $uibModal, localization, deviceService, networkFilterService, alertService) {
 
         $scope.localization = localization;
         $scope.devices = [];
@@ -92,7 +92,7 @@ angular.module('headwind-kiosk')
 
         // Open filter modal
         $scope.openFilterModal = function(filter) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'app/components/main/view/modals/filter-modal.html',
                 controller: 'FilterModalController',
                 resolve: {
@@ -153,7 +153,7 @@ angular.module('headwind-kiosk')
         $scope.loadDevices();
         $scope.loadFilters();
     })
-    .controller('FilterModalController', function ($scope, $modalInstance, filter, devices, networkFilterService, localization, alertService) {
+    .controller('FilterModalController', function ($scope, $uibModalInstance, filter, devices, networkFilterService, localization, alertService) {
         $scope.localization = localization;
         $scope.filter = angular.copy(filter) || {};
         $scope.devices = devices;
@@ -190,7 +190,7 @@ angular.module('headwind-kiosk')
             networkFilterService.saveFilter(params, function(response) {
                 $scope.isSaving = false;
                 if (response.status === 'OK') {
-                    $modalInstance.close(response.data);
+                    $uibModalInstance.close(response.data);
                     alertService.showSuccessMessage(
                         localization.localize('success.filter.saved')
                     );
@@ -204,6 +204,6 @@ angular.module('headwind-kiosk')
 
         // Cancel
         $scope.cancel = function() {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
     });

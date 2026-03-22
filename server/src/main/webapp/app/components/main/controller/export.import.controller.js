@@ -1,6 +1,6 @@
 // Localization completed
 angular.module('headwind-kiosk')
-    .controller('ExportImportController', function ($scope, $modal, localization, exportImportService, alertService) {
+    .controller('ExportImportController', function ($scope, $uibModal, localization, exportImportService, alertService) {
 
         $scope.localization = localization;
         $scope.importJobs = [];
@@ -42,7 +42,7 @@ angular.module('headwind-kiosk')
 
         // Open import modal
         $scope.openImportModal = function() {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'app/components/main/view/modals/import-modal.html',
                 controller: 'ImportModalController',
                 resolve: {
@@ -62,7 +62,7 @@ angular.module('headwind-kiosk')
 
         // Open export modal
         $scope.openExportModal = function() {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'app/components/main/view/modals/export-modal.html',
                 controller: 'ExportModalController',
                 resolve: {
@@ -91,7 +91,7 @@ angular.module('headwind-kiosk')
 
         // View job details
         $scope.viewJobDetails = function(job) {
-            $modal.open({
+            $uibModal.open({
                 templateUrl: 'app/components/main/view/modals/job-details-modal.html',
                 controller: 'JobDetailsModalController',
                 resolve: {
@@ -130,7 +130,7 @@ angular.module('headwind-kiosk')
         // Initialize
         $scope.loadImportJobs();
     })
-    .controller('ImportModalController', function ($scope, $modalInstance, localization, exportImportService, alertService) {
+    .controller('ImportModalController', function ($scope, $uibModalInstance, localization, exportImportService, alertService) {
         $scope.localization = localization;
         $scope.importData = {
             file: null,
@@ -181,7 +181,7 @@ angular.module('headwind-kiosk')
             exportImportService.importDevices(params, function(response) {
                 $scope.isUploading = false;
                 if (response.status === 'OK') {
-                    $modalInstance.close(response.data);
+                    $uibModalInstance.close(response.data);
                 } else {
                     alertService.showErrorMessage(
                         localization.localize(response.message || 'error.import.failed')
@@ -194,10 +194,10 @@ angular.module('headwind-kiosk')
 
         // Cancel
         $scope.cancel = function() {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
     })
-    .controller('ExportModalController', function ($scope, $modalInstance, localization, deviceService, exportImportService, alertService) {
+    .controller('ExportModalController', function ($scope, $uibModalInstance, localization, deviceService, exportImportService, alertService) {
         $scope.localization = localization;
         $scope.exportData = {
             format: 'csv',
@@ -257,7 +257,7 @@ angular.module('headwind-kiosk')
             exportImportService.exportDevices(params, function(response) {
                 $scope.isExporting = false;
                 if (response.status === 'OK') {
-                    $modalInstance.close(response.data);
+                    $uibModalInstance.close(response.data);
                 } else {
                     alertService.showErrorMessage(
                         localization.localize(response.message || 'error.export.failed')
@@ -268,16 +268,16 @@ angular.module('headwind-kiosk')
 
         // Cancel
         $scope.cancel = function() {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         $scope.loadDevices();
     })
-    .controller('JobDetailsModalController', function ($scope, $modalInstance, job, localization) {
+    .controller('JobDetailsModalController', function ($scope, $uibModalInstance, job, localization) {
         $scope.localization = localization;
         $scope.job = job;
 
         $scope.close = function() {
-            $modalInstance.dismiss('close');
+            $uibModalInstance.dismiss('close');
         };
     });
