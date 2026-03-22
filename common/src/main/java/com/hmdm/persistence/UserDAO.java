@@ -73,6 +73,15 @@ public class UserDAO extends AbstractDAO<User> {
         updateRecord(user, this.mapper::updatePassword, SecurityException::onUserAccessViolation);
     }
 
+    /**
+     * Updates the auth token for a user. This is an unsecure method that bypasses
+     * permission checks and should only be called during authentication flow.
+     * @param user the user with the updated authToken
+     */
+    public void updateAuthToken(User user) {
+        this.mapper.updateAuthToken(user);
+    }
+
     @Transactional
     public void updatePasswordBySuperAdmin(User user ) {
         if (SecurityContext.get().isSuperAdmin()) {

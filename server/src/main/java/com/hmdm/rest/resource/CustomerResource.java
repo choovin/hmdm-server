@@ -252,8 +252,7 @@ public class CustomerResource {
                         // findOrgAdmin() doesn't return password, so we need to get the user's password
                         User user = unsecureDAO.findByLoginOrEmail(orgAdmin.getLogin());
                         user.setAuthToken(PasswordUtil.generateToken());
-                        user.setNewPassword(user.getPassword());        // copy value for setUserNewPasswordUnsecure
-                        unsecureDAO.setUserNewPasswordUnsecure(user);
+                        userDAO.updateAuthToken(user);
                         orgAdmin.setAuthToken(user.getAuthToken());
                     }
 
