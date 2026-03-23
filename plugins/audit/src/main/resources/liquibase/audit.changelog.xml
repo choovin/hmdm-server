@@ -64,9 +64,9 @@
     <changeSet id="plugin-audit-04.10.2019-16:40" author="isv" context="common">
         <comment>Permissions for audit plugin access</comment>
         <sql>
-            INSERT INTO permissions (name, description) VALUES ('plugin_audit_access', 'Имеет доступ к аудиту действий пользователей');
+            INSERT INTO permissions (name, description) VALUES ('plugin_audit_access', '有权访问用户操作审计');
             INSERT INTO userRolePermissions (roleId, permissionId)
-            SELECT id, currval('permissions_id_seq') FROM userroles WHERE name IN ('Администратор', 'Супер-Администратор');
+            SELECT id, currval('permissions_id_seq') FROM userroles WHERE name IN ('管理员', '超级管理员');
         </sql>
         <rollback>
             DELETE FROM permissions WHERE name = 'plugin_audit_access';

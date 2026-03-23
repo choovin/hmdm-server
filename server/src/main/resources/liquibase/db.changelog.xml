@@ -509,14 +509,14 @@
     <changeSet id="01.02.19-14:25" author="isv" context="common">
         <comment>Initial set of roles and permissions</comment>
         <sql>
-            INSERT INTO permissions (id, name, description, superadmin) VALUES (1, 'superadmin', 'Функции супер-администратора всего приложения', TRUE);
-            INSERT INTO permissions (id, name, description) VALUES (2, 'settings', 'Имеет доступ к настройкам и видит их в меню');
-            INSERT INTO permissions (id, name, description) VALUES (3, 'configurations', 'Имеет доступ к конфигурациям, приложениям и файлам и видит их в меню');
-            INSERT INTO permissions (id, name, description) VALUES (4, 'edit_devices', 'Имеет доступ к редактированию и добавлению устройств');
+            INSERT INTO permissions (id, name, description, superadmin) VALUES (1, 'superadmin', '超级管理员的全应用功能', TRUE);
+            INSERT INTO permissions (id, name, description) VALUES (2, 'settings', '有权访问设置并在菜单中可见');
+            INSERT INTO permissions (id, name, description) VALUES (3, 'configurations', '有权访问配置、应用和文件并在菜单中可见');
+            INSERT INTO permissions (id, name, description) VALUES (4, 'edit_devices', '有权编辑和添加设备');
 
-            INSERT INTO userRoles (id, name, description, superadmin) VALUES (1, 'Супер-Администратор', 'Всевидящее око Саурона', TRUE);
-            INSERT INTO userRoles (id, name, description) VALUES (2, 'Администратор', 'Выполняет функции администратора для одной клиентской записи');
-            INSERT INTO userRoles (id, name, description) VALUES (3, 'Пользователь', 'Пользователь для одной клиентской записи');
+            INSERT INTO userRoles (id, name, description, superadmin) VALUES (1, '超级管理员', '全能管理者', TRUE);
+            INSERT INTO userRoles (id, name, description) VALUES (2, '管理员', '为单个客户账户执行管理员功能');
+            INSERT INTO userRoles (id, name, description) VALUES (3, '用户', '单个客户账户的用户');
 
             INSERT INTO userRolePermissions (roleId, permissionId) VALUES (1, 1);
 
@@ -617,10 +617,10 @@
     <changeSet id="04.03.19-20:32" author="isv" context="common">
         <comment>Observer role</comment>
         <sql>
-            INSERT INTO userRoles (name, description) VALUES ('Наблюдатель', 'Наблюдатель зорко наблюдает');
+            INSERT INTO userRoles (name, description) VALUES ('观察者', '观察者仔细观察');
         </sql>
         <rollback>
-            DELETE FROM userRoles WHERE name = 'Наблюдатель';
+            DELETE FROM userRoles WHERE name = '观察者';
         </rollback>
     </changeSet>
 
@@ -1438,9 +1438,9 @@
     <changeSet id="18.10.2019-17:21" author="isv" context="common">
         <comment>Permission,new: edit_device_app_settings</comment>
         <sql>
-            INSERT INTO permissions (name, description) VALUES ('edit_device_app_settings', 'Имеет доступ к редактированию и добавлению настроек приложения для устройства');
+            INSERT INTO permissions (name, description) VALUES ('edit_device_app_settings', '有权为设备编辑和添加应用程序设置');
             INSERT INTO userRolePermissions (roleId, permissionId)
-            SELECT id, currval('permissions_id_seq') FROM userroles WHERE name IN ('Администратор', 'Супер-Администратор');
+            SELECT id, currval('permissions_id_seq') FROM userroles WHERE name IN ('管理员', '超级管理员');
         </sql>
         <rollback>
             DELETE FROM permissions WHERE name = 'edit_device_app_settings';

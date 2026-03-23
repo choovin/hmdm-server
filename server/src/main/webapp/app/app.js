@@ -64,7 +64,10 @@ angular.module('headwind-kiosk',
             var userLang = window.navigator.language || window.navigator.userLanguage;
             if (userLang) {
                 userLang = userLang.replace('-', '_');
-                if (SUPPORTED_LANGUAGES[userLang]) {
+                // Force Chinese for Russian locale (common misconfiguration)
+                if (userLang === 'ru' || userLang === 'ru_RU' || userLang === 'ru_SU') {
+                    userLang = DEFAULT_LANGUAGE;
+                } else if (SUPPORTED_LANGUAGES[userLang]) {
                     userLang = SUPPORTED_LANGUAGES[userLang];
                 } else {
                     // Fall back to Chinese instead of English

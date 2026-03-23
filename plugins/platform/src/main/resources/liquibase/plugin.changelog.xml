@@ -97,10 +97,10 @@
     <changeSet id="plugin-platform-29.10.2019-17:55" author="isv" context="common">
         <comment>Permission,new: plugins_customer_access_management</comment>
         <sql>
-            INSERT INTO permissions (name, description) VALUES ('plugins_customer_access_management', 'Имеет доступ к управлению списком используемых плагинов на уровне учетной записи своей организации');
+            INSERT INTO permissions (name, description) VALUES ('plugins_customer_access_management', '有权在组织账户级别管理所用插件列表');
             INSERT INTO userRolePermissions (roleId, permissionId)
             SELECT id, currval('permissions_id_seq')
-            FROM userroles WHERE name IN ('Администратор', 'Супер-Администратор');
+            FROM userroles WHERE name IN ('管理员', '超级管理员');
         </sql>
         <rollback>
             DELETE FROM permissions WHERE name = 'plugins_customer_access_management';

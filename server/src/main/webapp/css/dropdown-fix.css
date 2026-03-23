@@ -236,3 +236,57 @@ a.btn-primary,
     padding: 6px 12px !important;
     font-size: 14px !important;
 }
+
+/* ===========================================
+   9. FOOTER OVERLAP FIX
+   =========================================== */
+/* Content wrapper needs bottom padding to account for fixed footer (bottom: 10px + padding-top: 10px = ~60px) */
+.content-wrapper {
+    padding-bottom: 80px !important;
+}
+
+/* Ensure page content doesn't get hidden behind fixed footer */
+.page-body,
+.panel,
+.panel-default,
+.panel-primary {
+    margin-bottom: 20px !important;
+}
+
+/* Main content area needs bottom margin for fixed footer */
+.main-content,
+.page-content,
+.content-area {
+    padding-bottom: 80px !important;
+}
+
+/* Fix for settings and configuration pages */
+.settings-content,
+.configuration-content,
+.tab-content {
+    padding-bottom: 80px !important;
+}
+
+/* Ensure forms and action buttons are visible above footer */
+.form-actions,
+.modal-footer,
+.action-buttons {
+    margin-bottom: 60px !important;
+}
+
+/* For modern-theme content wrapper */
+.content-wrapper:not(.fullscreen) {
+    padding-bottom: 80px !important;
+}
+
+/* Ensure tables with actions don't get covered */
+.table-container .actions-row,
+.device-list-actions,
+.configuration-actions {
+    padding-bottom: 80px !important;
+}
+
+/* Bootstrap panel body needs bottom margin */
+.panel-body:last-child {
+    margin-bottom: 60px !important;
+}
